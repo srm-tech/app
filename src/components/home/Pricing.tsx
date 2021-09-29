@@ -59,7 +59,7 @@ const pricing = {
 
 export default function Pricing() {
   return (
-    <div className='px-4 py-24 mx-auto bg-white max-w-7xl sm:px-6 lg:px-8'>
+    <div className='px-4 py-24 mx-auto max-w-7xl sm:px-6 lg:px-8'>
       <h2 className='text-3xl font-extrabold text-gray-900 sm:text-5xl sm:leading-none sm:tracking-tight lg:text-6xl'>
         Pricing
       </h2>

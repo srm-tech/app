@@ -42,10 +42,18 @@ export default function HomePage() {
             </svg>
           </div>
           <div className='relative pt-6 pb-16 sm:pb-24'>
-            <Nav />
-            <Hero />
-            <Pricing />
-            <Footer />
+            <div className='w-full'>
+              <Nav />
+            </div>
+            <div className='w-full'>
+              <Hero />
+            </div>
+            <div className='w-full bg-white'>
+              <Pricing />
+            </div>
+            <div className='w-full'>
+              <Footer />
+            </div>
           </div>
         </div>
       </main>
