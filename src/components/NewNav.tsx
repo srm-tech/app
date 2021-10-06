@@ -8,7 +8,7 @@ const navigation = [
   // { name: 'Company', href: '#' },
 ];
 
-export default function Nav() {
+export default function NewNav() {
   return (
     <Popover>
       <nav
@@ -26,7 +26,7 @@ export default function Nav() {
               />
             </a>
             <div className='flex items-center -mr-2 md:hidden'>
-              <Popover.Button className='inline-flex items-center justify-center p-2 text-gray-400 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus-ring-inset focus:ring-white'>
+              <Popover.Button className='inline-flex items-center justify-center p-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:ring-gray-200'>
                 <span className='sr-only'>Open main menu</span>
                 <MenuIcon className='w-6 h-6' aria-hidden='true' />
               </Popover.Button>
@@ -39,7 +39,7 @@ export default function Nav() {
               <a
                 key={item.name}
                 href={item.href}
-                className='font-medium text-white hover:text-gray-300 '
+                className='font-medium text-gray-700 transition hover:text-gray-400'
               >
                 {item.name}
               </a>
@@ -47,7 +47,8 @@ export default function Nav() {
           </div>
           <a
             href='#'
-            className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md hover:bg-gray-700'
+            // className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md hover:bg-gray-700'
+            className='inline-flex items-center px-4 py-2 text-lg text-white bg-gray-700 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
           >
             Log in
           </a>
@@ -77,7 +78,7 @@ export default function Nav() {
                 />
               </div>
               <div className='-mr-2'>
-                <Popover.Button className='inline-flex items-center justify-center p-2 text-gray-400 bg-white rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500'>
+                <Popover.Button className='inline-flex items-center justify-center p-2 text-gray-400 bg-white rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-300'>
                   <span className='sr-only'>Close menu</span>
                   <XIcon className='w-6 h-6' aria-hidden='true' />
                 </Popover.Button>
@@ -96,7 +97,7 @@ export default function Nav() {
             </div>
             <a
               href='#'
-              className='block w-full px-5 py-3 font-medium text-center text-green-600 bg-gray-50 hover:bg-gray-100'
+              className='block w-full px-5 py-3 text-lg font-medium text-center text-gray-700 bg-gray-100 hover:bg-gray-100'
             >
               Log in
             </a>

@@ -1,7 +1,26 @@
 import { ClockIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 
+const scriptURL =
+  'https://script.google.com/macros/s/1hLHlC4go0WYvUt45i-PJiWmpxJYOiAaIDAOsdGjuHKE/exec';
+
 export default function Hero() {
+  const [name, setName] = React.useState('');
+  const [contact, setContact] = React.useState('');
+
+  const _handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formdData = new FormData();
+    formdData.append('name', name);
+    formdData.append('contact', contact);
+
+    fetch(scriptURL, { method: 'POST', body: formdData }).then(() =>
+      alert('You have successfully submitted.')
+    );
+    // .catch(error => )
+  };
+
   return (
     <section className='mt-16 mb-16 sm:mt-24'>
       <div className='mx-auto max-w-7xl'>
@@ -62,8 +81,8 @@ export default function Hero() {
               </div>
             </div>
           </div>
-          <div className='mt-16 sm:mt-24 lg:mt-0 lg:col-span-6'>
-            <div className='bg-white sm:max-w-md sm:w-full sm:mx-auto sm:rounded-lg sm:overflow-hidden'>
+          <div className='mx-5 mt-16 sm:mt-24 lg:mt-0 lg:col-span-6'>
+            <div className='overflow-hidden bg-white rounded-lg sm:max-w-md sm:w-full sm:mx-auto'>
               <div className='px-4 py-8 sm:px-10'>
                 <div>
                   <p className='text-sm font-medium text-gray-700'>
@@ -72,7 +91,12 @@ export default function Hero() {
                 </div>
 
                 <div className='mt-6'>
-                  <form action='#' method='POST' className='space-y-6'>
+                  <form
+                    action='#'
+                    method='POST'
+                    className='space-y-6'
+                    onSubmit={_handleSubmit}
+                  >
                     <div>
                       <label htmlFor='name' className='sr-only'>
                         Full name
@@ -85,6 +109,8 @@ export default function Hero() {
                         placeholder='Full name'
                         required
                         className='block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
                       />
                     </div>
 
@@ -100,6 +126,8 @@ export default function Hero() {
                         placeholder='Mobile number or email'
                         required
                         className='block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                        value={contact}
+                        onChange={(event) => setContact(event.target.value)}
                       />
                     </div>
 
