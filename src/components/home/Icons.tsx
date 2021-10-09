@@ -6,10 +6,10 @@ interface IconProps {
 
 export type IconName =
   | 'howItWorks'
-  | 'earth'
-  | 'weightScale'
-  | 'lightning'
-  | 'message';
+  | 'clock'
+  | 'inOutArrow'
+  | 'people'
+  | 'shine';
 
 const icons = ({ height = 48, width = 48 }: IconProps) => ({
   howItWorks: () => (
@@ -30,7 +30,7 @@ const icons = ({ height = 48, width = 48 }: IconProps) => ({
       />
     </svg>
   ),
-  earth: () => (
+  clock: () => (
     <svg
       width={width}
       height={height}
@@ -38,17 +38,20 @@ const icons = ({ height = 48, width = 48 }: IconProps) => ({
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
-      <rect width='48' height='48' rx='6' fill='#343434' />
       <path
-        d='M33 24C33 28.9706 28.9706 33 24 33M33 24C33 19.0294 28.9706 15 24 15M33 24H15M24 33C19.0294 33 15 28.9706 15 24M24 33C25.6569 33 27 28.9706 27 24C27 19.0294 25.6569 15 24 15M24 33C22.3431 33 21 28.9706 21 24C21 19.0294 22.3431 15 24 15M15 24C15 19.0294 19.0294 15 24 15'
-        stroke='white'
+        d='M0 24C0 10.7452 10.7452 0 24 0C37.2548 0 48 10.7452 48 24C48 37.2548 37.2548 48 24 48C10.7452 48 0 37.2548 0 24Z'
+        fill='#E6FFE7'
+      />
+      <path
+        d='M24 20V24L27 27M33 24C33 28.9706 28.9706 33 24 33C19.0294 33 15 28.9706 15 24C15 19.0294 19.0294 15 24 15C28.9706 15 33 19.0294 33 24Z'
+        stroke='#07504B'
         strokeWidth='2'
         strokeLinecap='round'
         strokeLinejoin='round'
       />
     </svg>
   ),
-  weightScale: () => (
+  inOutArrow: () => (
     <svg
       width={width}
       height={height}
@@ -56,17 +59,20 @@ const icons = ({ height = 48, width = 48 }: IconProps) => ({
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
-      <rect width='48' height='48' rx='6' fill='#343434' />
       <path
-        d='M15 18L18 19M18 19L15 28C16.7725 29.3334 19.2287 29.3334 21.0012 28M18 19L21.0001 28M18 19L24 17M30 19L33 18M30 19L27 28C28.7725 29.3334 31.2287 29.3334 33.0012 28M30 19L33.0001 28M30 19L24 17M24 15V17M24 33V17M24 33H21M24 33H27'
-        stroke='white'
+        d='M0 24C0 10.7452 10.7452 0 24 0C37.2548 0 48 10.7452 48 24C48 37.2548 37.2548 48 24 48C10.7452 48 0 37.2548 0 24Z'
+        fill='#E6FFE7'
+      />
+      <path
+        d='M20 19L32 19M32 19L28 15M32 19L28 23M28 29L16 29M16 29L20 33M16 29L20 25'
+        stroke='#07504B'
         strokeWidth='2'
         strokeLinecap='round'
         strokeLinejoin='round'
       />
     </svg>
   ),
-  lightning: () => (
+  people: () => (
     <svg
       width={width}
       height={height}
@@ -74,17 +80,20 @@ const icons = ({ height = 48, width = 48 }: IconProps) => ({
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
-      <rect width='48' height='48' rx='6' fill='#343434' />
       <path
-        d='M25 22V15L16 26H23L23 33L32 22L25 22Z'
-        stroke='white'
+        d='M0 24C0 10.7452 10.7452 0 24 0C37.2548 0 48 10.7452 48 24C48 37.2548 37.2548 48 24 48C10.7452 48 0 37.2548 0 24Z'
+        fill='#E6FFE7'
+      />
+      <path
+        d='M24 16.3542C24.7329 15.5238 25.8053 15 27 15C29.2091 15 31 16.7909 31 19C31 21.2091 29.2091 23 27 23C25.8053 23 24.7329 22.4762 24 21.6458M27 33H15V32C15 28.6863 17.6863 26 21 26C24.3137 26 27 28.6863 27 32V33ZM27 33H33V32C33 28.6863 30.3137 26 27 26C25.9071 26 24.8825 26.2922 24 26.8027M25 19C25 21.2091 23.2091 23 21 23C18.7909 23 17 21.2091 17 19C17 16.7909 18.7909 15 21 15C23.2091 15 25 16.7909 25 19Z'
+        stroke='#07504B'
         strokeWidth='2'
         strokeLinecap='round'
         strokeLinejoin='round'
       />
     </svg>
   ),
-  message: () => (
+  shine: () => (
     <svg
       width={width}
       height={height}
@@ -92,10 +101,13 @@ const icons = ({ height = 48, width = 48 }: IconProps) => ({
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
-      <rect width='48' height='48' rx='6' fill='#343434' />
       <path
-        d='M19 20H29M19 24H23M24 32L20 28H17C15.8954 28 15 27.1046 15 26V18C15 16.8954 15.8954 16 17 16H31C32.1046 16 33 16.8954 33 18V26C33 27.1046 32.1046 28 31 28H28L24 32Z'
-        stroke='white'
+        d='M0 24C0 10.7452 10.7452 0 24 0C37.2548 0 48 10.7452 48 24C48 37.2548 37.2548 48 24 48C10.7452 48 0 37.2548 0 24Z'
+        fill='#E6FFE7'
+      />
+      <path
+        d='M17 15V19M15 17H19M18 29V33M16 31H20M25 15L27.2857 21.8571L33 24L27.2857 26.1429L25 33L22.7143 26.1429L17 24L22.7143 21.8571L25 15Z'
+        stroke='#07504B'
         strokeWidth='2'
         strokeLinecap='round'
         strokeLinejoin='round'

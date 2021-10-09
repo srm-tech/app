@@ -19,7 +19,7 @@ export default function NewsLetter() {
         />
         <button
           type='button'
-          className='w-full px-5 py-2 text-base text-white uppercase bg-gray-700 border border-transparent rounded-md shadow-sm sm:text-xl hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
+          className='w-full px-5 py-2 text-base text-white uppercase border border-transparent rounded-md shadow-sm bg-dark-green sm:text-xl hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600'
         >
           Sign me up to receive updates
         </button>

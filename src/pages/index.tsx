@@ -1,6 +1,7 @@
 import Footer from '@/components/Footer';
 import Hero from '@/components/home/Hero';
 import HowItWorks from '@/components/home/HowItWorks';
+import { HowWeDifferent } from '@/components/home/HowWeDifferent';
 import Pricing from '@/components/home/Pricing';
 import Promo from '@/components/home/Promo';
 import Roadmap from '@/components/home/Roadmap/Roadmap';
@@ -56,20 +57,20 @@ export default function HomePage() {
             <div className='w-full bg-white'>
               <WhyUs />
             </div>
-            <div className='w-full bg-gray-100'>
+            <div className='w-full bg-light-green'>
               <Promo />
             </div>
             <div className='w-full bg-white'>
-              <Testimonials />
-            </div>
-            <div className='w-full bg-gray-100'>
               <HowItWorks />
             </div>
             <div className='w-full bg-white'>
-              <Roadmap />
+              <HowWeDifferent />
+            </div>
+            <div className='w-full bg-light-green'>
+              <Testimonials />
             </div>
             <div className='w-full bg-white'>
-              <Pricing />
+              <Roadmap />
             </div>
             <div className='w-full'>
               <Footer />

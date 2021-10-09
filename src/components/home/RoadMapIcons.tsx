@@ -1,22 +1,22 @@
 interface IconProps {
-  width?: string | number;
-  height?: string | number;
+  width?: number;
+  height?: number;
   iconColor?: string;
 }
 
-const icons = () => ({
+const icons = (width = 58, height = 58) => ({
   shine: () => (
     <svg
       style={{ margin: 'auto' }}
-      width='58'
-      height='58'
+      width={width}
+      height={height}
       viewBox='0 0 58 58'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
       <path
         d='M12.0833 7.25V16.9167M7.25 12.0833H16.9167M14.5 41.0833V50.75M9.66667 45.9167H19.3333M31.4167 7.25L36.9405 23.8214L50.75 29L36.9405 34.1786L31.4167 50.75L25.8929 34.1786L12.0833 29L25.8929 23.8214L31.4167 7.25Z'
-        stroke='#E0E1E1'
+        stroke='#fff'
         strokeWidth='3'
         strokeLinecap='round'
         strokeLinejoin='round'
@@ -25,15 +25,15 @@ const icons = () => ({
   ),
   community: () => (
     <svg
-      width='58'
-      height='58'
+      width={width}
+      height={height}
       viewBox='0 0 58 58'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
       <path
         d='M41.0834 48.3334H53.1667V43.5001C53.1667 39.496 49.9208 36.2501 45.9167 36.2501C43.6073 36.2501 41.5501 37.3298 40.2225 39.0121M41.0834 48.3334H16.9167M41.0834 48.3334V43.5001C41.0834 41.9142 40.7779 40.3996 40.2225 39.0121M16.9167 48.3334H4.83337V43.5001C4.83337 39.496 8.07931 36.2501 12.0834 36.2501C14.3928 36.2501 16.45 37.3298 17.7776 39.0121M16.9167 48.3334V43.5001C16.9167 41.9142 17.2222 40.3996 17.7776 39.0121M17.7776 39.0121C19.5593 34.5609 23.9125 31.4167 29 31.4167C34.0876 31.4167 38.4408 34.5609 40.2225 39.0121M36.25 16.9167C36.25 20.9208 33.0041 24.1667 29 24.1667C24.996 24.1667 21.75 20.9208 21.75 16.9167C21.75 12.9127 24.996 9.66675 29 9.66675C33.0041 9.66675 36.25 12.9127 36.25 16.9167ZM50.7501 24.1667C50.7501 26.8361 48.5861 29.0001 45.9167 29.0001C43.2473 29.0001 41.0834 26.8361 41.0834 24.1667C41.0834 21.4974 43.2473 19.3334 45.9167 19.3334C48.5861 19.3334 50.7501 21.4974 50.7501 24.1667ZM16.9167 24.1667C16.9167 26.8361 14.7528 29.0001 12.0834 29.0001C9.414 29.0001 7.25004 26.8361 7.25004 24.1667C7.25004 21.4974 9.414 19.3334 12.0834 19.3334C14.7528 19.3334 16.9167 21.4974 16.9167 24.1667Z'
-        stroke='#E0E1E1'
+        stroke='#fff'
         strokeWidth='3'
         strokeLinecap='round'
         strokeLinejoin='round'
@@ -42,15 +42,15 @@ const icons = () => ({
   ),
   lightning: () => (
     <svg
-      width='62'
-      height='62'
+      width={width}
+      height={height}
       viewBox='0 0 62 62'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
       <path
         d='M34.625 24.5556V2L2 37.4444H27.375L27.375 60L60 24.5556L34.625 24.5556Z'
-        stroke='#E0E1E1'
+        stroke='#fff'
         strokeWidth='3'
         strokeLinecap='round'
         strokeLinejoin='round'
@@ -59,15 +59,15 @@ const icons = () => ({
   ),
   calendar: () => (
     <svg
-      width='58'
-      height='58'
+      width={width}
+      height={height}
       viewBox='0 0 58 58'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
       <path
         d='M19.3333 16.9167V7.25M38.6667 16.9167V7.25M16.9167 26.5833H41.0833M12.0833 50.75H45.9167C48.586 50.75 50.75 48.586 50.75 45.9167V16.9167C50.75 14.2473 48.586 12.0833 45.9167 12.0833H12.0833C9.41396 12.0833 7.25 14.2473 7.25 16.9167V45.9167C7.25 48.586 9.41396 50.75 12.0833 50.75Z'
-        stroke='#E0E1E1'
+        stroke='#fff'
         strokeWidth='3'
         strokeLinecap='round'
         strokeLinejoin='round'
@@ -76,30 +76,30 @@ const icons = () => ({
   ),
   star: () => (
     <svg
-      width='58'
-      height='58'
+      width={width}
+      height={height}
       viewBox='0 0 58 58'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
       <path
         d='M28.049 2.92664C28.3483 2.00538 29.6517 2.00537 29.951 2.92664L35.287 19.3468C35.4208 19.7588 35.8048 20.0377 36.238 20.0377L53.5034 20.0384C54.472 20.0384 54.8748 21.278 54.0911 21.8474L40.1235 31.9963C39.7731 32.2509 39.6264 32.7022 39.7603 33.1142L45.0949 49.5348C45.3943 50.4561 44.3398 51.2222 43.5561 50.6528L29.5878 40.505C29.2373 40.2504 28.7627 40.2504 28.4122 40.505L14.4439 50.6528C13.6602 51.2222 12.6057 50.4561 12.9051 49.5348L18.2397 33.1142C18.3736 32.7022 18.2269 32.2509 17.8765 31.9963L3.90887 21.8474C3.12521 21.278 3.52796 20.0384 4.49665 20.0384L21.762 20.0377C22.1952 20.0377 22.5792 19.7588 22.713 19.3468L28.049 2.92664Z'
-        stroke='#E0E1E1'
+        stroke='#fff'
         strokeWidth='3'
       />
     </svg>
   ),
   grow: () => (
     <svg
-      width='58'
-      height='58'
+      width={width}
+      height={height}
       viewBox='0 0 58 58'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
       <path
         d='M31.4167 16.9165H50.75M50.75 16.9165V36.2498M50.75 16.9165L31.4167 36.2498L21.75 26.5832L7.25 41.0832'
-        stroke='#E0E1E1'
+        stroke='#fff'
         strokeWidth='3'
         strokeLinecap='round'
         strokeLinejoin='round'
@@ -108,7 +108,11 @@ const icons = () => ({
   ),
 });
 
-export const RoadMapIcon = ({ name }: IconProps & { name: string }) => {
-  const IconComponent = icons()[name];
+export const RoadMapIcon = ({
+  name,
+  width,
+  height,
+}: IconProps & { name: string }) => {
+  const IconComponent = icons(width, height)[name];
   return <IconComponent />;
 };

@@ -6,9 +6,7 @@
     }
     &::after {
       content: '';
-      width: 2px;
-      background-color: #000;
-      opacity: 0.07;
+      width: 3px;
       position: absolute;
       top: 100%;
       right: 50%;
@@ -18,9 +16,7 @@
   .r-icon {
     &:before {
       content: '';
-      height: 2px;
-      background-color: #000;
-      opacity: 0.07;
+      height: 3px;
       position: absolute;
       top: 50%;
       right: 100%;
@@ -29,9 +25,7 @@
   .l-icon {
     &:before {
       content: '';
-      height: 2px;
-      background-color: #000;
-      opacity: 0.07;
+      height: 3px;
       position: absolute;
       top: 50%;
       left: 100%;

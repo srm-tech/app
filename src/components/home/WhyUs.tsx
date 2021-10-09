@@ -2,22 +2,22 @@ import { Icon, IconName } from './Icons';
 
 const data: { icon: IconName; title: string; desc: string }[] = [
   {
-    icon: 'earth',
+    icon: 'clock',
     title: 'Competitive exchange rates',
     desc: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione. ',
   },
   {
-    icon: 'weightScale',
+    icon: 'inOutArrow',
     title: 'No hidden fees',
     desc: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione. ',
   },
   {
-    icon: 'lightning',
+    icon: 'shine',
     title: 'Transfers are instant',
     desc: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione. ',
   },
   {
-    icon: 'message',
+    icon: 'people',
     title: 'Mobile notifications',
     desc: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione. ',
   },
@@ -40,7 +40,7 @@ export default function WhyUs() {
             className='flex flex-row rounded-lg '
           >
             <div className='mr-6'>
-              <Icon name={item.icon} width={55} height={55} />
+              <Icon name={item.icon} width={60} height={60} />
             </div>
             <div className='flex-grow'>
               <h2 className='mb-2 text-xl font-normal text-gray-700 title-font'>

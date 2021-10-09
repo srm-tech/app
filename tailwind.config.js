@@ -17,6 +17,8 @@ module.exports = {
           500: '#00c4fd',
         },
         dark: '#222222',
+        'light-green': '#E9F1EC',
+        'dark-green': '#07504B',
       },
       keyframes: {
         flicker: {

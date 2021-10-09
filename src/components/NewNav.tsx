@@ -48,7 +48,7 @@ export default function NewNav() {
           <a
             href='#'
             // className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md hover:bg-gray-700'
-            className='inline-flex items-center px-4 py-2 text-lg text-white bg-gray-700 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
+            className='inline-flex items-center px-4 py-2 text-lg text-white border border-transparent rounded-md shadow-sm bg-dark-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600'
           >
             Log in
           </a>
