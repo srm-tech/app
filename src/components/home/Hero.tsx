@@ -58,8 +58,8 @@ export default function Hero() {
                 Introduce Guru, you can incentivise trusted partners with
                 referral fees and grow your business with $0 marketing costs.
               </p>
-              <p className='mt-8 text-sm font-semibold tracking-wide text-white uppercase sm:mt-10'>
-                Used by
+              {/* <p className='mt-8 text-sm font-semibold tracking-wide text-white uppercase sm:mt-10'>
+                Supported by
               </p>
               <div className='w-full mt-5 sm:mx-auto sm:max-w-lg lg:ml-0'>
                 <div className='flex flex-wrap items-start justify-between'>
@@ -85,7 +85,7 @@ export default function Hero() {
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className='mx-5 mt-16 sm:mt-24 lg:mt-0 lg:col-span-6'>
