@@ -5,8 +5,8 @@ const defaultMeta = {
   title: 'Introduce Guru',
   description: 'Business Accelerated via network referrals.',
   site_name: 'Introduce Guru',
-  url: 'https://theodorusclarence.com',
-  image: 'https://theodorusclarence.com/favicon/large-og.jpg',
+  url: 'https://introduce.guru',
+  image: 'https://introduce.guru/favicon/large-og.png',
   type: 'website',
   robots: 'follow, index',
 };

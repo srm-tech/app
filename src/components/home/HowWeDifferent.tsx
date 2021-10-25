@@ -5,7 +5,7 @@ const data = [
   },
   {
     title: 'Is this another lead sales website?',
-    desc: 'No. We don’t provide or sell leads. You will only receive referrals from a trusted network of businesses or individuals.',
+    desc: 'No. We don’t provide or sell leads. You will only receive referrals from a trusted network of businesses and individuals.',
   },
   {
     title: 'How are you different from other platforms?',
@@ -13,7 +13,7 @@ const data = [
   },
   {
     title: 'Can I afford it?',
-    desc: 'Yes. Any business can use the platform for free without any cost of advertising. Premium paid subscription is available to businesses which generate more revenue from using Introduce Guru.',
+    desc: 'Yes. Companies can use our platform for free. Paid subscriptions are available to businesses that would like to grow their revenue faster.',
   },
 ];
 
