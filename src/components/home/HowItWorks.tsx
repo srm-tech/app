@@ -38,7 +38,7 @@ export default function HowItWorks() {
                     <div className='w-1 h-full bg-gray-700 pointer-events-none'></div>
                   </div>
                 )}
-                <div className='relative z-10 inline-flex items-center justify-center flex-shrink-0 w-12 h-12 text-white bg-gray-800 rounded-full'>
+                <div className='relative z-10 inline-flex items-center justify-center flex-shrink-0 w-12 h-12 text-white bg-dark rounded-full'>
                   <h3>{index + 1}</h3>
                 </div>
                 <div className='flex-grow pl-4'>
