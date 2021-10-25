@@ -7,7 +7,7 @@ import Seo from '@/components/Seo';
 export default function PromotionPage() {
   return (
     <>
-      <Seo templateTitle='Home' />
+      <Seo templateTitle='Special Offer' />
 
       <main>
         <div className='relative overflow-hidden'>

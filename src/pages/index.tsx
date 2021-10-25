@@ -13,7 +13,7 @@ import Seo from '@/components/Seo';
 export default function HomePage() {
   return (
     <>
-      <Seo templateTitle='Home' />
+      <Seo templateTitle='Incentivise your network & grow your business' />
 
       <main>
         <div className='relative overflow-hidden bg-dark'>
