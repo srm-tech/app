@@ -2,11 +2,12 @@ import { ClockIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 
 const scriptURL =
-  'https://script.google.com/macros/s/1hLHlC4go0WYvUt45i-PJiWmpxJYOiAaIDAOsdGjuHKE/exec';
+  'https://hook.integromat.com/ndb1abbohl44oi2xsn23lhb7a1pvh3n5';
 
 export default function Hero() {
   const [name, setName] = React.useState('');
   const [contact, setContact] = React.useState('');
+  const formRef = React.useRef<any>();
 
   const _handleSubmit = (e) => {
     e.preventDefault();
@@ -14,10 +15,16 @@ export default function Hero() {
     const formdData = new FormData();
     formdData.append('name', name);
     formdData.append('contact', contact);
+    formdData.append('type', 'Beta Signup');
 
-    fetch(scriptURL, { method: 'POST', body: formdData }).then(() =>
-      alert('You have successfully submitted.')
-    );
+    fetch(scriptURL, {
+      method: 'POST',
+      body: formdData,
+    }).then(() => {
+      alert('You have successfully submitted.');
+      setName('');
+      setContact('');
+    });
     // .catch(error => )
   };
 
@@ -92,8 +99,7 @@ export default function Hero() {
 
                 <div className='mt-6'>
                   <form
-                    action='#'
-                    method='POST'
+                    ref={formRef}
                     className='space-y-6'
                     onSubmit={_handleSubmit}
                   >

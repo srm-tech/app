@@ -94,7 +94,7 @@ export default function Pricing() {
                     type='button'
                     className='inline-flex justify-center w-full py-3 mt-10 text-white transition border border-transparent rounded-md shadow-sm bg-dark-green felx sm:text-xl px-7 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600'
                   >
-                    <p className='text-lg sm:text-2xl'>BUY</p>
+                    <p className='text-lg sm:text-2xl'>Coming soon</p>
                   </button>
                 ) : (
                   <div className='h-24'></div>

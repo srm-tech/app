@@ -1,6 +1,29 @@
 import * as React from 'react';
 
+const scriptURL =
+  'https://hook.integromat.com/ndb1abbohl44oi2xsn23lhb7a1pvh3n5';
+
 export default function Footer() {
+  const [contact, setContact] = React.useState('');
+  const _handleSubmit = (e) => {
+    if (contact.length > 2) {
+      e.preventDefault();
+
+      const formdData = new FormData();
+      formdData.append('contact', contact);
+      formdData.append('type', 'Footer Newsletter');
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: formdData,
+      })
+        .then(() => {
+          alert('You have successfully submitted.');
+          setContact('');
+        })
+        .catch((error) => console.log(e));
+    }
+  };
   const navigation = {
     legal: [
       { name: 'Privacy', href: '#' },
@@ -107,7 +130,10 @@ export default function Footer() {
                   The latest news, articles, and resources, sent to your inbox
                   weekly.
                 </p>
-                <form className='mt-4 sm:flex sm:max-w-md'>
+                <form
+                  className='mt-4 sm:flex sm:max-w-md'
+                  onSubmit={_handleSubmit}
+                >
                   <label htmlFor='email-address' className='sr-only'>
                     Email address
                   </label>
@@ -119,6 +145,8 @@ export default function Footer() {
                     required
                     className='w-full min-w-0 px-4 py-2 text-base text-gray-900 placeholder-gray-500 bg-white border border-transparent rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white focus:border-white focus:placeholder-gray-400'
                     placeholder='Enter your email'
+                    value={contact}
+                    onChange={(e) => setContact(e.target.value)}
                   />
                   <div className='mt-3 rounded-md sm:mt-0 sm:ml-3 sm:flex-shrink-0'>
                     <button

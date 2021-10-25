@@ -35,7 +35,7 @@ export default function Nav() {
         <div className='flex items-center hidden md:flex'>
           <div className='hidden space-x-10 mr-14 md:flex'>
             {navigation.map((item) => (
-              <Link href={item.href} passHref>
+              <Link href={item.href} passHref key={item.name}>
                 <a
                   key={item.name}
                   className='font-medium text-white hover:text-gray-300 '
