@@ -31,7 +31,7 @@ export default function Hero() {
                 href='#'
                 className='inline-flex items-center p-1 pr-2 text-white bg-gray-900 rounded-full sm:text-base lg:text-sm xl:text-base hover:text-gray-200'
               >
-                <span className='px-3 py-0.5 text-white text-xs font-semibold leading-5 uppercase tracking-wide bg-green-500 rounded-full'>
+                <span className='px-3 py-0.5 text-white text-xs font-semibold leading-5 uppercase tracking-wide bg-primary-400 rounded-full'>
                   Beta
                 </span>
                 <span className='ml-4 text-sm'>Coming soon</span>
@@ -42,7 +42,7 @@ export default function Hero() {
               </a>
               <h1 className='mt-4 text-4xl font-extrabold tracking-tight text-white sm:mt-5 sm:leading-none lg:mt-6 lg:text-5xl xl:text-6xl'>
                 <span className='md:block'>Your success</span>{' '}
-                <span className='text-green-400 md:block'>
+                <span className='text-dark-green md:block'>
                   powered by a referral network
                 </span>
               </h1>
@@ -58,8 +58,8 @@ export default function Hero() {
                 <div className='flex flex-wrap items-start justify-between'>
                   <div className='flex justify-center px-1'>
                     <img
-                      className='h-9 sm:h-10'
-                      src='https://tailwindui.com/img/logos/tuple-logo-gray-400.svg'
+                      className='h-9 sm:h-10 opacity-70'
+                      src='/home/testimonials/personal-painters.png'
                       alt='Tuple'
                     />
                   </div>
@@ -85,7 +85,7 @@ export default function Hero() {
             <div className='overflow-hidden bg-white rounded-lg sm:max-w-md sm:w-full sm:mx-auto'>
               <div className='px-4 py-8 sm:px-10'>
                 <div>
-                  <p className='text-sm font-medium text-gray-700'>
+                  <p className='text-sm font-medium text-dark'>
                     Sign up for beta
                   </p>
                 </div>
@@ -134,7 +134,7 @@ export default function Hero() {
                     <div>
                       <button
                         type='submit'
-                        className='flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-green-500 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+                        className='flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-primary-400 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
                       >
                         Notify me
                       </button>

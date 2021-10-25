@@ -20,7 +20,7 @@ const data = [
 export const HowWeDifferent = () => {
   return (
     <div className='px-4 pt-10 mx-auto pb-36 max-w-7xl sm:px-6 lg:px-8'>
-      <h2 className='text-4xl text-center text-gray-700 lg:text-5xl'>
+      <h2 className='text-4xl text-center text-dark lg:text-5xl'>
         How are we different?
       </h2>
       <div className='grid self-center w-full mt-20 sm:mt-32 gap-14 sm:gap-24 sm:grid-cols-2'>
@@ -30,7 +30,7 @@ export const HowWeDifferent = () => {
             className='flex flex-row rounded-lg '
           >
             <div className='flex-grow'>
-              <h2 className='mb-2 text-xl font-normal text-gray-700 title-font'>
+              <h2 className='mb-2 text-xl font-normal text-dark title-font'>
                 {item.title}
               </h2>
               <p className='text-base leading-relaxed sm:text-xl lg:text-lg xl:text-xl opacity-40'>

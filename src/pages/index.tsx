@@ -16,13 +16,13 @@ export default function HomePage() {
       <Seo templateTitle='Home' />
 
       <main>
-        <div className='relative overflow-hidden bg-gray-800'>
+        <div className='relative overflow-hidden bg-dark'>
           <div
             className='hidden sm:block sm:absolute sm:inset-0'
             aria-hidden='true'
           >
             <svg
-              className='absolute bottom-0 right-0 mb-48 text-gray-700 transform translate-x-1/2 lg:top-0 lg:mt-28 lg:mb-0 xl:transform-none xl:translate-x-0'
+              className='absolute bottom-0 right-0 mb-48 text-dark transform translate-x-1/2 lg:top-0 lg:mt-28 lg:mb-0 xl:transform-none xl:translate-x-0'
               width={364}
               height={384}
               viewBox='0 0 364 384'

@@ -5,6 +5,7 @@ import Document, {
   Main,
   NextScript,
 } from 'next/document';
+import Script from 'next/script';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -30,10 +31,22 @@ class MyDocument extends Document {
         <body className=''>
           <Main />
           <NextScript />
+          <script
+            async
+            src='https://www.googletagmanager.com/gtag/js?id=G-EMFVVLT2ME'
+          ></script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer = window.dataLayer || [];
+  function gtag(){window.dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-EMFVVLT2ME')`,
+            }}
+          />
         </body>
       </Html>
     );
   }
 }
-
 export default MyDocument;

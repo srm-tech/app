@@ -5,7 +5,7 @@ export default function NewsLetter() {
     <div className='flex flex-col items-center px-4 mx-auto py-14 max-w-7xl sm:px-6 lg:px-8'>
       <p className='mb-10 text-xl text-center sm:text-2xl sm:w-4/6 '>
         Something related to leaving the email for updates and getting some of
-        the early bird advantages (guru badge, unlimited access etc)
+        the early bird advantages (guru badge, unlimited access, etc.)
       </p>
       <div className='w-full sm:w-max'>
         <input

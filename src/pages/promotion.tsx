@@ -48,7 +48,7 @@ export default function PromotionPage() {
 
             <div className='w-full pt-6 bg-white'>
               <div className='flex flex-col items-center px-4 pt-24 mx-auto sm:pt-32 max-w-7xl sm:px-6 lg:px-8'>
-                <h2 className='text-4xl text-center text-gray-700 lg:text-5xl xl:text-6xl'>
+                <h2 className='text-4xl text-center text-dark lg:text-5xl xl:text-6xl'>
                   Service Provider’s earlybird promo.
                 </h2>
                 <p
@@ -64,7 +64,7 @@ export default function PromotionPage() {
             <div className='w-full bg-white'>
               <Pricing />
             </div>
-            <div className='w-full bg-gray-100'>
+            <div id='contact' className='w-full bg-gray-100'>
               <NewsLetter />
             </div>
             <div className='w-full'>

@@ -13,12 +13,12 @@ module.exports = {
       },
       colors: {
         primary: {
-          400: '#00E0F3',
-          500: '#00c4fd',
+          400: '#79BA3C',
+          500: '#282942',
         },
-        dark: '#222222',
-        'light-green': '#E9F1EC',
-        'dark-green': '#07504B',
+        dark: '#282942',
+        'light-green': '#B6DB7B',
+        'dark-green': '#79BA3C',
       },
       keyframes: {
         flicker: {

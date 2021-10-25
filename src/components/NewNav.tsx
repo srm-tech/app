@@ -1,9 +1,10 @@
 import { Popover, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import { Fragment } from 'react';
+import Link from 'next/link';
 
 const navigation = [
-  { name: 'Contact Us', href: '#' },
+  { name: 'Contact Us', href: '/promotion/#contact' },
   // { name: 'Marketplace', href: '#' },
   // { name: 'Company', href: '#' },
 ];
@@ -17,16 +18,14 @@ export default function NewNav() {
       >
         <div className='flex items-center flex-1'>
           <div className='flex items-center justify-between w-full md:w-auto'>
-            <a href='#'>
-              <span className='sr-only'>Workflow</span>
-              <img
-                src='/logo/logo_submark_light.svg'
-                className='w-10 h-10'
-                alt='logo'
-              />
-            </a>
+            <Link href='/' passHref>
+              <a className='text-dark text-4xl'>
+                <span className='sr-only'>introduce Guru</span>
+                introduce<span className='text-primary-400'>.</span>guru
+              </a>
+            </Link>
             <div className='flex items-center -mr-2 md:hidden'>
-              <Popover.Button className='inline-flex items-center justify-center p-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:ring-gray-200'>
+              <Popover.Button className='inline-flex items-center justify-center p-2 text-dark bg-gray-100 rounded-md hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:ring-gray-200'>
                 <span className='sr-only'>Open main menu</span>
                 <MenuIcon className='w-6 h-6' aria-hidden='true' />
               </Popover.Button>
@@ -39,19 +38,19 @@ export default function NewNav() {
               <a
                 key={item.name}
                 href={item.href}
-                className='font-medium text-gray-700 transition hover:text-gray-400'
+                className='font-medium text-dark transition hover:text-gray-400'
               >
                 {item.name}
               </a>
             ))}
           </div>
-          <a
+          {/* <a
             href='#'
             // className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md hover:bg-gray-700'
             className='inline-flex items-center px-4 py-2 text-lg text-white border border-transparent rounded-md shadow-sm bg-dark-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600'
           >
             Log in
-          </a>
+          </a> */}
         </div>
       </nav>
 
@@ -89,18 +88,18 @@ export default function NewNav() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className='block px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50'
+                  className='block px-3 py-2 text-base font-medium text-dark rounded-md hover:text-gray-900 hover:bg-gray-50'
                 >
                   {item.name}
                 </a>
               ))}
             </div>
-            <a
+            {/* <a
               href='#'
-              className='block w-full px-5 py-3 text-lg font-medium text-center text-gray-700 bg-gray-100 hover:bg-gray-100'
+              className='block w-full px-5 py-3 text-lg font-medium text-center text-dark bg-gray-100 hover:bg-gray-100'
             >
               Log in
-            </a>
+            </a> */}
           </div>
         </Popover.Panel>
       </Transition>

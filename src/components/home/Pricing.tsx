@@ -75,7 +75,7 @@ export default function Pricing() {
                   </p>
                 ) : null} */}
                 <div className='flex justify-between'>
-                  <p className='flex items-baseline text-5xl font-extrabold tracking-tight text-gray-700 sm:text-6xl'>
+                  <p className='flex items-baseline text-5xl font-extrabold tracking-tight text-dark sm:text-6xl'>
                     {/* <span className='text-5xl font-extrabold tracking-tight sm:text-6xl'> */}
                     ${tier.price}
                     {/* </span> */}
@@ -110,7 +110,7 @@ export default function Pricing() {
                   {tier.desc}
                 </p>
               )}
-              <p className='text-gray-700 mb-9'>WHAT'S INCLUDED</p>
+              <p className='text-dark mb-9'>WHAT'S INCLUDED</p>
               {/* Feature list */}
               <ul role='list' className='space-y-4 sm:space-y-6'>
                 {tier.features.map((feature) => (
