@@ -166,6 +166,7 @@ export default function Footer() {
                 <a
                   key={item.name}
                   href={item.href}
+                  rel='noreferrer'
                   className='text-gray-400 hover:text-gray-300'
                 >
                   <span className='sr-only'>{item.name}</span>
