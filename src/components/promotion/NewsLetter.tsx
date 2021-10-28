@@ -11,6 +11,7 @@ export default function NewsLetter() {
       e.preventDefault();
 
       const formdData = new FormData();
+      formdData.append('name', name);
       formdData.append('contact', contact);
       formdData.append('type', 'Promotion Signup');
 
@@ -29,10 +30,13 @@ export default function NewsLetter() {
   return (
     <div className='flex flex-col items-center px-4 mx-auto py-14 max-w-7xl sm:px-6 lg:px-8'>
       <p className='mb-10 text-xl text-center sm:text-2xl sm:w-4/6 '>
-        Something related to leaving the email for updates and getting some of
-        the early bird advantages (guru badge, unlimited access, etc.)
+        Subscribe to our newsletter to receive offers, latest news and updates.
       </p>
-      <form className='mt-4 sm:flex sm:max-w-md' onSubmit={_handleSubmit}>
+      <form
+        id='notify'
+        className='mt-4 sm:flex sm:max-w-md'
+        onSubmit={_handleSubmit}
+      >
         <div className='w-full sm:w-max'>
           <input
             value={name}
@@ -41,7 +45,7 @@ export default function NewsLetter() {
             name='name'
             id='name'
             autoComplete='name'
-            placeholder='Full name'
+            placeholder='Name'
             required
             className='block w-full mb-4 border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-lg'
           />

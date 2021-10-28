@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 
 const navigation = [
-  { name: 'Contact Us', href: '/promotion/#contact' },
+  { name: 'Contact Us', href: '/promotion/#notify' },
   // { name: 'Marketplace', href: '#' },
   // { name: 'Company', href: '#' },
 ];

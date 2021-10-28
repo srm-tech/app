@@ -69,7 +69,7 @@ export default function HomePage() {
             <div className='w-full bg-light-green'>
               <Testimonials />
             </div>
-            <div className='w-full bg-white'>
+            <div id='roadmap' className='w-full bg-white'>
               <Roadmap />
             </div>
             <div className='w-full'>

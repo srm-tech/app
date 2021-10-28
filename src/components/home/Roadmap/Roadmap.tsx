@@ -10,8 +10,8 @@ export default function Roadmap() {
         Roadmap
       </h1>
       <p className='w-full text-base leading-relaxed text-center text-gray-400 sm:text-xl lg:text-lg xl:text-xl sm:w-2/3'>
-        Adopting our platform early will give you many privileges and establish
-        presence that will fruit in future business.
+        Adopting our platform early will give you many privileges and allow you
+        to establish your presence that will be beneficial for future business.
       </p>
 
       <div className='mt-16 sm:mt-20'>

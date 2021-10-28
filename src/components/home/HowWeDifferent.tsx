@@ -9,7 +9,7 @@ const data = [
   },
   {
     title: 'How are you different from other platforms?',
-    desc: 'At Introduce Guru there is no bidding for leeds nor advertising. We are business centric, transparent. We support organic growth via healthy referral incentives.',
+    desc: 'At Introduce Guru there is no bidding for leads nor advertising. We are business centric, transparent. We support organic growth via healthy referral incentives.',
   },
   {
     title: 'Can I afford it?',

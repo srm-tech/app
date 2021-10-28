@@ -1,5 +1,6 @@
 import { CheckIcon } from '@heroicons/react/outline';
 import * as React from 'react';
+import UnstyledLink from '../links/UnstyledLink';
 
 const pricing = {
   tiers: [
@@ -17,6 +18,7 @@ const pricing = {
     {
       price: 99,
       features: [
+        'Everything in the previous plan left, plus',
         '1 year subscription from the launch of the Final Version with unlimited access to all premium functionalities',
         'Invitation to monthly online networking event to grow your GURU network',
         '500 co-branded business cards with a QR code to help you build your referral network',
@@ -27,6 +29,7 @@ const pricing = {
     {
       price: 199,
       features: [
+        'Everything in the previous plan left, plus',
         'Your logo published on the supporter page with a link to your profile',
         'Invitation for 1 person to a networking launch party in Sydney',
         'Major Guru Supporter badge',
@@ -36,9 +39,10 @@ const pricing = {
     {
       price: 299,
       features: [
+        'Everything in the previous plan left, plus',
         'Your logo published on the supporter page with a link to your profile',
         'Invitation for 1 person to a networking launch party in Sydney',
-        'Invitation for the second person',
+        'Invitation for a second person',
         'Major Guru Supporter badge',
       ],
       mostPopular: false,
@@ -46,9 +50,10 @@ const pricing = {
     {
       price: 999,
       features: [
+        'Everything in the previous plan left, plus',
         'Launch party gold supporter status. Your business will be promoted on the invitations as well as through the venue',
         '5 minutes presentation opportunity at the launch party to promote your business',
-        'Life time to the Final Version with unlimited access to all premium functionalities',
+        'Access to the Introduce Guru Platform with all unlimited premium functionalities',
       ],
       mostPopular: false,
       info: 'ONLY 5',
@@ -89,16 +94,16 @@ export default function Pricing() {
                     </div>
                   )}
                 </div>
-                {tier.price ? (
-                  <button
-                    type='button'
-                    className='inline-flex justify-center w-full py-3 mt-10 text-white transition border border-transparent rounded-md shadow-sm bg-dark-green felx sm:text-xl px-7 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600'
-                  >
-                    <p className='text-lg sm:text-2xl'>Coming soon</p>
-                  </button>
-                ) : (
+                {/* {tier.price ? ( */}
+                <UnstyledLink
+                  href='/promotion/#notify'
+                  className='inline-flex justify-center w-full py-3 mt-10 text-white transition border border-transparent rounded-md shadow-sm bg-dark-green felx sm:text-xl px-7 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600'
+                >
+                  <p className='text-lg sm:text-2xl'>Coming soon</p>
+                </UnstyledLink>
+                {/* ) : (
                   <div className='h-24'></div>
-                )}
+                )} */}
               </div>
               <div
                 className='mt-8 -mx-8 border-t border-dark-green mb-7'

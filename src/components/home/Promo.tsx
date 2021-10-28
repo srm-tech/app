@@ -8,7 +8,7 @@ export default function Promo() {
       >
         Access exclusive{' '}
         <text className='text-white opacity-80'>
-          early-bird promotion and benefits
+          early-bird promotions and benefits
         </text>
       </h1>
       <div className='self-center mt-8 sm:mt-0'>

@@ -6,7 +6,7 @@ const data = [
   {
     icon: 'shine',
     date: '1 Nov 2021',
-    desc: 'A very beginning of building Guru Community.',
+    desc: 'The beginning of building The Guru Community.',
   },
   {
     icon: 'community',
@@ -26,7 +26,7 @@ const data = [
   {
     icon: 'star',
     date: '01 APR 2022',
-    desc: 'We go officially live',
+    desc: 'Official launch of Introduce Guru',
   },
   {
     icon: 'grow',

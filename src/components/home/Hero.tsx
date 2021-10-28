@@ -1,5 +1,7 @@
 import { ClockIcon } from '@heroicons/react/solid';
 import * as React from 'react';
+import Link from 'next/link';
+import UnstyledLink from '../links/UnstyledLink';
 
 const scriptURL =
   'https://hook.integromat.com/ndb1abbohl44oi2xsn23lhb7a1pvh3n5';
@@ -34,19 +36,18 @@ export default function Hero() {
         <div className='lg:grid lg:grid-cols-12 lg:gap-8'>
           <div className='px-4 sm:px-6 sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center'>
             <div>
-              <a
-                href='#'
-                className='inline-flex items-center p-1 pr-2 text-white bg-gray-900 rounded-full sm:text-base lg:text-sm xl:text-base hover:text-gray-200'
-              >
-                <span className='px-3 py-0.5 text-white text-xs font-semibold leading-5 uppercase tracking-wide bg-primary-400 rounded-full'>
-                  Beta
-                </span>
-                <span className='ml-4 text-sm'>Coming soon</span>
-                <ClockIcon
-                  className='w-5 h-5 ml-2 text-gray-500'
-                  aria-hidden='true'
-                />
-              </a>
+              <Link href='/#roadmap' passHref>
+                <a className='inline-flex items-center p-1 pr-2 text-white bg-gray-900 rounded-full sm:text-base lg:text-sm xl:text-base hover:text-gray-200'>
+                  <span className='px-3 py-0.5 text-white text-xs font-semibold leading-5 uppercase tracking-wide bg-primary-400 rounded-full'>
+                    Beta
+                  </span>
+                  <span className='ml-4 text-sm'>Coming soon</span>
+                  <ClockIcon
+                    className='w-5 h-5 ml-2 text-gray-500'
+                    aria-hidden='true'
+                  />
+                </a>
+              </Link>
               <h1 className='mt-4 text-4xl font-extrabold tracking-tight text-white sm:mt-5 sm:leading-none lg:mt-6 lg:text-5xl xl:text-6xl'>
                 <span className='md:block'>Your success</span>{' '}
                 <span className='text-dark-green md:block'>
@@ -151,26 +152,26 @@ export default function Hero() {
               <div className='px-4 py-6 border-t-2 border-gray-200 bg-gray-50 sm:px-10'>
                 <p className='text-xs leading-5 text-gray-500'>
                   By signing up, you agree to our{' '}
-                  <a
-                    href='#'
+                  <UnstyledLink
+                    href='/legal/terms'
                     className='font-medium text-gray-900 hover:underline'
                   >
                     Terms
-                  </a>
+                  </UnstyledLink>
                   ,{' '}
-                  <a
-                    href='#'
+                  <UnstyledLink
+                    href='/legal/policy'
                     className='font-medium text-gray-900 hover:underline'
                   >
                     Data Policy
-                  </a>{' '}
+                  </UnstyledLink>{' '}
                   and{' '}
-                  <a
-                    href='#'
+                  <UnstyledLink
+                    href='/legal/privacy'
                     className='font-medium text-gray-900 hover:underline'
                   >
                     Cookies Policy
-                  </a>
+                  </UnstyledLink>
                   .
                 </p>
               </div>

@@ -26,13 +26,13 @@ export default function Footer() {
   };
   const navigation = {
     legal: [
-      { name: 'Privacy', href: '#' },
-      { name: 'Terms', href: '#' },
+      { name: 'Privacy', href: '/legal/privacy' },
+      { name: 'Terms', href: '/legal/terms' },
     ],
     social: [
       {
         name: 'Facebook',
-        href: '#',
+        href: 'https://www.facebook.com/Introduce-Guru-113051301162284',
         icon: (props) => (
           <svg fill='currentColor' viewBox='0 0 24 24' {...props}>
             <path

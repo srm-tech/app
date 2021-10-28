@@ -14,7 +14,7 @@ const data: { icon: IconName; title: string; desc: string }[] = [
   {
     icon: 'shine',
     title: 'Affordable Marketing',
-    desc: 'Save $$$ and replace expensive ads platforms with Introduce Gurus that will refer you to real customers. Pay only after deal is closed.',
+    desc: 'Save $$$ and replace expensive ads platforms with Introduce Gurus that will refer you to the real customers. Pay only after deal is closed.',
   },
   {
     icon: 'people',

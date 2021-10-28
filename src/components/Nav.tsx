@@ -13,7 +13,7 @@ export default function Nav() {
   return (
     <Popover>
       <nav
-        className='relative flex items-center justify-between px-4 mx-auto max-w-7xl sm:px-6'
+        className='bg-dark relative flex items-center justify-between px-4 mx-auto max-w-7xl sm:px-6'
         aria-label='Global'
       >
         <div className='flex items-center flex-1'>

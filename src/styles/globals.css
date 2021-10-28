@@ -61,3 +61,11 @@
     background-size: 0 2px, 100% 2px;
   }
 }
+
+.document h1,
+.document h2,
+.document h3,
+.document h4,
+.document p {
+  margin-bottom: 10px;
+}
