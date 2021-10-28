@@ -3,7 +3,7 @@ import * as React from 'react';
 
 export default function Privacy() {
   return (
-    <main className='max-w-7xl m-auto'>
+    <main className='max-w-7xl px-4 m-auto'>
       <div className='container'>
         <h2>Introduce Guru Terms</h2>
         <div className='mb-5 mt-5 space-x-4'>
