@@ -160,7 +160,7 @@ export default function Hero() {
                   </UnstyledLink>
                   ,{' '}
                   <UnstyledLink
-                    href='/legal/policy'
+                    href='/legal/privacy'
                     className='font-medium text-gray-900 hover:underline'
                   >
                     Data Policy
