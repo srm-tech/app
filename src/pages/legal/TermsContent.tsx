@@ -18,7 +18,7 @@ export default function TermsContent() {
           related services provided by INTRODUCE GURU.
         </p>
         <p>
-          By accessing
+          By accessing{' '}
           <a href='https://introduce.guru'>https://introduce.guru</a>, you agree
           to abide by these Terms of Service and to comply with all applicable
           laws and regulations. If you do not agree with these Terms of Service,
@@ -37,7 +37,7 @@ export default function TermsContent() {
           By using this website, you warrant on behalf of yourself, your users,
           and other parties you represent that you will not:
         </p>
-        <ol>
+        <ol className='list-disc ml-2'>
           <li>
             modify, copy, prepare derivative works of, decompile, or reverse
             engineer any materials and software contained on this website;
@@ -87,8 +87,8 @@ export default function TermsContent() {
         <p>
           This constitutes the grant of a license, not a transfer of title. This
           license shall automatically terminate if you violate any of these
-          restrictions or the Terms of Service, and may be terminated by STASH
-          PROPERTY UNIT TRUST at any time.
+          restrictions or the Terms of Service, and may be terminated by
+          INTRODUCE GURU at any time.
         </p>
         <h3>User-Generated Content</h3>
         <p>
@@ -181,10 +181,10 @@ export default function TermsContent() {
         <h4>Cancellation Terms</h4>
         <p>
           You may cancel the Services by providing us with no less than 14 days
-          written notice via email (cancellations@stashproperty.com.au),
-          provided that such cancellation must not take effect before the expiry
-          of any minimum contract term agreed with INTRODUCE GURU. Your payment
-          is non-refundable and your service will continue until the end of that
+          written notice via email (cancellations@introduce.guru), provided that
+          such cancellation must not take effect before the expiry of any
+          minimum contract term agreed with INTRODUCE GURU. Your payment is
+          non-refundable and your service will continue until the end of that
           month’s billing period.
         </p>
         <h3>Annual contract (paid monthly)</h3>
@@ -201,12 +201,11 @@ export default function TermsContent() {
         <h4>Cancellation Terms</h4>
         <p>
           You may cancel the Services by providing us with no less than 30 days
-          written notice via email (cancellations@stashproperty.com.au),
-          provided that such cancellation must not take effect before the expiry
-          of any minimum contract term agreed with INTRODUCE GURU. You’ll be
-          charged a lump sum amount of 50% of your remaining contract obligation
-          and your service will continue until the end of that month’s billing
-          period.
+          written notice via email (cancellations@introduce.guru), provided that
+          such cancellation must not take effect before the expiry of any
+          minimum contract term agreed with INTRODUCE GURU. You’ll be charged a
+          lump sum amount of 50% of your remaining contract obligation and your
+          service will continue until the end of that month’s billing period.
         </p>
         <h3>Annual contract (prepaid)</h3>
         <h4>Subscription Terms</h4>
@@ -221,18 +220,18 @@ export default function TermsContent() {
         <h4>Cancellation Terms</h4>
         <p>
           You may cancel the Services by providing us with no less than 30 days
-          written notice via email (cancellations@stashproperty.com.au),
-          provided that such cancellation must not take effect before the expiry
-          of any minimum contract term agreed with INTRODUCE GURU. Your payment
-          is non-refundable and your service will continue until the end of your
+          written notice via email (cancellations@introduce.guru), provided that
+          such cancellation must not take effect before the expiry of any
+          minimum contract term agreed with INTRODUCE GURU. Your payment is
+          non-refundable and your service will continue until the end of your
           contracted term.
         </p>
-        <h3>Contract with Stash Partner or Reseller</h3>
+        <h3>Contract with Introduce Guru Partner or Reseller</h3>
         <p>
-          If you entered into direct agreement with a Stash approved partner or
-          reseller please refer to that agreement for subscription terms. To
-          request a copy of your agreement, please contact Stash partner or
-          reseller directly.
+          If you entered into direct agreement with a Introduce Guru approved
+          partner or reseller please refer to that agreement for subscription
+          terms. To request a copy of your agreement, please contact Introduce
+          Guru partner or reseller directly.
         </p>
         <h3>Pricing &amp; Payments</h3>
         <p>
@@ -265,7 +264,7 @@ export default function TermsContent() {
         </p>
         <h3>Hardship</h3>
         <p>If you encountered financial hardship that includes</p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>COVID-19</li>
           <li>Natural disaster</li>
           <li>Being out of work</li>
@@ -275,16 +274,16 @@ export default function TermsContent() {
           <li>Relationship breakdown</li>
         </ul>
         <p>
-          please contact us via email support@stashproperty.com.au or by calling
-          07 4243 4600. Our friendly staff will listen and walk you through your
+          please contact us via email support@introduce.guru or by calling 07
+          4243 4600. Our friendly staff will listen and walk you through your
           circumstances to understand what options are available to help improve
           your situation by moving payment dates or arranging a fortnightly
           payment plan.
         </p>
         <h3>No refunds</h3>
         <p>
-          No refund is due to you if you terminate your subscription or STASH
-          PROPERTY UNIT TRUST terminates it in accordance with these terms.
+          No refund is due to you if you terminate your subscription or
+          INTRODUCE GURU terminates it in accordance with these terms.
         </p>
         <h3>Retention of your data</h3>
         <p>
@@ -369,7 +368,7 @@ export default function TermsContent() {
           material in violation of any applicable law. This includes but isn’t
           limited to:
         </p>
-        <ol type='i'>
+        <ol className='list-disc ml-2'>
           <li>
             any material protected by copyright, trademark, trade secret, or
             other intellectual property right used without proper authorization,
@@ -450,7 +449,7 @@ export default function TermsContent() {
           Other activities considered unethical, exploitative, and malicious
           include:
         </p>
-        <ol>
+        <ol className='list-disc ml-2'>
           <li>
             Obtaining (or attempting to obtain) services from us with the intent
             to avoid payment;
@@ -492,10 +491,10 @@ export default function TermsContent() {
         <h4>Unauthorized use of INTRODUCE GURU property</h4>
         <p>
           We prohibit the impersonation of INTRODUCE GURU, the representation of
-          a significant business relationship with STASH PROPERTY UNIT TRUST, or
-          ownership of any INTRODUCE GURU property (including our Products and
-          brand) for the purpose of fraudulently gaining service, custom,
-          patronage, or user trust.
+          a significant business relationship with INTRODUCE GURU, or ownership
+          of any INTRODUCE GURU property (including our Products and brand) for
+          the purpose of fraudulently gaining service, custom, patronage, or
+          user trust.
         </p>
         <h3>About this policy</h3>
         <p>
@@ -507,7 +506,7 @@ export default function TermsContent() {
           the revised version on our website. The revised version will be
           effective from the earlier of:
         </p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>
             the date the customer uses our Products after we publish the revised
             version on our website; or

@@ -16,7 +16,7 @@ export default function Privacy() {
           Your privacy is important to us. It is INTRODUCE GURU's policy to
           respect your privacy and comply with any applicable law and regulation
           regarding any personal information we may collect about you, including
-          across our website,
+          across our website,{' '}
           <a href='https://introduce.guru'>https://introduce.guru</a>, and other
           sites we own and operate.
         </p>
@@ -78,7 +78,7 @@ export default function Privacy() {
           When you visit our website or interact with our services, we may
           automatically collect data about your device, such as:
         </p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>Device Type</li>
           <li>Operating System</li>
           <li>Unique device identifiers</li>
@@ -96,7 +96,7 @@ export default function Privacy() {
           to our newsletter or when you contact us — which may include one or
           more of the following:
         </p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>Name</li>
           <li>Email</li>
           <li>Social media profiles</li>
@@ -138,7 +138,7 @@ export default function Privacy() {
           We may collect personal information from you when you do any of the
           following on our website:
         </p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>Register for an account</li>
           <li>Purchase a subscription</li>
           <li>
@@ -159,7 +159,7 @@ export default function Privacy() {
           purposes, and personal information will not be further processed in a
           manner that is incompatible with these purposes:
         </p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>to provide you with our platform's core features and services</li>
           <li>
             to enable you to customize or personalize your experience of our
@@ -256,7 +256,7 @@ export default function Privacy() {
         </p>
         <h3>Disclosure of Personal Information to Third Parties</h3>
         <p>We may disclose personal information to:</p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>a parent, subsidiary, or affiliate of our company</li>
           <li>
             third-party service providers for the purpose of enabling them to
@@ -295,7 +295,7 @@ export default function Privacy() {
           </li>
         </ul>
         <p>Third parties we currently use include:</p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>Google Analytics</li>
           <li>Mixpanel</li>
           <li>MailChimp</li>
@@ -457,10 +457,10 @@ export default function Privacy() {
           The GDPR distinguishes between organisations that process personal
           information for their own purposes (known as “data controllers”) and
           organizations that process personal information on behalf of other
-          organizations (known as “data processors”). We, STASH PROPERTY UNIT
-          TRUST, located at the address provided in our Contact Us section, are
-          a Data Controller and/or Processor with respect to the personal
-          information you provide to us.
+          organizations (known as “data processors”). We, INTRODUCE GURU,
+          located at the address provided in our Contact Us section, are a Data
+          Controller and/or Processor with respect to the personal information
+          you provide to us.
         </p>
         <h4>Legal Bases for Processing Your Personal Information</h4>
         <p>
@@ -627,7 +627,7 @@ export default function Privacy() {
           personal information enumerated in the California Consumer Privacy
           Act:
         </p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>
             Customer records, such as billing and shipping address, and credit
             or debit card data.
@@ -659,7 +659,7 @@ export default function Privacy() {
           our data practices in the preceding 12 months. In particular, you have
           the right to request the following from us:
         </p>
-        <ul>
+        <ul className='list-disc ml-2'>
           <li>
             The categories of personal information we have collected about you;
           </li>
@@ -711,11 +711,11 @@ export default function Privacy() {
         <p>
           Support
           <br />
-          support@stashproperty.com.au
+          support@introduce.guru
         </p>
         <h2>Cookie Policy</h2>
         <p>
-          We use cookies to help improve your experience of our website at
+          We use cookies to help improve your experience of our website at{' '}
           <a href='https://introduce.guru'>https://introduce.guru</a>. This
           cookie policy is part of INTRODUCE GURU's privacy policy. It covers
           the use of cookies between your device and our site.
@@ -727,7 +727,7 @@ export default function Privacy() {
         </p>
         <p>
           If you don’t wish to accept cookies from us, you should instruct your
-          browser to refuse cookies from
+          browser to refuse cookies from{' '}
           <a href='https://introduce.guru'>https://introduce.guru</a>. In such a
           case, we may be unable to provide you with some of your desired
           content and services.
