@@ -113,7 +113,7 @@ export default function Hero() {
                         name='name'
                         id='name'
                         autoComplete='name'
-                        placeholder='Full name'
+                        placeholder='Name'
                         required
                         className='block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
                         value={name}
