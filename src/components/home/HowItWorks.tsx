@@ -13,7 +13,7 @@ const data = [
   },
   {
     title: 'Reward Partners',
-    desc: 'Reward and incentivise your referrer partner by sharing your profit',
+    desc: 'Reward and incentivise your referrer partner by sharing your profit.',
   },
 ];
 
