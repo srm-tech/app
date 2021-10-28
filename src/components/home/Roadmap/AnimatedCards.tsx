@@ -26,7 +26,7 @@ const data = [
   {
     icon: 'star',
     date: '01 APR 2022',
-    desc: 'Official launch of Introduce Guru',
+    desc: 'Official launch of Introduce Guru.',
   },
   {
     icon: 'grow',
