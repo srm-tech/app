@@ -9,12 +9,12 @@ const data: { icon: IconName; title: string; desc: string }[] = [
   {
     icon: 'inOutArrow',
     title: 'Extend you network',
-    desc: 'More exposure, more business! Let everyone know you are open for business and incentivise trusted partners to grow faster.',
+    desc: 'More exposure, more business! Let everyone know you are open for business and incentivize trusted partners to grow faster.',
   },
   {
     icon: 'shine',
     title: 'Affordable Marketing',
-    desc: 'Save $$$ and replace expensive ads platforms with Introduce Gurus that will refer you to the real customers. Pay only after deal is closed.',
+    desc: 'Save $$$ and replace expensive ad platforms with Introduce Gurus that will refer you to the real customers. Pay only after the deal is closed.',
   },
   {
     icon: 'people',
