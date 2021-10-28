@@ -31,7 +31,7 @@ export default function TermsContent() {
           this page. Any changes to these Terms of Service will take effect
           immediately from the date of publication.
         </p>
-        <p>These Terms of Service were last updated on 19 March 2021.</p>
+        <p>These Terms of Service were last updated on 28 October 2021.</p>
         <h3>Limitations of Use</h3>
         <p>
           By using this website, you warrant on behalf of yourself, your users,
@@ -322,7 +322,7 @@ export default function TermsContent() {
           account termination. In extreme cases, we may be legally obliged to
           report such customers to the relevant authorities.
         </p>
-        <p>This policy was last reviewed on 19 March 2021.</p>
+        <p>This policy was last reviewed on 28 October 2021.</p>
         <h3>Fair use</h3>
         <p>
           We provide our facilities with the assumption your use will be
