@@ -54,7 +54,7 @@ export default function HowItWorks() {
           </div>
           <img
             className='object-contain object-center mt-12 rounded-lg lg:w-2/5 md:w-1/2 md:mt-0'
-            src='/home/img/how-it-works.png'
+            src='/home/img/how-it-works.svg'
             alt='how it works illustration'
           />
         </div>
