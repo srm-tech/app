@@ -49,14 +49,14 @@ export default function PromotionPage() {
             <div className='w-full pt-6 bg-white'>
               <div className='flex flex-col items-center px-4 pt-24 mx-auto sm:pt-32 max-w-7xl sm:px-6 lg:px-8'>
                 <h2 className='text-4xl text-center text-dark lg:text-5xl xl:text-6xl'>
-                  Service Provider’s earlybird promo.
+                  Service Provider’s early bird promo
                 </h2>
                 <p
                   className='mt-8 text-xl text-center text-gray-400 lg:text-2xl xl:text-3xl sm:w-11/12 sm:leading-none sm:tracking-tight'
                   style={{ lineHeight: 1.3 }}
                 >
-                  Start building for free, then add a site plan to go live.
-                  Account plans unlock additional features.
+                  Limited offer only for early adopters. Don't Miss Out! Sign
+                  up. now!
                 </p>
               </div>
             </div>
