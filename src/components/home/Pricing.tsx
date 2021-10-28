@@ -18,7 +18,7 @@ const pricing = {
     {
       price: 99,
       features: [
-        'Everything in the previous plan left, plus',
+        'Everything in the previous plan, plus',
         '1 year subscription from the launch of the Final Version with unlimited access to all premium functionalities',
         'Invitation to monthly online networking event to grow your GURU network',
         '500 co-branded business cards with a QR code to help you build your referral network',
@@ -29,7 +29,7 @@ const pricing = {
     {
       price: 199,
       features: [
-        'Everything in the previous plan left, plus',
+        'Everything in the previous plan, plus',
         'Your logo published on the supporter page with a link to your profile',
         'Invitation for 1 person to a networking launch party in Sydney',
         'Major Guru Supporter badge',
@@ -39,7 +39,7 @@ const pricing = {
     {
       price: 299,
       features: [
-        'Everything in the previous plan left, plus',
+        'Everything in the previous plan, plus',
         'Your logo published on the supporter page with a link to your profile',
         'Invitation for 1 person to a networking launch party in Sydney',
         'Invitation for a second person',
@@ -50,7 +50,7 @@ const pricing = {
     {
       price: 999,
       features: [
-        'Everything in the previous plan left, plus',
+        'Everything in the previous plan, plus',
         'Launch party gold supporter status. Your business will be promoted on the invitations as well as through the venue',
         '5 minutes presentation opportunity at the launch party to promote your business',
         'Access to the Introduce Guru Platform with all unlimited premium functionalities',
