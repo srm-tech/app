@@ -37,7 +37,7 @@ export default function TermsContent() {
           By using this website, you warrant on behalf of yourself, your users,
           and other parties you represent that you will not:
         </p>
-        <ol className='list-disc ml-2'>
+        <ol className='list-disc ml-4'>
           <li>
             modify, copy, prepare derivative works of, decompile, or reverse
             engineer any materials and software contained on this website;
@@ -264,7 +264,7 @@ export default function TermsContent() {
         </p>
         <h3>Hardship</h3>
         <p>If you encountered financial hardship that includes</p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>COVID-19</li>
           <li>Natural disaster</li>
           <li>Being out of work</li>
@@ -368,7 +368,7 @@ export default function TermsContent() {
           material in violation of any applicable law. This includes but isn’t
           limited to:
         </p>
-        <ol className='list-disc ml-2'>
+        <ol className='list-disc ml-4'>
           <li>
             any material protected by copyright, trademark, trade secret, or
             other intellectual property right used without proper authorization,
@@ -449,7 +449,7 @@ export default function TermsContent() {
           Other activities considered unethical, exploitative, and malicious
           include:
         </p>
-        <ol className='list-disc ml-2'>
+        <ol className='list-disc ml-4'>
           <li>
             Obtaining (or attempting to obtain) services from us with the intent
             to avoid payment;
@@ -506,7 +506,7 @@ export default function TermsContent() {
           the revised version on our website. The revised version will be
           effective from the earlier of:
         </p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>
             the date the customer uses our Products after we publish the revised
             version on our website; or

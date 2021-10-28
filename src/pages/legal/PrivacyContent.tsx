@@ -78,7 +78,7 @@ export default function Privacy() {
           When you visit our website or interact with our services, we may
           automatically collect data about your device, such as:
         </p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>Device Type</li>
           <li>Operating System</li>
           <li>Unique device identifiers</li>
@@ -96,7 +96,7 @@ export default function Privacy() {
           to our newsletter or when you contact us — which may include one or
           more of the following:
         </p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>Name</li>
           <li>Email</li>
           <li>Social media profiles</li>
@@ -138,7 +138,7 @@ export default function Privacy() {
           We may collect personal information from you when you do any of the
           following on our website:
         </p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>Register for an account</li>
           <li>Purchase a subscription</li>
           <li>
@@ -159,7 +159,7 @@ export default function Privacy() {
           purposes, and personal information will not be further processed in a
           manner that is incompatible with these purposes:
         </p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>to provide you with our platform's core features and services</li>
           <li>
             to enable you to customize or personalize your experience of our
@@ -256,7 +256,7 @@ export default function Privacy() {
         </p>
         <h3>Disclosure of Personal Information to Third Parties</h3>
         <p>We may disclose personal information to:</p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>a parent, subsidiary, or affiliate of our company</li>
           <li>
             third-party service providers for the purpose of enabling them to
@@ -295,7 +295,7 @@ export default function Privacy() {
           </li>
         </ul>
         <p>Third parties we currently use include:</p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>Google Analytics</li>
           <li>Mixpanel</li>
           <li>MailChimp</li>
@@ -627,7 +627,7 @@ export default function Privacy() {
           personal information enumerated in the California Consumer Privacy
           Act:
         </p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>
             Customer records, such as billing and shipping address, and credit
             or debit card data.
@@ -659,7 +659,7 @@ export default function Privacy() {
           our data practices in the preceding 12 months. In particular, you have
           the right to request the following from us:
         </p>
-        <ul className='list-disc ml-2'>
+        <ul className='list-disc ml-4'>
           <li>
             The categories of personal information we have collected about you;
           </li>
