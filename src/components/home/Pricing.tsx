@@ -53,7 +53,7 @@ const pricing = {
         'Everything in the previous plan, plus',
         'Launch party gold supporter status. Your business will be promoted on the invitations as well as through the venue',
         '5 minutes presentation opportunity at the launch party to promote your business',
-        'Access to the Introduce Guru Platform with all unlimited premium functionalities',
+        'Life time access to the Introduce Guru Platform with all unlimited premium functionalities',
       ],
       mostPopular: false,
       info: 'ONLY 5',
