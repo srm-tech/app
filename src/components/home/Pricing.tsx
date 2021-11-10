@@ -4,10 +4,10 @@ import Stripe from 'stripe';
 import { fetchPostJSON } from '@/lib/api-helpers';
 import getStripe from '@/lib/get-stripe';
 
-const pricing = {
+export const pricing = {
   tiers: [
     {
-      id: 0,
+      stripePriceId: '',
       price: 0,
       features: [
         'Guru Supporter badge',
@@ -19,7 +19,7 @@ const pricing = {
       info: 'FREE',
     },
     {
-      id: 1,
+      stripePriceId: 'price_1JrjOwJFqzC89nhWPH7iSn5O',
       price: 99,
       features: [
         'Everything in the previous plan, plus',
@@ -31,7 +31,7 @@ const pricing = {
       mostPopular: true,
     },
     {
-      id: 2,
+      stripePriceId: 'price_1JrjPIJFqzC89nhWfmX66Jdz',
       price: 199,
       features: [
         'Everything in the previous plan, plus',
@@ -42,7 +42,7 @@ const pricing = {
       mostPopular: false,
     },
     {
-      id: 3,
+      stripePriceId: 'price_1JrjPeJFqzC89nhWGdLaCSkM',
       price: 299,
       features: [
         'Everything in the previous plan, plus',
@@ -54,7 +54,7 @@ const pricing = {
       mostPopular: false,
     },
     {
-      id: 4,
+      stripePriceId: 'price_1JrjPuJFqzC89nhW7nHKT5eD',
       price: 999,
       features: [
         'Everything in the previous plan, plus',
@@ -69,16 +69,12 @@ const pricing = {
 };
 
 export default function Pricing() {
-  const [input, setInput] = React.useState({
-    amount: 0,
-  });
-
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     // Create a Checkout Session.
 
     const response = await fetchPostJSON('/api/checkout-sessions', {
-      amount: e.currentTarget.children[0].value,
+      priceId: e.currentTarget.children[0].value,
     });
 
     if (response.statusCode === 500) {
@@ -91,9 +87,7 @@ export default function Pricing() {
     const { error } = await stripe!.redirectToCheckout({
       sessionId: response.id,
     });
-    // If `redirectToCheckout` fails due to a browser or network
-    // error, display the localized error message to your customer
-    // using `error.message`.
+
     console.warn(error.message); // for devs
   };
 
@@ -129,22 +123,19 @@ export default function Pricing() {
                     </div>
                   )}
                 </div>
-                {/* {tier.price ? ( */}
-                {/* --- price form goes here --- */}
+                {/* --- The form goes here --- */}
                 <form method='post' onSubmit={handleSubmit}>
-                  {/* <input type='hidden' name='amount' value={tier.price}/> */}
-                  {/* <input type='hidden' name='productName' value={tier.price} /> */}
                   <button
                     type='submit'
                     className='inline-flex justify-center w-full py-3 mt-10 text-white transition border border-transparent rounded-md shadow-sm bg-dark-green felx sm:text-xl px-7 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600'
-                    value={tier.price}
+                    value={tier.stripePriceId}
                   >
                     <span className='text-lg sm:text-2xl'>
                       Choose this option
                     </span>
                   </button>
                 </form>
-                {/* --- price form ends here --- */}
+                {/* --- The form ends here --- */}
                 {/* ) : (
                   <div className='h-24'></div>
                 )} */}
