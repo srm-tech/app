@@ -2,11 +2,13 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 
+import { fetchGetJSON } from '@/lib/api-helpers';
+
 export default function index(req: NextApiRequest, res: NextApiResponse) {
-  const networkGrowth = {};
-  const introductions = {};
-  const invitations = {};
-  const connections = {};
+  const networkGrowth = fetchGetJSON('/api/dashboard/widgets/networkGrowth');
+  const introductions = fetchGetJSON('/api/dashboard/widgets/introductions');
+  const invitations = fetchGetJSON('/api/dashboard/widgets/invitations');
+  const connections = fetchGetJSON('/api/dashboard/widgets/connections');
 
   res.status(200).json({
     networkGrowth: networkGrowth,
