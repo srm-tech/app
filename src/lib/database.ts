@@ -1,38 +1,17 @@
+// import { connect, ConnectionOptions } from "mongoose"
+
 import { MongoClient } from 'mongodb';
 
-const openDbConnection = (url) => {
-  const p = new Promise((resolve, reject) => {
-    MongoClient.connect(
-      url,
-      {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-      },
-      async (error, client) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+// console.log(":", process.env.MONGODB_URI)
 
-        const dbName = process.env.DB_NAME || 'test';
-        const db = client.db(dbName);
+// const options: ConnectionOptions = {
+//     useUnifiedTopology: true,
+//     useNewUrlParser: true
+// }
 
-        resolve({ client, db });
-      }
-    );
-  });
-  p.catch((err) => console.log('ERROR: openDbConnection', err));
-  return p;
-};
+// export const connectToDatabase = () => connect(process.env.MONGODB_URI, options)
 
-const createDbConnection = async () => {
-  const url = `mongodb://mongo:27017`;
-
-  try {
-    return await openDbConnection(url);
-  } catch (err) {
-    throw `ERROR: createDbConnection - ${err}`;
-  }
-};
-
-export default createDbConnection;
+export async function getConnection() {
+  const client = await MongoClient.connect(process.env.MONDGODB_URI);
+  const db = client.db();
+}
