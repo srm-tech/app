@@ -16,6 +16,7 @@ const pricing = {
       info: 'FREE',
     },
     {
+      stripePriceId: 'price_1Jw5tQEnBtxAmMRDct4pcQ6t',
       price: 99,
       features: [
         'Everything in the previous plan, plus',
