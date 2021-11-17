@@ -1,0 +1,75 @@
+import { getDb, ObjectId } from '@/lib/db';
+const { client, collection } = getDb('introductions');
+
+const Introduction = {
+  getReceived: async (userId: ObjectId) => {
+    await client.connect();
+    return collection
+      .aggregate([
+        {
+          $match: {
+            to: userId,
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'from',
+            foreignField: '_id',
+            as: 'invitedBy',
+          },
+        },
+        {
+          $project: {
+            'invitedBy.firstName': true,
+            'invitedBy.lastName': true,
+            'invitedBy.businessName': true,
+            status: true,
+          },
+        },
+        {
+          $unwind: '$invitedBy',
+        },
+      ])
+      .sort({
+        date: -1,
+      })
+      .toArray();
+  },
+  getSent: async (userId: ObjectId) => {
+    await client.connect();
+    return collection
+      .aggregate([
+        {
+          $match: {
+            from: userId,
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'to',
+            foreignField: '_id',
+            as: 'invitationSentTo',
+          },
+        },
+        {
+          $project: {
+            'invitationSentTo.firstName': true,
+            'invitationSentTo.lastName': true,
+            'invitationSentTo.businessName': true,
+            status: true,
+          },
+        },
+        {
+          $unwind: '$invitationSentTo',
+        },
+      ])
+      .sort({
+        date: -1,
+      })
+      .toArray();
+  },
+};
+
+export default Introduction;

@@ -1,6 +1,6 @@
-import { ObjectId } from 'mongodb';
+import { ObjectId } from 'bson';
 
-export default async function getCurrentUser() {
+export default function getCurrentUser() {
   return {
     _id: ObjectId('000000000000000000000001'),
   };

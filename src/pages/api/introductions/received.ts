@@ -1,47 +1,21 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import nextConnect from 'next-connect';
 
 import getCurrentUser from '@/lib/get-current-user';
 
-import middleware from '@/middleware/database';
+import Introduction from '@/models/Introduction';
 
-const handler = nextConnect();
-
-handler.use(middleware);
-
-handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
-  const user = await getCurrentUser();
-  const introductions = await req.db
-    .collection('introductions')
-    .aggregate([
-      {
-        $match: {
-          to: user._id,
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'from',
-          foreignField: '_id',
-          as: 'invitedBy',
-        },
-      },
-      {
-        $unset: ['from', 'to'],
-      },
-      {
-        $unwind: '$invitedBy',
-      },
-    ])
-    .sort({
-      date: -1,
-    })
-    .toArray();
-
-  res.json({
-    introductions: introductions,
-  });
-});
-
-export default handler;
+// todo: replace userId
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method === 'GET') {
+    try {
+      const user = getCurrentUser();
+      const result = await Introduction.getReceived(user._id);
+      res.status(200).json(result);
+    } catch (err: any) {
+      res.status(500).json({ statusCode: 500, message: err.message });
+    }
+  }
+}
