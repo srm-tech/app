@@ -1,3 +1,7 @@
+import { NextApiRequest, NextApiResponse } from 'next';
+
+import getCurrentUser from './get-current-user';
+
 export async function fetchGetJSON(url: string) {
   try {
     const data = await fetch(url).then((res) => res.json());
@@ -5,6 +9,20 @@ export async function fetchGetJSON(url: string) {
   } catch (_err) {
     const err: Error = _err as Error;
     throw new Error(err.message);
+  }
+}
+
+export async function easyGetAll(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  obj: any
+) {
+  try {
+    const user = getCurrentUser();
+    const result = await obj.readMany(user._id);
+    res.status(200).json(result);
+  } catch (err: any) {
+    res.status(500).json({ statusCode: 500, message: err.message });
   }
 }
 
