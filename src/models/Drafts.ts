@@ -6,6 +6,10 @@ const Draft = {
     await client.connect();
     return collection.find({ _id: userId }).toArray();
   },
+  create: async (data) => {
+    await client.connect();
+    return collection.insertOne(data);
+  },
 };
 
 export default Draft;
