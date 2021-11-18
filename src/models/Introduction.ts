@@ -1,8 +1,8 @@
-import { getDb } from '@/lib/db';
+import { getDb, ObjectId } from '@/lib/db';
 const { client, collection } = getDb('myContacts');
 
 const Introduction = {
-  readMany: async ({ userId }) => {
+  readMany: async (userId: ObjectId) => {
     await client.connect();
     return collection.find({ userId }).toArray();
   },
