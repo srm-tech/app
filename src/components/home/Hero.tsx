@@ -89,8 +89,8 @@ export default function Hero() {
               </div> */}
             </div>
           </div>
-          <div className='mx-5 mt-16 sm:mt-24 lg:mt-0 lg:col-span-6'>
-            <div className='overflow-hidden bg-white rounded-lg sm:max-w-md sm:w-full sm:mx-auto'>
+          <div className='mx-5 mt-16 sm:mt-24 lg:mt-0 lg:col-span-6 justify-self-end'>
+            <div className='overflow-hidden bg-white rounded-lg sm:max-w-md sm:w-full'>
               <div className='px-4 py-8 sm:px-10'>
                 <div>
                   <p className='text-sm font-medium text-dark'>

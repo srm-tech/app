@@ -1,7 +1,7 @@
 import { ObjectId } from 'bson';
 
-export default function getCurrentUser() {
+export default async function getCurrentUser() {
   return {
-    _id: ObjectId('000000000000000000000001'),
+    _id: new ObjectId('000000000000000000000001'),
   };
 }
