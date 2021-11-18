@@ -2,6 +2,7 @@ import Footer from '@/components/Footer';
 import NewNav from '@/components/NewNav';
 import NewsLetter from '@/components/promotion/NewsLetter';
 import Seo from '@/components/Seo';
+import Link from 'next/link';
 
 export default function StripeConfirmationPage() {
   return (
@@ -57,12 +58,11 @@ export default function StripeConfirmationPage() {
                   You have successfully subscribed the service, thanks!
                 </p>
 
-                <a
-                  href='/'
-                  className='flex items-center justify-center px-4 py-2 text-base font-medium text-white border border-transparent rounded-md bg-primary-400 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-green-500 sm:mt-8'
-                >
-                  Go back home
-                </a>
+                <Link href='/'>
+                  <a className='flex items-center justify-center px-4 py-2 text-base font-medium text-white border border-transparent rounded-md bg-primary-400 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-green-500 sm:mt-8'>
+                    Go back home
+                  </a>
+                </Link>
               </div>
             </div>
 

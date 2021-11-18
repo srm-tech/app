@@ -1,9 +1,6 @@
 import * as React from 'react';
-import Stripe from 'stripe';
-
 import { fetchPostJSON } from '@/lib/api-helpers';
 import getStripe from '@/lib/get-stripe';
-
 import HeadBanner from '../banners/headBanner';
 
 export const pricing = {
@@ -72,12 +69,12 @@ export const pricing = {
 
 export default function Pricing() {
   const [errorMessage, setErrorMessage] = React.useState('');
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+  const handleSubmit: React.FormEventHandler<any> = async (e) => {
     e.preventDefault();
     // Create a Checkout Session.
-
+    const btnEl: HTMLButtonElement = e.currentTarget.children[0];
     const response = await fetchPostJSON('/api/checkout-sessions', {
-      priceId: e.currentTarget.children[0].value,
+      priceId: btnEl.value,
     });
 
     if (response.statusCode === 500) {

@@ -41,7 +41,9 @@ export default async function handler(
         await stripe.checkout.sessions.create(params);
       res.status(200).json(checkoutSession);
     } catch (err) {
-      res.status(500).json({ statusCode: 500, message: err.message });
+      res
+        .status(500)
+        .json({ statusCode: 500, message: (err as Error).message });
     }
   } else {
     res.setHeader('Allow', 'POST');
