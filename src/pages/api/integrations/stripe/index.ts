@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
-
 import { formatAmountForStripe } from '@/lib/stripe-helpers';
-
 import { CURRENCY, STRIPE_CANCEL_PAGE, STRIPE_SUCCESS_PAGE } from '@/config';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
