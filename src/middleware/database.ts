@@ -1,11 +1,7 @@
 import { MongoClient } from 'mongodb';
 import nextConnect from 'next-connect';
 
-const client = new MongoClient('mongodb://localhost:27017/', {
-  // todo: do not hardcode!
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const client = new MongoClient('mongodb://localhost:27017/');
 
 async function database(req, res, next) {
   await client.connect();

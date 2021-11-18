@@ -12,6 +12,6 @@ import { MongoClient } from 'mongodb';
 // export const connectToDatabase = () => connect(process.env.MONGODB_URI, options)
 
 export async function getConnection() {
-  const client = await MongoClient.connect(process.env.MONDGODB_URI);
+  const client = await MongoClient.connect(process.env.MONDGODB_URI || '');
   const db = client.db();
 }
