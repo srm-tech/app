@@ -37,5 +37,7 @@ yarn-error.log*
 robots.txt
 sitemap.xml
 
+# env
+.env*.local
 # Docker generated
 data/
