@@ -55,8 +55,8 @@ export default function PromotionPage() {
                   className='mt-8 text-xl text-center text-gray-400 lg:text-2xl xl:text-3xl sm:w-11/12 sm:leading-none sm:tracking-tight'
                   style={{ lineHeight: 1.3 }}
                 >
-                  Limited offer only for early adopters. Don't Miss Out! Sign
-                  up. now!
+                  Limited offer only for early adopters. Don't Miss Out! Sign up
+                  now!
                 </p>
               </div>
             </div>
