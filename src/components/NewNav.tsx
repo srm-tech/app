@@ -19,13 +19,13 @@ export default function NewNav() {
         <div className='flex items-center flex-1'>
           <div className='flex items-center justify-between w-full md:w-auto'>
             <Link href='/' passHref>
-              <a className='text-dark text-4xl'>
+              <a className='text-4xl text-dark'>
                 <span className='sr-only'>introduce Guru</span>
                 introduce<span className='text-primary-400'>.</span>guru
               </a>
             </Link>
             <div className='flex items-center -mr-2 md:hidden'>
-              <Popover.Button className='inline-flex items-center justify-center p-2 text-dark bg-gray-100 rounded-md hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:ring-gray-200'>
+              <Popover.Button className='inline-flex items-center justify-center p-2 bg-gray-100 rounded-md text-dark hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:ring-gray-200'>
                 <span className='sr-only'>Open main menu</span>
                 <MenuIcon className='w-6 h-6' aria-hidden='true' />
               </Popover.Button>
@@ -38,7 +38,7 @@ export default function NewNav() {
               <a
                 key={item.name}
                 href={item.href}
-                className='font-medium text-dark transition hover:text-gray-400'
+                className='font-medium transition text-dark hover:text-gray-400'
               >
                 {item.name}
               </a>
@@ -88,7 +88,7 @@ export default function NewNav() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className='block px-3 py-2 text-base font-medium text-dark rounded-md hover:text-gray-900 hover:bg-gray-50'
+                  className='block px-3 py-2 text-base font-medium rounded-md text-dark hover:text-gray-900 hover:bg-gray-50'
                 >
                   {item.name}
                 </a>
@@ -96,7 +96,7 @@ export default function NewNav() {
             </div>
             {/* <a
               href='#'
-              className='block w-full px-5 py-3 text-lg font-medium text-center text-dark bg-gray-100 hover:bg-gray-100'
+              className='block w-full px-5 py-3 text-lg font-medium text-center bg-gray-100 text-dark hover:bg-gray-100'
             >
               Log in
             </a> */}
