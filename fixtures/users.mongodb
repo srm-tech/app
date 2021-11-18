@@ -6,29 +6,38 @@ const database = 'guru';
 // The current database to use.
 use(database);
 
+db.users.drop();
+
 db.users.insertMany([
   {
     _id: ObjectId('000000000000000000000001'),
-    name: 'Marcin Baryłka',
+    firstName: 'Marcin',
+    lastName: 'Baryłka',
+    businessName: 'Hicron sp. z o.o.',
     email: 'marcin.barylka@hicron.com',
     isActive: true
   },
   {
     _id: ObjectId('000000000000000000000002'),
-    name: 'Jan Kowalski',
-    email: 'j.kowalski@mail.com',
+    firstName: 'Janusz',
+    lastName: 'Iksiński',
+    businessName: 'Januszex sp. j.',
+    email: 'janusz@januszex.pl',
     isActive: true
   },
   {
     _id: ObjectId('000000000000000000000003'),
-    name: 'Zdzisława Malinowska',
-    email: 'malinowska@mail.com',
+    firstName: 'Anna',
+    lastName: 'Nieznana',
+    businessName: 'Firma SA',
+    email: 'nieznana@firma.com',
     isActive: true
   },
   {
     _id: ObjectId('000000000000000000000004'),
-    name: 'Jane Doe',
-    email: 'jdoe@guru.com',
-    isActive: true
-  }
+    firstName: 'Jane',
+    lastName: 'Doe',
+    businessName: 'Big Corp, Inc.',
+    email: 'janedoe@bigcorp.com',
+    isActive: true  }
 ]);
