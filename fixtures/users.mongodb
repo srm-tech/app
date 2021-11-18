@@ -1,0 +1,43 @@
+// MongoDB Playground
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+const database = 'guru';
+
+// The current database to use.
+use(database);
+
+db.users.drop();
+
+db.users.insertMany([
+  {
+    _id: ObjectId('000000000000000000000001'),
+    firstName: 'Marcin',
+    lastName: 'Baryłka',
+    businessName: 'Hicron sp. z o.o.',
+    email: 'marcin.barylka@hicron.com',
+    isActive: true
+  },
+  {
+    _id: ObjectId('000000000000000000000002'),
+    firstName: 'Janusz',
+    lastName: 'Iksiński',
+    businessName: 'Januszex sp. j.',
+    email: 'janusz@januszex.pl',
+    isActive: true
+  },
+  {
+    _id: ObjectId('000000000000000000000003'),
+    firstName: 'Anna',
+    lastName: 'Nieznana',
+    businessName: 'Firma SA',
+    email: 'nieznana@firma.com',
+    isActive: true
+  },
+  {
+    _id: ObjectId('000000000000000000000004'),
+    firstName: 'Jane',
+    lastName: 'Doe',
+    businessName: 'Big Corp, Inc.',
+    email: 'janedoe@bigcorp.com',
+    isActive: true  }
+]);
