@@ -5,13 +5,13 @@ const DashboardIntroductionsWidget = {
   get: async ({ userId }) => {
     await client.connect();
     const introductionsPending = await collection
-      .find({ to: userId, status: 'pending' })
+      ?.find({ to: userId, status: 'pending' })
       .count();
     const introductionsCompleted = await collection
-      .find({ to: userId, status: 'completed' })
+      ?.find({ to: userId, status: 'completed' })
       .count();
     const introductionsAcccepted = await collection
-      .find({ to: userId, status: 'accepted' })
+      ?.find({ to: userId, status: 'accepted' })
       .count();
     return {
       introductionsPending: introductionsPending,

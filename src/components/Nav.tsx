@@ -2,6 +2,7 @@ import { Popover, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import { Fragment } from 'react';
 import Link from 'next/link';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 const navigation = [
   { name: 'Early Bird Offer', href: '/promotion' },
@@ -10,6 +11,8 @@ const navigation = [
 ];
 
 export default function Nav() {
+  const { data: session } = useSession();
+
   return (
     <Popover>
       <nav
@@ -45,12 +48,12 @@ export default function Nav() {
               </Link>
             ))}
           </div>
-          {/* <a
-            href='#'
+          <button
+            onClick={session ? () => signOut() : () => signIn()}
             className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md hover:bg-gray-700'
           >
-            Log in
-          </a> */}
+            {session ? 'Log out' : 'Log in'}
+          </button>
         </div>
       </nav>
 
