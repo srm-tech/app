@@ -2,6 +2,17 @@ import { getDb, ObjectId } from '@/lib/db';
 const { client, collection } = getDb('messages');
 
 const Message = {
+  create: async (data: any) => {
+    await client.connect();
+    return collection.insertOne({
+      from: data.userId,
+      date: new Date(),
+      read: 0,
+      to: new ObjectId(data.to),
+      subject: data.subject,
+      content: data.content,
+    });
+  },
   readMany: async (userId: ObjectId) => {
     await client.connect();
     return collection
@@ -21,6 +32,9 @@ const Message = {
         },
         {
           $project: {
+            subject: true,
+            content: true,
+            date: true,
             'sentBy.firstName': true,
             'sentBy.lastName': true,
             'sentBy.businessName': true,
