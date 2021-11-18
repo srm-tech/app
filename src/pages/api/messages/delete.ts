@@ -14,7 +14,7 @@ export default async function handler(
       res.status(405).json({ statusCode: 405, message: 'Method not allowed' });
     }
     const user = getCurrentUser();
-    const result = await Message.toggleRead(
+    const result = await Message.deleteOne(
       user._id,
       ObjectId(req.query.messageId)
     );

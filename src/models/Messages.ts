@@ -36,6 +36,19 @@ const Message = {
       })
       .toArray();
   },
+  deleteOne: async (userId: ObjectId, messageId: ObjectId) => {
+    await client.connect();
+    const isAllowed = await collection
+      .find({
+        _id: messageId,
+        to: userId,
+      })
+      .count();
+    if (isAllowed === 0) {
+      return null;
+    }
+    return await collection.deleteOne({ _id: messageId, to: userId });
+  },
   toggleRead: async (userId: ObjectId, messageId: ObjectId) => {
     await client.connect();
     const isAllowed = await collection
@@ -43,9 +56,8 @@ const Message = {
         _id: messageId,
         to: userId,
       })
-      .toArray();
-    console.log(isAllowed);
-    if (isAllowed.length === 0) {
+      .count();
+    if (isAllowed === 0) {
       return null;
     }
     const message = await collection.updateOne(
