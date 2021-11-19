@@ -4,16 +4,16 @@ const { client, collection } = getDb('myContacts');
 const MyContacts = {
   create: async (data) => {
     await client.connect();
-    return collection.insertOne(data);
+    return collection?.insertOne(data);
   },
   readMany: async ({ userId }) => {
     await client.connect();
-    return collection.find({ userId }).toArray();
+    return collection?.find({ userId }).toArray();
   },
   search: async ({ userId, query = '' }) => {
     await client.connect();
     return collection
-      .aggregate([
+      ?.aggregate([
         //pipeline array
         {
           $project: {
