@@ -70,6 +70,32 @@ const Invitation = {
       })
       .toArray();
   },
+  accept: async (inviteeId: ObjectId, invitingUserId: ObjectId) => {
+    return collection.updateOne(
+      {
+        from: invitingUserId,
+        to: inviteeId,
+      },
+      {
+        $set: {
+          status: 'accepted',
+        },
+      }
+    );
+  },
+  decline: async (inviteeId: ObjectId, invitingUserId: ObjectId) => {
+    return collection.updateOne(
+      {
+        from: invitingUserId,
+        to: inviteeId,
+      },
+      {
+        $set: {
+          status: 'decline',
+        },
+      }
+    );
+  },
 };
 
 export default Invitation;
