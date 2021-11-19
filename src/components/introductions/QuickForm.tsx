@@ -121,7 +121,7 @@ export const QuickForm = () => {
                 >
                   Login
                 </button>{' '}
-                to complete this introduction.
+                to save and track introductions.
               </p>
             </div>
           )}
