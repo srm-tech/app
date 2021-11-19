@@ -391,6 +391,11 @@
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.0.6.tgz"
   integrity sha512-Myxw//kzromB9yWgS8qYGuGVf91oBUUJpNvy5eM50sqvmKLbKjwLxohJnkWGTeeI9v9IBMtPLxz5Gc60FIfvCA==
 
+"@stripe/stripe-js@^1.20.3":
+  version "1.20.3"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-1.20.3.tgz#6f479d53ad933b8b17b6c708bbc2840b7512d80e"
+  integrity sha512-pFhPvajrZJUzoOZDC3/2YsOeL5VD63CVlbOXs+AriIchmy6Kb2CQqrcHPCuK72FM726lwo4neF0wPRBtsLYXuw==
+
 "@tailwindcss/forms@^0.3.3":
   version "0.3.3"
   resolved "https://registry.npmjs.org/@tailwindcss/forms/-/forms-0.3.3.tgz"
@@ -437,6 +442,11 @@
   version "15.12.5"
   resolved "https://registry.npmjs.org/@types/node/-/node-15.12.5.tgz"
   integrity sha512-se3yX7UHv5Bscf8f1ERKvQOD6sTyycH3hdaoozvaLxgUiY5lIGEeH37AD0G0Qi9kPqihPn0HOfd2yaIEN9VwEg==
+
+"@types/node@>=8.1.0":
+  version "16.11.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.7.tgz#36820945061326978c42a01e56b61cd223dfdc42"
+  integrity sha512-QB5D2sqfSjCmTuWcBWyJ+/44bcjO7VbjSbOE0ucoVbAsSNQc4Lt6QkgkVXkTDwkL4z/beecZNDvVX15D4P8Jbw==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -4084,6 +4094,13 @@ q@^1.5.1:
   resolved "https://registry.npmjs.org/q/-/q-1.5.1.tgz"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
+qs@^6.6.0:
+  version "6.10.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.10.1.tgz#4931482fa8d647a5aab799c5271d2133b981fb6a"
+  integrity sha512-M528Hph6wsSVOBiYUnGf+K/7w0hNshs/duGsNXPUCLH5XAqjEtiPGwNONLV0tBH8NoGb0mvD5JubnUTrujKDTg==
+  dependencies:
+    side-channel "^1.0.4"
+
 querystring-es3@0.2.1, querystring-es3@^0.2.0:
   version "0.2.1"
   resolved "https://registry.npmjs.org/querystring-es3/-/querystring-es3-0.2.1.tgz"
@@ -4798,6 +4815,14 @@ strip-json-comments@^3.1.0, strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://registry.npmjs.org/strip-json-comments/-/strip-json-comments-3.1.1.tgz"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
+
+stripe@^8.186.1:
+  version "8.186.1"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.186.1.tgz#fb717cfcb8c2e73c91e3873dc286f3e8442bfb65"
+  integrity sha512-BBByVyqKEBY2GNQDLmfwL1RtfsPmjForD+up7tu+P7KYxxvwEzF1gM2Iv4npfOQevGaBmR70sxIWRwn7utS5pg==
+  dependencies:
+    "@types/node" ">=8.1.0"
+    qs "^6.6.0"
 
 styled-jsx@4.0.1:
   version "4.0.1"
