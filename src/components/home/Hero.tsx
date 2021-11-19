@@ -2,6 +2,7 @@ import { ClockIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import Link from 'next/link';
 import { SignUpForBetaForm } from './SignUpForBetaForm';
+import { QuickForm } from '../introductions/QuickForm';
 
 export default function Hero() {
   return (
@@ -64,7 +65,7 @@ export default function Hero() {
             </div>
           </div>
           <div className='mx-5 mt-16 sm:mt-24 lg:mt-0 lg:col-span-6 justify-self-end'>
-            <SignUpForBetaForm />
+            <QuickForm />
           </div>
         </div>
       </div>

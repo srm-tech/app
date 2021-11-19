@@ -17,15 +17,18 @@ const MyContacts = {
         //pipeline array
         {
           $project: {
-            label: {
+            search: {
               $concat: ['$firstName', ' ', '$lastName', ' - ', '$businessName'],
             },
+            name: { $concat: ['$firstName', ' ', '$lastName'] },
+            businessName: '$businessName',
             userId: '$userId',
+            category: '$businessCategory',
           },
         }, //stage1
         {
           $match: {
-            $and: [{ label: { $regex: query, $options: 'i' } }, { userId: 1 }],
+            $and: [{ search: { $regex: query, $options: 'i' } }, { userId: 1 }],
           },
         }, //stage2
         { $limit: 30 },
