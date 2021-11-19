@@ -1,7 +1,7 @@
 import { getDb, ObjectId } from '@/lib/db';
-const { client, collection } = getDb('introductions');
+const { client, collection } = getDb('invitations');
 
-const Introduction = {
+const Invitation = {
   getReceived: async (userId: ObjectId) => {
     await client.connect();
     return collection
@@ -72,4 +72,4 @@ const Introduction = {
   },
 };
 
-export default Introduction;
+export default Invitation;
