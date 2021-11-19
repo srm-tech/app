@@ -70,10 +70,11 @@ const Invitation = {
       })
       .toArray();
   },
-  accept: async (inviteeId: ObjectId, invitingUserId: ObjectId) => {
+  accept: async (inviteeId: ObjectId, invitationId: ObjectId) => {
+    await client.connect();
     return collection.updateOne(
       {
-        from: invitingUserId,
+        _id: invitationId,
         to: inviteeId,
       },
       {
@@ -83,10 +84,11 @@ const Invitation = {
       }
     );
   },
-  decline: async (inviteeId: ObjectId, invitingUserId: ObjectId) => {
+  decline: async (inviteeId: ObjectId, invitationId: ObjectId) => {
+    await client.connect();
     return collection.updateOne(
       {
-        from: invitingUserId,
+        _id: invitationId,
         to: inviteeId,
       },
       {
