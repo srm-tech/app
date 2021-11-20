@@ -1,0 +1,43 @@
+use('guru');
+
+db.messages.drop();
+
+db.messages.insertMany([
+  {
+    _id: ObjectId(1),
+    from: ObjectId('000000000000000000000002'),
+    to: ObjectId('000000000000000000000001'),
+    subject: 'Lorem ipsum',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus et varius dui, vel laoreet urna. Donec hendrerit tellus nec tellus maximus bibendum.',
+    read: 0
+  },
+
+  {
+    _id: ObjectId(1),
+    from: ObjectId('000000000000000000000003'),
+    to: ObjectId('000000000000000000000001'),
+    subject: 'Fusce eu',
+    content: 'Luctus mi. Quisque ac commodo tortor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis sit amet mauris id libero feugiat laoreet.',
+    read: 1
+  },
+
+  {
+    _id: ObjectId(1),
+    from: ObjectId('000000000000000000000002'),
+    to: ObjectId('000000000000000000000001'),
+    subject: 'Etiam eu urna sem',
+    content: 'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean id rutrum neque. Nulla eu scelerisque leo, sit amet porttitor erat. Nunc auctor, orci quis ',
+    read: 0
+  },
+
+ {
+    _id: ObjectId(1),
+    from: ObjectId('000000000000000000000001'),
+    to: ObjectId('000000000000000000000004'),
+    subject: 'posuere cubilia curae',
+    content: 'Cras ipsum ligula, ullamcorper sagittis iaculis id, bibendum vel nisi. Donec eu velit et justo aliquet porttitor. Etiam faucibus magna justo, a luctus nulla auctor id.',
+    read: 1
+  },
+ 
+
+])
