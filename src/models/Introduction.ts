@@ -47,8 +47,54 @@ const Introduction = {
       }
     );
   },
-  reviewDefaultAgreenemt: async (userId, objId) => {
+  reviewDefaultAgreement: async (data) => {
     await client.connect();
+    console.log(data);
+    const obj = await collection.updateOne(
+      {
+        _id: new ObjectId(data.introId),
+        userId: data.userId,
+      },
+      {
+        $set: {
+          agreement: data,
+        },
+      }
+    );
+    obj.id = data.introId;
+    return obj;
+  },
+  timeToFinish: async (data) => {
+    await client.connect();
+    const obj = await collection.updateOne(
+      {
+        _id: new ObjectId(data.introId),
+        userId: data.userId,
+      },
+      {
+        $set: {
+          aboutTheJob: data.aboutTheJob,
+          agreement: { timeToFinish: data.timeToFinish },
+        },
+      }
+    );
+    obj.id = data.introId;
+    return obj;
+  },
+  finalise: async (data) => {
+    await client.connect();
+    const obj = await collection.updateOne(
+      {
+        _id: new ObjectId(data.introId),
+        userId: data.userId,
+      },
+      {
+        $set: {
+          data,
+        },
+      }
+    );
+    return obj;
   },
 };
 
