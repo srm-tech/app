@@ -1,4 +1,5 @@
 import { getDb, ObjectId } from '@/lib/db';
+import { check, validate } from '@/lib/validator';
 const { client, collection } = getDb('introductions');
 
 const Introduction = {
@@ -12,6 +13,7 @@ const Introduction = {
   },
   selectContacts: async (introductionId: ObjectId, userId: ObjectId, data) => {
     await client.connect();
+    await validate([check('introductionId').isMongoId()]);
     const intro = await collection.findOne({
       _id: introductionId,
       userId: userId,
