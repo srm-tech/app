@@ -47,6 +47,9 @@ const Introduction = {
       }
     );
   },
+  reviewDefaultAgreenemt: async (userId, objId) => {
+    await client.connect();
+  },
 };
 
 export default Introduction;
