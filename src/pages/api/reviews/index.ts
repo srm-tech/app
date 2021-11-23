@@ -16,9 +16,9 @@ export default async function handler(
         check('stars').isNumeric(),
         check('comment').isLength({ min: 0, max: 1023 }),
         check('reviewedId').isMongoId(),
-      ]);
-      const obj = await Review.create({ userId: user._id, ...req.query });
-      res.status(200).json({ obj });
+      ])(req, res);
+      const result = await Review.create({ userId: user._id, ...req.query });
+      res.status(200).json({ result });
     } catch (err: any) {
       res.status(500).json({ statusCode: 500, message: err.message });
     }
