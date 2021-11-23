@@ -14,18 +14,18 @@ export default async function handler(
       let result;
       if (req.query.q !== undefined) {
         await validate([check('q').isLength({ min: 1, max: 255 })])(req, res);
-        result = await User.searchForBusiness({
+        result = await User.searchForGuru({
           query: req.query.q.toString(),
         });
       } else {
-        result = await User.searchForBusiness('');
+        result = await User.searchForGuru('');
       }
       res.status(200).json(result);
     } catch (err: any) {
       res.status(500).json({ statusCode: 500, message: err.message });
     }
   } else {
-    res.setHeader('Allow', 'POST');
+    res.setHeader('Allow', 'GET');
     res.status(405).end('Method Not Allowed');
   }
 }
