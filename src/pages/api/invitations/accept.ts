@@ -4,6 +4,7 @@ import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 
 import Invitation from '@/models/Invitations';
+import { check, validate } from '@/lib/validator';
 
 // todo: replace userId
 export default async function handler(
@@ -14,10 +15,11 @@ export default async function handler(
     try {
       const user = getCurrentUser();
       const invitationId = req.query.invitationId;
-      const result = await Invitation.accept(user._id, ObjectId(invitationId));
-      if (result.matchedCount == 0) {
-        res.status(404).json({ statusCode: 404, message: 'Not found' });
-      }
+      await validate([check(invitationId).isMongoId()]);
+      const result = await Invitation.accept(
+        user._id,
+        new ObjectId(invitationId)
+      );
       res.status(200).json(result);
     } catch (err: any) {
       res.status(500).json({ statusCode: 500, message: err.message });
