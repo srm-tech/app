@@ -10,6 +10,11 @@ const Introduction = {
     await client.connect();
     return collection.insertOne(data);
   },
+  now: async (data) => {
+    await client.connect();
+    data.contactId = new ObjectId(data.contactId);
+    return collection.insertOne(data);
+  },
 };
 
 export default Introduction;
