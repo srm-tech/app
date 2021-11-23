@@ -1,7 +1,7 @@
 import { getDb } from '@/lib/db';
 const { client, collection } = getDb('users');
 
-const Business = {
+const User = {
   create: async (data) => {
     await client.connect();
     return collection?.insertOne(data);
@@ -38,4 +38,4 @@ const Business = {
   },
 };
 
-export default MyContacts;
+export default User;

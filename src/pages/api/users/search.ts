@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { check, validate } from '@/lib/validator';
 
-import Business from '@/models/Business';
+import User from '@/models/User';
 
 // TODO: replace userId
 export default async function handler(
@@ -14,9 +14,11 @@ export default async function handler(
       let result;
       if (req.query.q !== undefined) {
         await validate([check('q').isLength({ min: 1, max: 255 })])(req, res);
-        result = await Business.searchForBusiness({
+        result = await User.searchForBusiness({
           query: req.query.q.toString(),
         });
+      } else {
+        result = await User.searchForBusiness('');
       }
       res.status(200).json(result);
     } catch (err: any) {
