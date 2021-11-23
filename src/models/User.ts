@@ -13,7 +13,7 @@ const User = {
   searchForGuru: async ({ query = '' }) => {
     await client.connect();
     return collection
-      ?.aggregate([
+      .aggregate([
         //pipeline array
         {
           $project: {
@@ -35,6 +35,16 @@ const User = {
         { $unset: 'userId' }, // remove filed from result
       ])
       .toArray();
+  },
+  getOne: async (userId) => {
+    await client.connect();
+    return collection.findOne({
+      _id: userId,
+    });
+  },
+  updateOne: async (data) => {
+    await client.connect();
+    return collection.updateOne({ _id: data.userId }, { $set: data });
   },
 };
 
