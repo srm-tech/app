@@ -28,7 +28,9 @@ const User = {
         }, //stage1
         {
           $match: {
-            $and: [{ search: { $regex: query, $options: 'i' }, flag: 'guru' }],
+            $and: [
+              { search: { $regex: query, $options: 'i' }, flag: 'business' },
+            ],
           },
         }, //stage2
         { $limit: 30 },
