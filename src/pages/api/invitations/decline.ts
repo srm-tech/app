@@ -25,6 +25,7 @@ export default async function handler(
       res.status(500).json({ statusCode: 500, message: err.message });
     }
   } else {
-    res.status(405).json({ statusCode: 405, message: 'Method not allowed' });
+    res.setHeader('Allow', 'POST');
+    res.status(405).end('Method Not Allowed');
   }
 }
