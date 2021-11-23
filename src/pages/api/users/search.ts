@@ -12,13 +12,20 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       let result;
+      await validate([check('x').isNumeric(), check('y').isNumeric()]);
       if (req.query.q !== undefined) {
         await validate([check('q').isLength({ min: 1, max: 255 })])(req, res);
         result = await User.searchForBusiness({
           query: req.query.q.toString(),
+          x: req.query.x,
+          y: req.query.y,
         });
       } else {
-        result = await User.searchForBusiness('');
+        result = await User.searchForBusiness({
+          q: '',
+          x: req.query.x,
+          y: req.query.y,
+        });
       }
       res.status(200).json(result);
     } catch (err: any) {

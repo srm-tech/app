@@ -10,8 +10,11 @@ const User = {
     await client.connect();
     return collection?.find({ userId }).toArray();
   },
-  searchForBusiness: async ({ query = '' }) => {
+  searchForBusiness: async ({ query = '', x, y }) => {
     await client.connect();
+    // todo do not hardcode this
+    const maxDist = 25000;
+    const minDist = 25000;
     return collection
       ?.aggregate([
         //pipeline array
@@ -28,9 +31,15 @@ const User = {
         }, //stage1
         {
           $match: {
-            $and: [
-              { search: { $regex: query, $options: 'i' }, flag: 'business' },
-            ],
+            $and: [{ search: { $regex: query, $options: 'i' } }],
+            $near: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [x, y],
+              },
+              $maxDistance: maxDist,
+              $minDistance: minDist,
+            },
           },
         }, //stage2
         { $limit: 30 },
