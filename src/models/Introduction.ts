@@ -6,6 +6,10 @@ const Introduction = {
     await client.connect();
     return collection.find({ userId }).toArray();
   },
+  create: async (data) => {
+    await client.connect();
+    return collection.insertOne(data);
+  },
 };
 
 export default Introduction;
