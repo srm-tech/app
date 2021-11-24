@@ -10,8 +10,9 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       let result;
-      if (req.query.q) {
-        await validate([check('q').isLength({ min: 3, max: 255 })])(req, res);
+      console.log(req.query);
+      if (req.query.q !== undefined) {
+        await validate([check('q').isLength({ min: 0, max: 255 })])(req, res);
         result = await MyContacts.search({
           userId: 1,
           query: req.query.q.toString(),

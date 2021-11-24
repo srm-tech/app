@@ -7,9 +7,9 @@ export default function Promo() {
         style={{ lineHeight: 1.3 }}
       >
         Access exclusive{' '}
-        <text className='text-white opacity-80'>
+        <div className='text-white opacity-80'>
           early-bird promotions and benefits
-        </text>
+        </div>
       </h1>
       <div className='self-center mt-8 sm:mt-0'>
         <Link href='/promotion' passHref>

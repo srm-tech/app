@@ -1,7 +1,7 @@
 import { getDb } from '@/lib/db';
-const { client, collection } = getDb('myContacts');
+const { client, collection } = getDb('users');
 
-const MyContacts = {
+const User = {
   create: async (data) => {
     await client.connect();
     return collection?.insertOne(data);
@@ -10,8 +10,11 @@ const MyContacts = {
     await client.connect();
     return collection?.find({ userId }).toArray();
   },
-  search: async ({ userId, query = '' }) => {
+  searchForBusiness: async ({ query = '', x, y }) => {
     await client.connect();
+    // todo do not hardcode this
+    const maxDist = 25000;
+    const minDist = 25000;
     return collection
       ?.aggregate([
         //pipeline array
@@ -28,7 +31,15 @@ const MyContacts = {
         }, //stage1
         {
           $match: {
-            $and: [{ search: { $regex: query, $options: 'i' } }, { userId: 1 }],
+            $and: [{ search: { $regex: query, $options: 'i' } }],
+            $near: {
+              $geometry: {
+                type: 'Point',
+                coordinates: [x, y],
+              },
+              $maxDistance: maxDist,
+              $minDistance: minDist,
+            },
           },
         }, //stage2
         { $limit: 30 },
@@ -38,4 +49,4 @@ const MyContacts = {
   },
 };
 
-export default MyContacts;
+export default User;
