@@ -50,10 +50,26 @@ export default function initiationsReceived() {
     {
       firstName: 'Jan',
       lastName: 'Kowalski',
-      age: 120,
+      age: 52,
       visits: 11123,
       status: 'dead',
       progress: 'very fast',
+    },
+    {
+      firstName: 'Zdzisław',
+      lastName: 'Malinowski',
+      age: 76,
+      visits: 1234,
+      status: 'still alive',
+      progress: 'slow',
+    },
+    {
+      firstName: 'Ambroży',
+      lastName: 'Kleks',
+      age: 'unknown',
+      visits: 7837483,
+      status: 'still alive',
+      progress: 'lightspeed',
     },
   ]);
 
