@@ -4,7 +4,7 @@ import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
 
-import Invitation from '@/models/Invitations';
+import Introduction from '@/models/Introduction';
 
 // todo: replace userId
 export default async function handler(
@@ -14,18 +14,14 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       const user = getCurrentUser();
-      const invitationId = req.query.invitationId;
-      await validate([check(invitationId).isMongoId()]);
-      const result = await Invitation.decline(
-        user._id,
-        new ObjectId(invitationId)
-      );
+      const introId = req.query.introId;
+      await validate([check('invitationId').isMongoId()]);
+      const result = await Introduction.decline(user._id, ObjectId(introId));
       res.status(200).json(result);
     } catch (err: any) {
       res.status(500).json({ statusCode: 500, message: err.message });
     }
   } else {
-    res.setHeader('Allow', 'POST');
-    res.status(405).end('Method Not Allowed');
+    res.status(405).json({ statusCode: 405, message: 'Method not allowed' });
   }
 }

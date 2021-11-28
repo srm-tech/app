@@ -23,20 +23,25 @@ export default async function handler(
       check('aboutTheJob').isLength({ min: 1, max: 1023 }),
     ])(req, res);
     try {
-      if (req.query.action == 'continue') {
+      if (req.query.action === 'continue') {
         result = await Introduction.create({
           userId: user._id,
           date: new Date(),
+          status: 'not sent yet',
           ...req.query,
         });
-      } else if (req.query.action == 'draft') {
-        result = await Draft.create({
+      } else if (req.query.action === 'draft') {
+        result = await Introduction.create({
           userId: user._id,
+          status: 'draft',
           date: new Date(),
           ...req.query,
         });
       } else {
-        res.status(404).json({ statusCode: 404, message: 'Not found' });
+        res.status(404).json({
+          statusCode: 404,
+          message: 'Not found. Maybe you should specify an "action" parameter?',
+        });
       }
     } catch (err: any) {
       res.status(500).json({ statusCode: 500, message: err.message });

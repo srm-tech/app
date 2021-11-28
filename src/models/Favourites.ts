@@ -1,5 +1,5 @@
-import { getDb, ObjectId } from '@/lib/db';
-const { client, collection } = getDb('favourites');
+import { getCollection, ObjectId } from '@/lib/db';
+const { client, collection } = getCollection('favourites');
 
 const Favourite = {
   readMany: async (userId: ObjectId) => {
