@@ -1,5 +1,5 @@
-import { getDb, ObjectId } from '@/lib/db';
-const { client, collection } = getDb('invitations');
+import { getCollection, ObjectId } from '@/lib/db';
+const { client, collection } = getCollection('invitations');
 
 const Invitation = {
   getReceived: async (userId: ObjectId) => {
