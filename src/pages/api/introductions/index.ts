@@ -38,13 +38,10 @@ export default async function handler(
           ...req.query,
         });
       } else {
-        res
-          .status(404)
-          .json({
-            statusCode: 404,
-            message:
-              'Not found. Maybe you should specify an "action" parameter?',
-          });
+        res.status(404).json({
+          statusCode: 404,
+          message: 'Not found. Maybe you should specify an "action" parameter?',
+        });
       }
     } catch (err: any) {
       res.status(500).json({ statusCode: 500, message: err.message });

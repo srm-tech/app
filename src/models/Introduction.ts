@@ -1,6 +1,17 @@
-import { getDb, ObjectId } from '@/lib/db';
+import { getCollection, ObjectId } from '@/lib/db';
 import { check, validate } from '@/lib/validator';
-const { client, collection } = getDb('introductions');
+const { client, collection } = getCollection('introductions');
+
+export interface Contact {
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobile: string;
+  aboutTheJob: string;
+  to: string;
+  originalId: ObjectId;
+  userId: ObjectId;
+}
 
 const Introduction = {
   readMany: async (userId: ObjectId) => {
@@ -21,9 +32,9 @@ const Introduction = {
     if (!intro) {
       return null;
     }
-    const elements = [];
+    const elements: Contact[] = [];
     for (let a = 0; a < data.length; a++) {
-      const obj = {
+      const obj: Contact = {
         firstName: intro.firstName,
         lastName: intro.lastName,
         email: intro.email,

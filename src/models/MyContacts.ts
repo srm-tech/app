@@ -1,14 +1,14 @@
-import { getDb } from '@/lib/db';
-const { client, collection } = getDb('myContacts');
+import { getCollection } from '@/lib/db';
+const { client, collection } = getCollection('myContacts');
 
 const MyContacts = {
   create: async (data) => {
     await client.connect();
-    return collection?.insertOne(data);
+    return collection.insertOne(data);
   },
   readMany: async ({ userId }) => {
     await client.connect();
-    return collection?.find({ userId }).toArray();
+    return collection.find({ userId }).toArray();
   },
   search: async ({ userId, query = '' }) => {
     await client.connect();
