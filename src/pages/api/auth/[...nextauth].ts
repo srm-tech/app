@@ -3,7 +3,7 @@ import EmailProvider from 'next-auth/providers/email';
 import nodemailer from 'nodemailer';
 import { getDb } from '@/lib/db';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
-const { client, db } = getDb();
+const { client } = getDb();
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options

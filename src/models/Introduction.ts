@@ -1,5 +1,5 @@
-import { getDb, ObjectId } from '@/lib/db';
-const { client, collection } = getDb('introductions');
+import { getCollection, ObjectId } from '@/lib/db';
+const { client, collection } = getCollection('introductions');
 
 const Introduction = {
   readMany: async (userId: ObjectId) => {
@@ -61,7 +61,6 @@ const Introduction = {
         },
       }
     );
-    obj.id = data.introId;
     return obj;
   },
   timeToFinish: async (data) => {
@@ -78,7 +77,6 @@ const Introduction = {
         },
       }
     );
-    obj.id = data.introId;
     return obj;
   },
   finalise: async (data) => {

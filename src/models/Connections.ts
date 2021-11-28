@@ -1,5 +1,5 @@
-import { getDb, ObjectId } from '@/lib/db';
-const { client, collection } = getDb('connections');
+import { getCollection, ObjectId } from '@/lib/db';
+const { client, collection } = getCollection('connections');
 
 const Connection = {
   readMany: async (userId: ObjectId) => {

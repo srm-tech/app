@@ -1,5 +1,5 @@
-import { getDb } from '@/lib/db';
-const { client, collection } = getDb('introductions');
+import { getCollection } from '@/lib/db';
+const { client, collection } = getCollection('introductions');
 
 const DashboardIntroductionsWidget = {
   get: async ({ userId }) => {
