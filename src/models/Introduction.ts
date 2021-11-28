@@ -1,17 +1,5 @@
 import { getCollection, ObjectId } from '@/lib/db';
-import { check, validate } from '@/lib/validator';
 const { client, collection } = getCollection('introductions');
-
-export interface Contact {
-  firstName: string;
-  lastName: string;
-  email: string;
-  mobile: string;
-  aboutTheJob: string;
-  to: string;
-  originalId: ObjectId;
-  userId: ObjectId;
-}
 
 const Introduction = {
   readMany: async (userId: ObjectId) => {
@@ -22,43 +10,89 @@ const Introduction = {
     await client.connect();
     return collection.insertOne(data);
   },
-  selectContacts: async (introductionId: ObjectId, userId: ObjectId, data) => {
+  readOne: async (userId, objId) => {
     await client.connect();
-    await validate([check('introductionId').isMongoId()]);
-    const intro = await collection.findOne({
-      _id: introductionId,
-      userId: userId,
+    return await collection.findOne({
+      _id: objId,
+      to: userId,
     });
-    if (!intro) {
-      return null;
-    }
-    const elements: Contact[] = [];
-    for (let a = 0; a < data.length; a++) {
-      const obj: Contact = {
-        firstName: intro.firstName,
-        lastName: intro.lastName,
-        email: intro.email,
-        mobile: intro.mobile,
-        aboutTheJob: intro.aboutTheJob,
-        to: data[a],
-        originalId: intro._id,
-        userId: userId,
-      };
-      elements.push(obj);
-    }
-    return collection.insertMany(elements);
   },
-  send: async (introductionId: ObjectId, uId: ObjectId) => {
+  accept: async (userId, objId) => {
     await client.connect();
-    return await collection.updateMany(
-      { originalId: introductionId, userId: uId },
+    return await collection.updateOne(
+      {
+        _id: objId,
+        to: userId,
+      },
       {
         $set: {
-          status: 'sent',
+          status: 'accepted',
           date: new Date(),
         },
       }
     );
+  },
+  decline: async (userId, objId) => {
+    await client.connect();
+    return await collection.updateOne(
+      {
+        _id: objId,
+        to: userId,
+      },
+      {
+        $set: {
+          status: 'declined',
+          date: new Date(),
+        },
+      }
+    );
+  },
+  reviewDefaultAgreement: async (data) => {
+    await client.connect();
+    console.log(data);
+    const obj = await collection.updateOne(
+      {
+        _id: new ObjectId(data.introId),
+        userId: data.userId,
+      },
+      {
+        $set: {
+          agreement: data,
+        },
+      }
+    );
+    return obj;
+  },
+  timeToFinish: async (data) => {
+    await client.connect();
+    const obj = await collection.updateOne(
+      {
+        _id: new ObjectId(data.introId),
+        userId: data.userId,
+      },
+      {
+        $set: {
+          aboutTheJob: data.aboutTheJob,
+          agreement: { timeToFinish: data.timeToFinish },
+        },
+      }
+    );
+    return obj;
+  },
+  finalise: async (data) => {
+    await client.connect();
+    const obj = await collection.updateOne(
+      {
+        _id: new ObjectId(data.introId),
+        userId: data.userId,
+      },
+      {
+        $set: {
+          data,
+        },
+      }
+    );
+    return obj;
   },
 };
 
