@@ -1,5 +1,5 @@
-import { getDb, ObjectId } from '@/lib/db';
-const { client, collection } = getDb('invitations');
+import { getCollection, ObjectId } from '@/lib/db';
+const { client, collection } = getCollection('invitations');
 
 const Invitation = {
   getReceived: async (userId: ObjectId) => {
@@ -72,7 +72,7 @@ const Invitation = {
   },
   accept: async (inviteeId: ObjectId, invitationId: ObjectId) => {
     await client.connect();
-    return collection.updateOne(
+    const result = collection.updateOne(
       {
         _id: invitationId,
         to: inviteeId,
@@ -80,9 +80,12 @@ const Invitation = {
       {
         $set: {
           status: 'accepted',
+          invitationId: invitationId,
+          date: new Date(),
         },
       }
     );
+    return result;
   },
   decline: async (inviteeId: ObjectId, invitationId: ObjectId) => {
     await client.connect();
@@ -94,6 +97,8 @@ const Invitation = {
       {
         $set: {
           status: 'decline',
+          invitationId: invitationId,
+          date: new Date(),
         },
       }
     );
