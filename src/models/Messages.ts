@@ -1,5 +1,5 @@
-import { getDb, ObjectId } from '@/lib/db';
-const { client, collection } = getDb('messages');
+import { getCollection, ObjectId } from '@/lib/db';
+const { client, collection } = getCollection('messages');
 
 const Message = {
   create: async (data: any) => {

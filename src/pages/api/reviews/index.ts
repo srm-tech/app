@@ -1,12 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
 
-import Invitation from '@/models/Invitations';
+import Review from '@/models/Reviews';
 
-// todo: replace userId
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -14,13 +12,13 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       const user = getCurrentUser();
-      const invitationId = req.query.invitationId;
-      await validate([check(invitationId).isMongoId()]);
-      const result = await Invitation.decline(
-        user._id,
-        new ObjectId(invitationId)
-      );
-      res.status(200).json(result);
+      await validate([
+        check('stars').isNumeric(),
+        check('comment').isLength({ min: 0, max: 1023 }),
+        check('reviewedId').isMongoId(),
+      ])(req, res);
+      const result = await Review.create({ userId: user._id, ...req.query });
+      res.status(200).json({ result });
     } catch (err: any) {
       res.status(500).json({ statusCode: 500, message: err.message });
     }

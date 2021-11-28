@@ -1,25 +1,27 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
 
-import Invitation from '@/models/Invitations';
+import Introduction from '@/models/Introduction';
 
-// todo: replace userId
+// TODO: replace userId
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
+    const user = getCurrentUser();
+    await validate([
+      check('aboutTheJob').isLength({ min: 1, max: 1023 }),
+      check('timeToFinish').isNumeric(),
+      check('introId').isMongoId(),
+    ])(req, res);
     try {
-      const user = getCurrentUser();
-      const invitationId = req.query.invitationId;
-      await validate([check(invitationId).isMongoId()]);
-      const result = await Invitation.decline(
-        user._id,
-        new ObjectId(invitationId)
-      );
+      const result = await Introduction.timeToFinish({
+        userId: user._id,
+        ...req.query,
+      });
       res.status(200).json(result);
     } catch (err: any) {
       res.status(500).json({ statusCode: 500, message: err.message });
