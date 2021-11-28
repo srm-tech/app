@@ -1,25 +1,29 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
 
-import Invitation from '@/models/Invitations';
+import Agreement from '@/models/Agreement';
 
-// todo: replace userId
+// TODO: replace userId
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
+    const user = getCurrentUser();
+    await validate([
+      check('email').isEmail(),
+      check('commisionPerReceivedLeadCash').isNumeric(),
+      check('commissionPerCompletedLead').isNumeric(),
+      check('commissionPerReceivedLeadPercent').isNumeric(),
+      check('message').isLength({ min: 1, max: 1024 }),
+    ])(req, res);
     try {
-      const user = getCurrentUser();
-      const invitationId = req.query.invitationId;
-      await validate([check(invitationId).isMongoId()]);
-      const result = await Invitation.decline(
-        user._id,
-        new ObjectId(invitationId)
-      );
+      const result = await Agreement.create({
+        userId: user._id,
+        ...req.body,
+      });
       res.status(200).json(result);
     } catch (err: any) {
       res.status(500).json({ statusCode: 500, message: err.message });
