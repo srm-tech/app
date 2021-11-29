@@ -54,22 +54,28 @@ const Invitation = {
         {
           $lookup: {
             from: 'users',
-            localField: 'to',
+            localField: 'from',
             foreignField: '_id',
-            as: 'invitationSentTo',
+            as: 'invitee',
           },
         },
+        { $unwind: '$invitee' },
         {
-          $project: {
-            'invitationSentTo.firstName': true,
-            'invitationSentTo.lastName': true,
-            'invitationSentTo.businessName': true,
-            status: true,
+          $addFields: {
+            invitedById: '$_id',
+            name: {
+              $concat: ['$invitee.firstName', ' ', '$invitee.lastName'],
+            },
+            email: '$invitee.email',
+            phone: '$invitee.phone',
+            businessName: '$invitee.businessName',
+            businessCategory: '$invitee.businessCategory',
+            rating: '$invitee.rating',
+            succesfulRate: '$invitee.succesfulRate',
+            averageCommission: '$invitee.averageCommission',
           },
         },
-        {
-          $unwind: '$invitationSentTo',
-        },
+        { $unset: 'invitee' },
       ])
       .sort({
         date: -1,

@@ -82,5 +82,11 @@ db.invitations.insertMany([
     date: ISODate('2021-11-11T14:52:11+01:00'),
     status: 'accepted'
   },
+    {
+    to: ObjectId('00000000000000000000001a'),
+    from:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'accepted'
+  },
   
 ]);
