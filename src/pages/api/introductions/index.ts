@@ -13,7 +13,13 @@ export default async function handler(
   const user = getCurrentUser();
   let result;
   if (req.method === 'GET') {
-    easyGetAll(req, res, Introduction);
+    try {
+      const user = getCurrentUser();
+      const result = await Introduction.readMany(user._id);
+      res.status(200).json(result);
+    } catch (err: any) {
+      res.status(500).json({ statusCode: 500, message: err.message });
+    }
   } else if (req.method === 'POST') {
     await validate([
       check('firstName').isLength({ min: 1, max: 255 }),
@@ -27,12 +33,14 @@ export default async function handler(
         result = await Introduction.create({
           userId: user._id,
           date: new Date(),
+          type: 'introduction',
           ...req.query,
         });
       } else if (req.query.action == 'draft') {
-        result = await Draft.create({
+        result = await Introduction.create({
           userId: user._id,
           date: new Date(),
+          type: 'draft',
           ...req.query,
         });
       } else {

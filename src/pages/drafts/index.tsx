@@ -8,7 +8,7 @@ export default function introductions() {
     loading,
     error,
     data = [],
-  } = useFetch(process.env.BASE_URL + '/api/introductions', options, []);
+  } = useFetch(process.env.BASE_URL + '/api/drafts', options, []);
 
   const columns = [
     {
@@ -25,6 +25,21 @@ export default function introductions() {
     { Header: 'businessCategory', accessor: 'businessCategory' },
     { Header: 'status', accessor: 'status' },
     { Header: 'commission earned', accessor: 'commissionEarned' },
+    {
+      Header: '',
+      accessor: '_id',
+      Cell: ({ row: { original } }) => {
+        if (original.status === 'pending') {
+          return (
+            <>
+              <button className='cell-button-accept'>Assign</button>
+            </>
+          );
+        } else {
+          return <></>;
+        }
+      },
+    },
   ];
 
   return (
