@@ -16,7 +16,7 @@ export default function HomePage() {
       <Seo templateTitle='Incentivise your network & grow your business' />
 
       <main>
-        <div className='relative overflow-hidden bg-dark'>
+        <div className='relative overflow-hidde'>
           <div
             className='hidden sm:block sm:absolute sm:inset-0'
             aria-hidden='true'
@@ -47,11 +47,11 @@ export default function HomePage() {
               />
             </svg>
           </div>
-          <div className='relative pt-6 pb-16 sm:pb-24'>
-            <div className='w-full'>
+          <div className='relative'>
+            <div className='w-full bg-dark px-4 mx-auto max-w-7xl sm:px-6 pt-6'>
               <Nav />
             </div>
-            <div className='w-full'>
+            <div className='w-full bg-dark pt-16 pb-16 sm:pt-24'>
               <Hero />
             </div>
             <div className='w-full bg-white'>
@@ -72,7 +72,7 @@ export default function HomePage() {
             <div id='roadmap' className='w-full bg-white'>
               <Roadmap />
             </div>
-            <div className='w-full'>
+            <div className='w-full bg-dark'>
               <Footer />
             </div>
           </div>

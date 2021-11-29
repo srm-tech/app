@@ -1,7 +1,7 @@
-import clsx from 'clsx';
 /* This example requires Tailwind CSS v2.0+ */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactElement } from 'react';
 import { NextRouter, useRouter } from 'next/router';
+import Link from '@/components/links/UnstyledLink';
 
 const transitionDuration = 300;
 type UseAdmin = {
@@ -28,9 +28,14 @@ export const useAdmin = ({ to = '/' }): UseAdmin => {
   useEffect(() => {
     setOpen(true);
   }, []);
-  return { open, setOpen, onClose, isLoading, setIsLoading, router };
+  return {
+    open,
+    setOpen,
+    onClose,
+    isLoading,
+    setIsLoading,
+    router,
+  };
 };
 
-export default function Dashboard() {
-  return null;
-}
+export { Link };

@@ -41,7 +41,7 @@ export default function PromotionPage() {
               />
             </svg>
           </div>
-          <div className='relative pb-16 sm:pb-24'>
+          <div className='relative'>
             <div className='w-full pt-6 bg-white'>
               <NewNav />
             </div>
@@ -67,7 +67,7 @@ export default function PromotionPage() {
             <div id='contact' className='w-full bg-gray-100'>
               <NewsLetter />
             </div>
-            <div className='w-full'>
+            <div className='w-full bg-dark'>
               <Footer />
             </div>
           </div>

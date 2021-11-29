@@ -1,9 +1,6 @@
-/* This example requires Tailwind CSS v2.0+ */
-import { useState, useEffect, ReactElement } from 'react';
+import { useState, useEffect } from 'react';
 import { NextRouter, useRouter } from 'next/router';
-import UnstyledLink, {
-  UnstyledLinkProps,
-} from '@/components/links/UnstyledLink';
+import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 const transitionDuration = 300;
 type UseAdmin = {
@@ -13,7 +10,6 @@ type UseAdmin = {
   setIsLoading: (isLoading) => void;
   onClose: () => void;
   router: NextRouter;
-  Link: (props: UnstyledLinkProps) => ReactElement<any>;
 };
 
 export const useAdmin = ({ to = '/' }): UseAdmin => {
@@ -31,13 +27,9 @@ export const useAdmin = ({ to = '/' }): UseAdmin => {
   useEffect(() => {
     setOpen(true);
   }, []);
-  return {
-    open,
-    setOpen,
-    onClose,
-    isLoading,
-    setIsLoading,
-    router,
-    Link: UnstyledLink,
-  };
+  return { open, setOpen, onClose, isLoading, setIsLoading, router };
 };
+
+export default function Dashboard() {
+  return <DashboardLayout>Contents</DashboardLayout>;
+}
