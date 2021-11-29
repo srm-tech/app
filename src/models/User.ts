@@ -1,17 +1,11 @@
-import { getDb } from '@/lib/db';
-const { client, collection } = getDb('users');
-
-const User = {
+const User = (collection) => ({
   create: async (data) => {
-    await client.connect();
     return collection?.insertOne(data);
   },
   readMany: async ({ userId }) => {
-    await client.connect();
     return collection?.find({ userId }).toArray();
   },
   searchForGuru: async ({ query = '' }) => {
-    await client.connect();
     return collection
       .aggregate([
         //pipeline array
@@ -37,15 +31,13 @@ const User = {
       .toArray();
   },
   getOne: async (userId) => {
-    await client.connect();
     return collection.findOne({
       _id: userId,
     });
   },
   updateOne: async (data) => {
-    await client.connect();
     return collection.updateOne({ _id: data.userId }, { $set: data });
   },
-};
+});
 
 export default User;

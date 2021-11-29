@@ -14,7 +14,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html lang='en'>
+      <Html lang='en' className='h-full'>
         <Head>
           <link rel='preconnect' href='https://fonts.googleapis.com' />
           <link
@@ -27,7 +27,7 @@ class MyDocument extends Document {
             rel='stylesheet'
           />
         </Head>
-        <body className=''>
+        <body className='h-full'>
           <Main />
           <NextScript />
           <script

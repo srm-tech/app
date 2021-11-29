@@ -1,16 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
+import models from '@/models';
+import { handleErrors } from '@/lib/middleware';
 
-import User from '@/models/User';
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === 'POST') {
-    try {
+export default handleErrors(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    let result;
+    await models.client.connect();
+    if (req.method === 'POST') {
       const user = getCurrentUser();
       await validate([
         check('firstName').isLength({ min: 1, max: 255 }),
@@ -21,13 +19,15 @@ export default async function handler(
         check('email').isEmail(),
         check('phone').isLength({ min: 1, max: 50 }),
       ])(req, res);
-      const result = await User.updateOne({ userId: user._id, ...req.query });
-      res.status(200).json({ result });
-    } catch (err: any) {
-      res.status(500).json({ statusCode: 500, message: err.message });
+      result = await models.User.updateOne({
+        userId: user._id,
+        ...req.query,
+      });
+    } else {
+      res.setHeader('Allow', 'POST');
+      return res.status(405).end('Method Not Allowed');
     }
-  } else {
-    res.setHeader('Allow', 'POST');
-    res.status(405).end('Method Not Allowed');
+    res.status(200).json({ result });
+    await models.client.close();
   }
-}
+);

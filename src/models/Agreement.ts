@@ -1,12 +1,10 @@
-import { getDb, ObjectId } from '@/lib/db';
-const { client, collection } = getDb('agreements');
+import { ObjectId } from '@/lib/db';
 
-const Agreement = {
+const Agreement = (collection) => ({
   create: async (data) => {
-    await client.connect();
     data.reviewedId = new ObjectId(data.reviewedId);
     return collection.insertOne(data);
   },
-};
+});
 
 export default Agreement;

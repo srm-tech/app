@@ -1,31 +1,31 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
-import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
+import models from '@/models';
+import { handleErrors } from '@/lib/middleware';
 
-import Message from '@/models/Messages';
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  try {
-    if (req.method !== 'POST') {
-      res.status(405).json({ statusCode: 405, message: 'Method not allowed' });
-    }
+export default handleErrors(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    let result;
+    await models.client.connect();
     const user = getCurrentUser();
-    const result = await Message.toggleRead(
-      user._id,
-      ObjectId(req.query.messageId)
-    );
+
+    if (req.method !== 'POST') {
+      result = await models.Message.toggleRead(
+        user._id,
+        req.query.messageId.toString()
+      );
+    } else {
+      return res
+        .status(405)
+        .json({ statusCode: 405, message: 'Method not allowed' });
+    }
 
     // no result: the message with given id & userId does not exist
     if (!result) {
-      res.status(404).json({ statusCode: 404, message: 'Not found' });
+      return res.status(404).json({ statusCode: 404, message: 'Not found' });
     }
 
     res.status(200).json(result);
-  } catch (err: any) {
-    res.status(500).json({ statusCode: 500, message: err.message });
+    await models.client.close();
   }
-}
+);
