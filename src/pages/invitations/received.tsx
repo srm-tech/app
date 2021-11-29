@@ -18,7 +18,7 @@ export default function initiationsReceived() {
     { Header: 'rating', accessor: 'rating' },
     { Header: 'succesful rate', accessor: 'succesfulRate' },
     { Header: 'average commission', accessor: 'averageCommission' },
-    { Header: 'status', accessor: 'status' },
+    { Header: 'status', accessor: 'status', filter: SliderColumnFilter },
   ];
 
   return (

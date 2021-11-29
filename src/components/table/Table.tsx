@@ -1,61 +1,45 @@
+import {
+  DefaultColumnFilter,
+  fuzzyTextFilterFn,
+} from '@/components/table/filters';
 import React from 'react';
-import { useTable, usePagination, useAsyncDebounce } from 'react-table';
-import matchSorter from 'match-sorter';
-
-function fuzzyTextFilterFn(rows, id, filterValue) {
-  return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
-}
-
-// Let the table remove the filter if the string is empty
-fuzzyTextFilterFn.autoRemove = (val) => !val;
-
-function GlobalFilter({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter,
-}) {
-  const count = preGlobalFilteredRows.length;
-  const [value, setValue] = React.useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined);
-  }, 200);
-
-  return (
-    <span>
-      Search:{' '}
-      <input
-        value={value || ''}
-        onChange={(e) => {
-          setValue(e.target.value);
-          onChange(e.target.value);
-        }}
-        placeholder={`${count} records...`}
-      />
-    </span>
-  );
-}
-
-function DefaultColumnFilter({
-  column: { filterValue, preFilteredRows, setFilter },
-}) {
-  const count = preFilteredRows.length;
-
-  return (
-    <input
-      value={filterValue || ''}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined);
-      }}
-      placeholder={`Search ${count} records...`}
-    />
-  );
-}
+import {
+  useTable,
+  usePagination,
+  useFilters,
+  useGlobalFilter,
+} from 'react-table';
 
 // ------------main table component----------------------------------------------------
 export default function Table({ columns, data }) {
-  const filterTypes = React.useMemo(() => ({
-    fuzzyText: fuzzyTextFilterFn,
-  }));
+  const filterTypes = React.useMemo(
+    () => ({
+      // Add a new fuzzyTextFilterFn filter type.
+      fuzzyText: fuzzyTextFilterFn,
+      // Or, override the default text filter to use
+      // "startWith"
+      text: (rows, id, filterValue) => {
+        return rows.filter((row) => {
+          const rowValue = row.values[id];
+          return rowValue !== undefined
+            ? String(rowValue)
+                .toLowerCase()
+                .startsWith(String(filterValue).toLowerCase())
+            : true;
+        });
+      },
+    }),
+    []
+  );
+
+  const defaultColumn = React.useMemo(
+    () => ({
+      // Let's set up our default Filter UI
+      Filter: DefaultColumnFilter,
+    }),
+    []
+  );
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -75,11 +59,15 @@ export default function Table({ columns, data }) {
     {
       columns,
       data,
+      defaultColumn,
+      filterTypes,
       initialState: {
         pageIndex: 0,
         pageSize: 30,
       },
     },
+    useFilters,
+    useGlobalFilter,
     usePagination
   );
 
@@ -101,6 +89,9 @@ export default function Table({ columns, data }) {
                         // Render the header
                         column.render('Header')
                       }
+                      <div>
+                        {column.canFilter ? column.render('Filter') : null}
+                      </div>
                     </th>
                   ))
                 }
