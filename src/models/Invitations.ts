@@ -1,9 +1,7 @@
-import { getCollection, ObjectId } from '@/lib/db';
-const { client, collection } = getCollection('invitations');
+import { ObjectId } from '@/lib/db';
 
-const Invitation = {
+const Invitation = (collection) => ({
   getReceived: async (userId: ObjectId) => {
-    await client.connect();
     return collection
       .aggregate([
         {
@@ -37,7 +35,6 @@ const Invitation = {
       .toArray();
   },
   getSent: async (userId: ObjectId) => {
-    await client.connect();
     return collection
       .aggregate([
         {
@@ -70,8 +67,7 @@ const Invitation = {
       })
       .toArray();
   },
-  accept: async (inviteeId: ObjectId, invitationId: ObjectId) => {
-    await client.connect();
+  accept: async (inviteeId, invitationId) => {
     const result = collection.updateOne(
       {
         _id: invitationId,
@@ -87,8 +83,7 @@ const Invitation = {
     );
     return result;
   },
-  decline: async (inviteeId: ObjectId, invitationId: ObjectId) => {
-    await client.connect();
+  decline: async (inviteeId, invitationId) => {
     return collection.updateOne(
       {
         _id: invitationId,
@@ -103,6 +98,5 @@ const Invitation = {
       }
     );
   },
-};
-
+});
 export default Invitation;

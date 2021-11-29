@@ -1,23 +1,26 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
 import getCurrentUser from '@/lib/get-current-user';
-
-import DashBoardConnectionsWidget from '@/models/widgets/DashboardConnections';
+import models from '@/models';
+import { handleErrors } from '@/lib/middleware';
 
 // todo: replace userId
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const user = getCurrentUser();
-  if (req.method === 'GET') {
-    try {
-      const result = await DashBoardConnectionsWidget.get({ userId: user._id });
-      res.status(200).json({
-        connections: result,
+export default handleErrors(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    let result;
+    const user = getCurrentUser();
+    await models.client.connect();
+    if (req.method === 'GET') {
+      result = await models.DashBoardConnectionsWidget.get({
+        userId: user._id,
       });
-    } catch (err: any) {
-      res.status(500).json({ statusCode: 500, message: err.message });
+    } else {
+      return res
+        .status(405)
+        .json({ statusCode: 405, message: 'Method not allowed' });
     }
+    res.status(200).json({
+      connections: result,
+    });
+    await models.client.close();
   }
-}
+);

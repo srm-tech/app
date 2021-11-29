@@ -9,12 +9,11 @@ export const getDb = () => {
     wtimeoutMS: 10000,
   });
   const db = client.db(env.DB_NAME);
-  return { client, db };
+  return { client, db, dbName: env.DB_NAME };
 };
-export const getCollection = (collectionName: string) => {
-  const { client, db } = getDb();
-  const collection = db.collection(collectionName);
-  return { client, db, collection };
+export const getCollection = (dbOptions) => (collectionName: string) => {
+  const { client, db } = dbOptions;
+  return db.collection(collectionName);
 };
 
 export { ObjectId };

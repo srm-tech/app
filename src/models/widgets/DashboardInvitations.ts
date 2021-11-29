@@ -1,9 +1,5 @@
-import { getCollection } from '@/lib/db';
-const { client, collection } = getCollection('invitations');
-
-const DashboardIntroductionsWidget = {
+const DashboardInvitationsWidget = (collection) => ({
   get: async ({ userId }) => {
-    await client.connect();
     const invitationsSent = await collection.find({ from: userId }).count();
     const invitationsReceived = await collection.find({ to: userId }).count();
     return {
@@ -11,6 +7,6 @@ const DashboardIntroductionsWidget = {
       invitationsReceived: invitationsReceived,
     };
   },
-};
+});
 
-export default DashboardIntroductionsWidget;
+export default DashboardInvitationsWidget;

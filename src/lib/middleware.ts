@@ -1,4 +1,5 @@
-// Helper method to wait for a middleware to execute before continuing
+import { NextApiRequest, NextApiResponse } from 'next';
+
 // And to throw an error when an error happens in a middleware
 export function initMiddleware(middleware) {
   return (req, res) =>
@@ -24,3 +25,16 @@ export function validateMiddleware(validations, validationResult) {
     res.status(422).json({ errors: errors.array() });
   };
 }
+
+export const handleErrors =
+  (callback) => async (req: NextApiRequest, res: NextApiResponse) => {
+    try {
+      await callback(req, res);
+    } catch (e) {
+      console.error(e);
+
+      return res
+        .status(500)
+        .json({ statusCode: 500, message: (e as Error).message });
+    }
+  };

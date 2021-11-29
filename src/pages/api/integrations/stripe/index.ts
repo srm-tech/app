@@ -1,43 +1,37 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 import { formatAmountForStripe } from '@/lib/stripe-helpers';
-import { CURRENCY, STRIPE_CANCEL_PAGE, STRIPE_SUCCESS_PAGE } from '@/config';
+import { env } from '@/config';
+import { handleErrors } from '@/lib/middleware';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2020-08-27',
 });
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === 'POST') {
-    const amount: number = req.body.amount;
-    try {
+export default handleErrors(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    let result;
+    if (req.method === 'POST') {
+      const amount: number = req.body.amount;
+
       const params: Stripe.Checkout.SessionCreateParams = {
         payment_method_types: ['card'],
         line_items: [
           {
             name: '$' + amount + ' Plan',
-            amount: formatAmountForStripe(amount, CURRENCY),
-            currency: CURRENCY,
+            amount: formatAmountForStripe(amount, env.CURRENCY),
+            currency: env.CURRENCY,
             quantity: 1,
           },
         ],
-        success_url: `${req.headers.origin}/${STRIPE_SUCCESS_PAGE}?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/${STRIPE_CANCEL_PAGE}?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${req.headers.origin}/${env.STRIPE_SUCCESS_PAGE}?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.headers.origin}/${env.STRIPE_CANCEL_PAGE}?session_id={CHECKOUT_SESSION_ID}`,
       };
-      const checkoutSession: Stripe.Checkout.Session =
-        await stripe.checkout.sessions.create(params);
-
-      res.status(200).json(checkoutSession);
-    } catch (err) {
-      res
-        .status(500)
-        .json({ statusCode: 500, message: (err as Error).message });
+      result = await stripe.checkout.sessions.create(params);
+    } else {
+      res.setHeader('Allow', 'POST');
+      return res.status(405).end('Method Not Allowed');
     }
-  } else {
-    res.setHeader('Allow', 'POST');
-    res.status(405).end('Method Not Allowed');
+    res.status(200).json(result);
   }
-}
+);
