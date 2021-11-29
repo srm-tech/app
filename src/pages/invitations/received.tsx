@@ -2,6 +2,7 @@ import Table from '@/components/table/Table';
 import React from 'react';
 import useFetch from 'use-http';
 import StarRatingComponent from 'react-star-rating-component';
+import { fullName } from '@/components/table/cells';
 
 export default function initiationsReceived() {
   const options = [];
@@ -12,9 +13,17 @@ export default function initiationsReceived() {
   } = useFetch(process.env.BASE_URL + '/api/invitations/received', options, []);
 
   const columns = [
-    { Header: 'name', accessor: 'name' },
-    { Header: 'email', accessor: 'email' },
-    { Header: 'phone', accesor: 'phone' },
+    {
+      Header: 'name',
+      accessor: 'name',
+      Cell: ({ row: { original } }) => (
+        <>
+          <div className='cell-name'>{original.name}</div>
+          <div className='cell-email'>{original.email}</div>
+          <div className='cell-phone'>{original.phone}</div>
+        </>
+      ),
+    },
     { Header: 'business name', accessor: 'businessName' },
     { Header: 'businessCategory', accessor: 'businessCategory' },
     {
@@ -29,6 +38,26 @@ export default function initiationsReceived() {
     },
     { Header: 'average commission', accessor: 'averageCommission' },
     { Header: 'status', accessor: 'status' },
+    {
+      Header: 'id',
+      accessor: '_id',
+      Cell: ({ row: { original } }) => {
+        if (original.status === 'pending') {
+          return (
+            <>
+              <div>
+                <button className='cell-button-accept'>Accept</button>
+              </div>
+              <div>
+                <button className='cell-button-decline'>Decline</button>
+              </div>
+            </>
+          );
+        } else {
+          return <></>;
+        }
+      },
+    },
   ];
 
   return (

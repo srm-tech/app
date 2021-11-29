@@ -12,9 +12,17 @@ export default function initiationsReceived() {
   } = useFetch(process.env.BASE_URL + '/api/invitations/sent', options, []);
 
   const columns = [
-    { Header: 'name', accessor: 'name' },
-    { Header: 'email', accessor: 'email' },
-    { Header: 'phone', accesor: 'phone' },
+    {
+      Header: 'name',
+      accessor: 'name',
+      Cell: ({ row: { original } }) => (
+        <>
+          <div className='cell-name'>{original.name}</div>
+          <div className='cell-email'>{original.email}</div>
+          <div className='cell-phone'>{original.phone}</div>
+        </>
+      ),
+    },
     { Header: 'business name', accessor: 'businessName' },
     { Header: 'businessCategory', accessor: 'businessCategory' },
     {
