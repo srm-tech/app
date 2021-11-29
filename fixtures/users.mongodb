@@ -11,10 +11,14 @@ db.users.drop();
 db.users.insertMany([
   {
     _id: ObjectId('000000000000000000000001'),
-    firstName: 'Marcin',
-    lastName: 'Baryłka',
-    businessName: 'Hicron sp. z o.o.',
-    email: 'marcin.barylka@hicron.com',
+    firstName: 'Adam',
+    lastName: 'Abacki',
+    businessName: 'Supersoft SA',
+    businessCategory: 'Software development',
+    rating: 5,
+    email: 'adam.abacki@a.pl',
+    succesfulRate: 0.97,
+    averageCommission: '$100 + 10%',
     isActive: true
   },
   {
@@ -22,6 +26,10 @@ db.users.insertMany([
     firstName: 'Janusz',
     lastName: 'Iksiński',
     businessName: 'Januszex sp. j.',
+    businessCategory: 'Catering',
+    rating: 2,
+    succesfulRate: .25,
+    averageCommission: '15%',
     email: 'janusz@januszex.pl',
     isActive: true
   },
@@ -31,13 +39,108 @@ db.users.insertMany([
     lastName: 'Nieznana',
     businessName: 'Firma SA',
     email: 'nieznana@firma.com',
+    businessCategory: 'Big corp',
+    rating: 4,
+    succesfulRate: .88,
+    averageCommission: '$1500',
     isActive: true
   },
   {
     _id: ObjectId('000000000000000000000004'),
     firstName: 'Jane',
     lastName: 'Doe',
-    businessName: 'Big Corp, Inc.',
-    email: 'janedoe@bigcorp.com',
-    isActive: true  }
+    businessName: 'Terefere, Inc.',
+    email: 'janedoe@terefere.com',
+    businessCategory: 'Big corp',
+    rating: 4,
+    succesfulRate: .91,
+    averageCommission: '$1500 + 5%',
+    isActive: true  },
+    {
+    _id: ObjectId('000000000000000000000005'),
+    firstName: 'Karol',
+    lastName: 'Superowy',
+    businessName: 'Trutututu  SA',
+    email: 'super@trutututu.com',
+    businessCategory: 'Flowers',
+    rating: 1,
+    succesfulRate: .08,
+    averageCommission: '$10',
+    isActive: true
+  },
+  {
+    _id: ObjectId('000000000000000000000006'),
+    firstName: 'Atanazy',
+    lastName: 'Parówka',
+    businessName: 'Parówka Company',
+    email: 'atanazy@paruwa.com',
+    businessCategory: 'Food & Groceries',
+    rating: 3,
+    succesfulRate: .38,
+    averageCommission: '$150',
+    isActive: true
+  },
+      {
+    _id: ObjectId('000000000000000000000007'),
+    firstName: 'Gerwazy',
+    lastName: 'Trąba',
+    businessName: 'Trutututu  SA',
+    email: 'traba@trutututu.com',
+    businessCategory: 'Flowers',
+    rating: 5,
+    succesfulRate: .89,
+    averageCommission: '$10',
+    isActive: true
+  },
+    {
+    _id: ObjectId('000000000000000000000008'),
+    firstName: 'Edward',
+    lastName: 'Mosiądz',
+    businessName: 'Mosiądz sp. z zoo',
+    email: 'mosiadz@zoo.pl',
+    businessCategory: 'Animals',
+    rating: 1,
+    succesfulRate: .8,
+    averageCommission: '$500150',
+    isActive: true
+  },
+      {
+    _id: ObjectId('000000000000000000000009'),
+    firstName: 'Pankracy',
+    lastName: 'Bomba',
+    businessName: 'Kaboom!',
+    email: 'bomba@kaboom.com',
+    businessCategory: 'Explosives',
+    rating: 5,
+    succesfulRate: .99,
+    averageCommission: '$1000',
+    isActive: true
+  },
+  {
+    _id: ObjectId('000000000000000000000010'),
+    firstName: 'Edward',
+    lastName: 'Mosiądz',
+    businessName: 'Mosiądz sp. z zoo',
+    email: 'mosiadz@zoo.pl',
+    businessCategory: 'Animals',
+    rating: 1,
+    succesfulRate: .8,
+    averageCommission: '$500150',
+    isActive: true
+  },
+  {
+    _id: ObjectId('00000000000000000000001a'),
+    firstName: 'Tadeusz',
+    lastName: 'Kozodój',
+    businessName: 'Lelek Kozodój!',
+    email: 'lelek@kozodoj.com',
+    businessCategory: 'Animals',
+    rating: 5,
+    succesfulRate: .99,
+    averageCommission: '$1000',
+    isActive: true
+  },
+  
 ]);
+
+

@@ -1,125 +1,188 @@
-import { UserIcon } from '@heroicons/react/solid';
 import React from 'react';
-import { useTable } from 'react-table';
+import { useTable, usePagination, useAsyncDebounce } from 'react-table';
+import matchSorter from 'match-sorter';
 
-export default function Table({ columns, data }) {
-  const tableInstance = useTable({ columns, data });
+function fuzzyTextFilterFn(rows, id, filterValue) {
+  return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
+}
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    tableInstance;
+// Let the table remove the filter if the string is empty
+fuzzyTextFilterFn.autoRemove = (val) => !val;
 
-  // Render the UI for your table
-  // return (
-  // <table {...getTableProps()}>
-  //   <thead>
-  //     {headerGroups.map((headerGroup) => (
-  //       <tr {...headerGroup.getHeaderGroupProps()}>
-  //         {headerGroup.headers.map((column) => (
-  //           <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-  //         ))}
-  //       </tr>
-  //     ))}
-  //   </thead>
-  //   <tbody {...getTableBodyProps()}>
-  //     {rows.map((row, i) => {
-  //       prepareRow(row);
-  //       return (
-  //         <tr {...row.getRowProps()}>
-  //           {row.cells.map((cell) => {
-  //             return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-  //           })}
-  //         </tr>
-  //       );
-  //     })}
-  //   </tbody>
-  // </table>
-  /* This example requires Tailwind CSS v2.0+ */
+function GlobalFilter({
+  preGlobalFilteredRows,
+  globalFilter,
+  setGlobalFilter,
+}) {
+  const count = preGlobalFilteredRows.length;
+  const [value, setValue] = React.useState(globalFilter);
+  const onChange = useAsyncDebounce((value) => {
+    setGlobalFilter(value || undefined);
+  }, 200);
 
   return (
-    <div className='flex flex-col'>
-      <div className='-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-        <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-          <div className='overflow-hidden border-b border-gray-200 shadow sm:rounded-lg'>
-            <table
-              className='min-w-full divide-y divide-gray-200'
-              {...getTableProps()}
-            >
-              <thead className='bg-gray-50'>
-                {headerGroups.map((headerGroup) => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <th
-                        scope='col'
-                        className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'
-                        {...column.getHeaderProps()}
-                      >
-                        {column.render('Header')}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
+    <span>
+      Search:{' '}
+      <input
+        value={value || ''}
+        onChange={(e) => {
+          setValue(e.target.value);
+          onChange(e.target.value);
+        }}
+        placeholder={`${count} records...`}
+      />
+    </span>
+  );
+}
 
-              <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
-                  prepareRow(row);
-                  return (
-                    <tr key={row + i} {...row.getRowProps()}>
-                      {row.cells.map((cell) => {
-                        return (
-                          <td
-                            className='px-6 py-4 whitespace-nowrap'
-                            {...cell.getCellProps()}
-                          >
-                            <div className='flex items-center'>
-                              <div className='flex-shrink-0 w-10 h-10'>
-                                {cell.render('Cell')}
-                              </div>
-                            </div>
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
+function DefaultColumnFilter({
+  column: { filterValue, preFilteredRows, setFilter },
+}) {
+  const count = preFilteredRows.length;
 
-              {/* <tbody className="bg-white divide-y divide-gray-200" {...getTableBodyProps()}>
-                {columns.map((person) => (
-                  <tr key={person.email}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-10 h-10">
-                          <UserIcon className="text-gray-500 bg-gray-300 rounded-full"/>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{person.name}</div>
-                          <div className="text-sm text-gray-500">{person.email}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{person.title}</div>
-                      <div className="text-sm text-gray-500">{person.department}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
-                        Active
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">{person.role}</td>
-                    <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                      <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                        Edit
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody> */}
-            </table>
-          </div>
-        </div>
+  return (
+    <input
+      value={filterValue || ''}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined);
+      }}
+      placeholder={`Search ${count} records...`}
+    />
+  );
+}
+
+// ------------main table component----------------------------------------------------
+export default function Table({ columns, data }) {
+  const filterTypes = React.useMemo(() => ({
+    fuzzyText: fuzzyTextFilterFn,
+  }));
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: {
+        pageIndex: 0,
+        pageSize: 30,
+      },
+    },
+    usePagination
+  );
+
+  return (
+    <>
+      <table {...getTableProps()}>
+        <thead>
+          {
+            // Loop over the header rows
+            headerGroups.map((headerGroup) => (
+              // Apply the header row props
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {
+                  // Loop over the headers in each row
+                  headerGroup.headers.map((column) => (
+                    // Apply the header cell props
+                    <th {...column.getHeaderProps()}>
+                      {
+                        // Render the header
+                        column.render('Header')
+                      }
+                    </th>
+                  ))
+                }
+              </tr>
+            ))
+          }
+        </thead>
+        {/* Apply the table body props */}
+        <tbody {...getTableBodyProps()}>
+          {
+            // Loop over the table rows
+            page.map((row) => {
+              // Prepare the row for display
+              prepareRow(row);
+              return (
+                // Apply the row props
+                <tr {...row.getRowProps()}>
+                  {
+                    // Loop over the rows cells
+                    row.cells.map((cell) => {
+                      // Apply the cell props
+                      return (
+                        <td {...cell.getCellProps()}>
+                          {
+                            // Render the cell contents
+                            cell.render('Cell')
+                          }
+                        </td>
+                      );
+                    })
+                  }
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+
+      <div className='pagination'>
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {'<<'}
+        </button>{' '}
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          {'<'}
+        </button>{' '}
+        <button onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
+        </button>{' '}
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {'>>'}
+        </button>{' '}
+        <span>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <span>
+          | Go to page:{' '}
+          <input
+            type='number'
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              gotoPage(page);
+            }}
+            style={{ width: '100px' }}
+          />
+        </span>{' '}
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+          }}
+        >
+          {[5, 10, 30, 50, 100].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
       </div>
-    </div>
+    </>
   );
 }

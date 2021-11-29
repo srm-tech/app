@@ -19,17 +19,23 @@ const Invitation = {
             as: 'invitedBy',
           },
         },
+        { $unwind: '$invitedBy' },
         {
-          $project: {
-            'invitedBy.firstName': true,
-            'invitedBy.lastName': true,
-            'invitedBy.businessName': true,
-            status: true,
+          $addFields: {
+            invitedById: '$_id',
+            name: {
+              $concat: ['$invitedBy.firstName', ' ', '$invitedBy.lastName'],
+            },
+            email: '$invitedBy.email',
+            phone: '$invitedBy.phone',
+            businessName: '$invitedBy.businessName',
+            businessCategory: '$invitedBy.businessCategory',
+            rating: '$invitedBy.rating',
+            succesfulRate: '$invitedBy.succesfulRate',
+            averageCommission: '$invitedBy.averageCommission',
           },
         },
-        {
-          $unwind: '$invitedBy',
-        },
+        { $unset: 'invitedBy' },
       ])
       .sort({
         date: -1,

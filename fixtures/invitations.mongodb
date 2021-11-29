@@ -5,26 +5,82 @@ db.invitations.drop();
 db.invitations.insertMany([
   {
     from: ObjectId('000000000000000000000003'),
-    to: ObjectId('000000000000000000000001'),
+    to:   ObjectId('000000000000000000000001'),
     date: ISODate('2021-11-11T12:12:11+01:00'),
     status: 'accepted'
   },
   {
     from: ObjectId('000000000000000000000002'),
-    to: ObjectId('000000000000000000000001'),
+    to:   ObjectId('000000000000000000000001'),
     date: ISODate('2021-10-01T21:47:11+01:00'),
     status: 'declined'
   },
   {
     from: ObjectId('000000000000000000000004'),
-    to: ObjectId('000000000000000000000001'),
+    to:   ObjectId('000000000000000000000001'),
     date: ISODate('2021-10-19T21:23:00+01:00'),
     status: 'pending'
   },
   {
     from: ObjectId('000000000000000000000004'),
-    to: ObjectId('000000000000000000000001'),
+    to:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'pending'
+  },
+    {
+    from: ObjectId('000000000000000000000005'),
+    to:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'pending'
+  },
+  
+   {
+    from: ObjectId('000000000000000000000006'),
+    to:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T12:12:11+01:00'),
+    status: 'accepted'
+  },
+  {
+    from: ObjectId('000000000000000000000007'),
+    to:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-10-01T21:47:11+01:00'),
+    status: 'declined'
+  },
+  {
+    from: ObjectId('000000000000000000000008'),
+    to:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-10-19T21:23:00+01:00'),
+    status: 'pending'
+  },
+  {
+    from: ObjectId('000000000000000000000009'),
+    to:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'pending'
+  },
+    {
+    from: ObjectId('000000000000000000000010'),
+    to:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'pending'
+  },
+   {
+    from: ObjectId('00000000000000000000001a'),
+    to:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-10-19T21:23:00+01:00'),
+    status: 'pending'
+  },
+  {
+    from: ObjectId('000000000000000000000002'),
+    to:   ObjectId('000000000000000000000001'),
     date: ISODate('2021-11-11T14:52:11+01:00'),
     status: 'declined'
   },
+    {
+    from: ObjectId('00000000000000000000001a'),
+    to:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'accepted'
+  },
+  
 ]);
