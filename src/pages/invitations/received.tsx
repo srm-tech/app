@@ -2,7 +2,6 @@ import Table from '@/components/table/Table';
 import React from 'react';
 import useFetch from 'use-http';
 import StarRatingComponent from 'react-star-rating-component';
-import { fullName } from '@/components/table/cells';
 
 export default function initiationsReceived() {
   const options = [];
