@@ -3,11 +3,13 @@ import EmailProvider from 'next-auth/providers/email';
 import nodemailer from 'nodemailer';
 import { getDb } from '@/lib/db';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
-const { client, db } = getDb();
+import { ObjectId } from 'mongodb';
+const { client, dbName } = getDb();
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export default async function auth(req, res) {
+  await client.connect();
   return await NextAuth(req, res, {
     // https://next-auth.js.org/configuration/providers
     providers: [
@@ -48,7 +50,8 @@ export default async function auth(req, res) {
     // * You must install an appropriate node_module for your database
     // * The Email provider requires a database (OAuth providers do not)
     adapter: MongoDBAdapter({
-      db: (await client.connect()).db(),
+      db: () => client.db(dbName),
+      ObjectId,
     }),
 
     // The secret should be set to a reasonably long random string.

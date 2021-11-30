@@ -3,6 +3,7 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import { Fragment } from 'react';
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import Logo from './Logo';
 
 const navigation = [
   { name: 'Early Bird Offer', href: '/promotion' },
@@ -16,17 +17,12 @@ export default function Nav() {
   return (
     <Popover>
       <nav
-        className='bg-dark relative flex items-center justify-between px-4 mx-auto max-w-7xl sm:px-6'
+        className='relative flex items-center justify-between'
         aria-label='Global'
       >
         <div className='flex items-center flex-1'>
           <div className='flex items-center justify-between w-full md:w-auto'>
-            <Link href='/' passHref>
-              <a className='text-white text-4xl'>
-                <span className='sr-only'>introduce Guru</span>
-                introduce<span className='text-light-green'>.</span>guru
-              </a>
-            </Link>
+            <Logo />
             <div className='flex items-center -mr-2 md:hidden'>
               <Popover.Button className='inline-flex items-center justify-center p-2 text-gray-400 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus-ring-inset focus:ring-white'>
                 <span className='sr-only'>Open main menu</span>

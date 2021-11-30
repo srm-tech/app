@@ -1,21 +1,21 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
 import getCurrentUser from '@/lib/get-current-user';
-
-import Invitation from '@/models/Invitations';
+import models from '@/models';
+import { handleErrors } from '@/lib/middleware';
 
 // todo: replace userId
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === 'GET') {
-    try {
+export default handleErrors(
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    let result;
+    await models.client.connect();
+    if (req.method === 'GET') {
       const user = getCurrentUser();
-      const result = await Invitation.getReceived(user._id);
-      res.status(200).json(result);
-    } catch (err: any) {
-      res.status(500).json({ statusCode: 500, message: err.message });
+      result = await models.Invitation.getReceived(user._id);
+    } else {
+      res.setHeader('Allow', 'POST');
+      return res.status(405).end('Method Not Allowed');
     }
+    res.status(200).json(result);
+    await models.client.close();
   }
-}
+);
