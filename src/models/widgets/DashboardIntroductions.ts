@@ -1,24 +1,20 @@
-import { getDb } from '@/lib/db';
-const { client, collection } = getDb('introductions');
-
-const DashboardIntroductionsWidget = {
+const DashboardIntroductionsWidget = (collection) => ({
   get: async ({ userId }) => {
-    await client.connect();
     const introductionsPending = await collection
       ?.find({ to: userId, status: 'pending' })
       .count();
     const introductionsCompleted = await collection
       ?.find({ to: userId, status: 'completed' })
       .count();
-    const introductionsAcccepted = await collection
+    const introductionsAccepted = await collection
       ?.find({ to: userId, status: 'accepted' })
       .count();
     return {
       introductionsPending: introductionsPending,
       introductionsCompleted: introductionsCompleted,
-      introductionsAcccepted: introductionsAcccepted,
+      introductionsAccepted: introductionsAccepted,
     };
   },
-};
+});
 
 export default DashboardIntroductionsWidget;

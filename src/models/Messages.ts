@@ -1,9 +1,7 @@
-import { getDb, ObjectId } from '@/lib/db';
-const { client, collection } = getDb('messages');
+import { ObjectId } from '@/lib/db';
 
-const Message = {
+const Message = (collection) => ({
   create: async (data: any) => {
-    await client.connect();
     return collection.insertOne({
       from: data.userId,
       date: new Date(),
@@ -14,7 +12,6 @@ const Message = {
     });
   },
   readMany: async (userId: ObjectId) => {
-    await client.connect();
     return collection
       .aggregate([
         {
@@ -50,8 +47,7 @@ const Message = {
       })
       .toArray();
   },
-  deleteOne: async (userId: ObjectId, messageId: ObjectId) => {
-    await client.connect();
+  deleteOne: async (userId: ObjectId, messageId: string) => {
     const isAllowed = await collection
       .find({
         _id: messageId,
@@ -63,8 +59,7 @@ const Message = {
     }
     return await collection.deleteOne({ _id: messageId, to: userId });
   },
-  toggleRead: async (userId: ObjectId, messageId: ObjectId) => {
-    await client.connect();
+  toggleRead: async (userId: ObjectId, messageId: string) => {
     const isAllowed = await collection
       .find({
         _id: messageId,
@@ -85,6 +80,5 @@ const Message = {
     );
     return message;
   },
-};
-
+});
 export default Message;

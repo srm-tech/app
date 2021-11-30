@@ -34,7 +34,6 @@
 
   body {
     @apply text-sm font-primary md:text-base;
-    background: #1f2937;
   }
 
   .layout {

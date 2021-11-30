@@ -4,15 +4,18 @@ import ContactType from './ContactTypeSelect';
 import ComboSelect from '../ComboSelect';
 import { useSession, signIn } from 'next-auth/react';
 
-interface Item {
+export interface Item {
+  _id: string;
   label: string;
-  value: string;
+  businessName: string;
+  category: string;
 }
 
 export const QuickForm = () => {
   const [name, setName] = React.useState('');
   const [contact, setContact] = React.useState('');
-  const [businessName, setBusinessName] = React.useState<null | Item>(null);
+  const [query, setQuery] = React.useState<null | Item>(null);
+  const [business, setBusiness] = React.useState<null | Item>(null);
   const [contactType, setContactType] = React.useState('phone');
   const { data: session } = useSession();
   const formRef = React.useRef<any>();
@@ -21,17 +24,20 @@ export const QuickForm = () => {
   const _handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formdData = new FormData();
-    formdData.append('name', name);
-    formdData.append('contact', contact);
-    formdData.append('businessName', businessName?.value || '');
-    formdData.append('type', 'Beta Signup');
-
-    await post(formdData);
+    await post('/quick', {
+      _id: business?._id,
+      name,
+      contact,
+      business: business?.businessName,
+      category: business?.category,
+      contactType,
+    });
     if (response.ok) {
       alert('You have successfully submitted.');
       setName('');
       setContact('');
+      setBusiness(null);
+      setContactType('phone');
     }
   };
 
@@ -57,7 +63,12 @@ export const QuickForm = () => {
               <label htmlFor='name' className='sr-only'>
                 Contact list
               </label>
-              <ComboSelect onSelect={(value) => setBusinessName(value)} />
+              <ComboSelect
+                query={query}
+                onChange={setQuery}
+                value={business}
+                onSelect={setBusiness}
+              />
             </div>
           </div>
           <hr />
@@ -83,7 +94,7 @@ export const QuickForm = () => {
               <div className='flex'>
                 <ContactType onChange={setContactType} value={contactType} />
                 <input
-                  type='text'
+                  type={contactType === 'email' ? 'email' : 'text'}
                   name='contact'
                   id='contact'
                   autoComplete='contact'
