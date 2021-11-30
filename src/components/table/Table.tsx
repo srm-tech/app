@@ -1,14 +1,16 @@
+import React from 'react';
+import {
+  useFilters,
+  useGlobalFilter,
+  usePagination,
+  useSortBy,
+  useTable,
+} from 'react-table';
+
 import {
   DefaultColumnFilter,
   fuzzyTextFilterFn,
 } from '@/components/table/filters';
-import React from 'react';
-import {
-  useTable,
-  usePagination,
-  useFilters,
-  useGlobalFilter,
-} from 'react-table';
 
 // ------------main table component----------------------------------------------------
 export default function Table({ columns, data }) {
@@ -68,6 +70,7 @@ export default function Table({ columns, data }) {
     },
     useFilters,
     useGlobalFilter,
+    useSortBy,
     usePagination
   );
 
@@ -79,16 +82,40 @@ export default function Table({ columns, data }) {
             // Loop over the header rows
             headerGroups.map((headerGroup) => (
               // Apply the header row props
-              <tr {...headerGroup.getHeaderGroupProps()}>
+              <tr
+                key='row-{headerGroup.toString()}'
+                {...headerGroup.getHeaderGroupProps()}
+              >
                 {
                   // Loop over the headers in each row
                   headerGroup.headers.map((column) => (
                     // Apply the header cell props
-                    <th {...column.getHeaderProps()}>
+                    <th
+                      key='col-{column.toString()}'
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                    >
                       {
                         // Render the header
                         column.render('Header')
                       }
+                      {/* Add a sort direction indicator */}
+                      <span>
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <>
+                              {' '}
+                              <small>&#x25B2;</small>
+                            </>
+                          ) : (
+                            <>
+                              {' '}
+                              <small>&#x25BC;</small>
+                            </>
+                          )
+                        ) : (
+                          ''
+                        )}
+                      </span>
                       <div>
                         {column.canFilter ? column.render('Filter') : null}
                       </div>
@@ -108,13 +135,16 @@ export default function Table({ columns, data }) {
               prepareRow(row);
               return (
                 // Apply the row props
-                <tr {...row.getRowProps()}>
+                <tr key='row-{row.toString()}' {...row.getRowProps()}>
                   {
                     // Loop over the rows cells
                     row.cells.map((cell) => {
                       // Apply the cell props
                       return (
-                        <td {...cell.getCellProps()}>
+                        <td
+                          key='cell-{cell.toString()}'
+                          {...cell.getCellProps()}
+                        >
                           {
                             // Render the cell contents
                             cell.render('Cell')
