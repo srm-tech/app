@@ -10,9 +10,7 @@ export default handleErrors(
     await models.client.connect();
     const user = getCurrentUser();
     if (req.method === 'GET') {
-      const user = getCurrentUser();
-      const result = await models.Introduction.readMany(user._id);
-      res.status(200).json(result);
+      result = await models.Introduction.readMany(user._id);
     } else if (req.method === 'POST') {
       await validate([
         check('firstName').isLength({ min: 1, max: 255 }),
@@ -44,7 +42,7 @@ export default handleErrors(
           ...req.query,
         });
       } else {
-        res.status(404).json({
+        return res.status(404).json({
           statusCode: 404,
           message: 'Not found. Maybe you should specify an "action" parameter?',
         });

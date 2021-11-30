@@ -30,7 +30,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function DashboardLayout({ children }: { children: FC }) {
+export default function DashboardLayout({ children }: { children: any }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
