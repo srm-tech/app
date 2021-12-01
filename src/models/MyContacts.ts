@@ -1,9 +1,44 @@
+import { ObjectId } from '@/lib/db';
+
 const MyContacts = (collection) => ({
   create: async (data) => {
     return collection.insertOne(data);
   },
   readMany: async ({ userId }) => {
-    return collection.find({ userId }).toArray();
+    return collection
+      .aggregate([
+        {
+          $match: {
+            userId: userId,
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'contactId',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        { $unwind: '$user' },
+        {
+          $addFields: {
+            invitedById: '$_id',
+            name: {
+              $concat: ['$user.firstName', ' ', '$user.lastName'],
+            },
+            email: '$user.email',
+            phone: '$user.phone',
+            businessName: '$user.businessName',
+            businessCategory: '$user.businessCategory',
+            rating: '$user.rating',
+            succesfulRate: '$user.succesfulRate',
+            averageCommission: '$user.averageCommission',
+          },
+        },
+        { $unset: 'user' },
+      ])
+      .toArray();
   },
   search: async ({ userId, query = '' }) => {
     return collection
@@ -30,7 +65,10 @@ const MyContacts = (collection) => ({
         }, //stage1
         {
           $match: {
-            $and: [{ search: { $regex: query, $options: 'i' } }, { userId: 1 }],
+            $and: [
+              { search: { $regex: query, $options: 'i' } },
+              { userId: new ObjectId(userId) },
+            ],
           },
         }, //stage2
         { $limit: 30 },

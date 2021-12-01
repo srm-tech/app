@@ -19,7 +19,9 @@ db.users.insertMany([
     email: 'adam.abacki@a.pl',
     succesfulRate: 0.97,
     averageCommission: '$100 + 10%',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
   },
   {
     _id: ObjectId('000000000000000000000002'),
@@ -31,7 +33,10 @@ db.users.insertMany([
     succesfulRate: .25,
     averageCommission: '15%',
     email: 'janusz@januszex.pl',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
+
   },
   {
     _id: ObjectId('000000000000000000000003'),
@@ -43,7 +48,10 @@ db.users.insertMany([
     rating: 4,
     succesfulRate: .88,
     averageCommission: '$1500',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
+
   },
   {
     _id: ObjectId('000000000000000000000004'),
@@ -55,7 +63,10 @@ db.users.insertMany([
     rating: 4,
     succesfulRate: .91,
     averageCommission: '$1500 + 5%',
-    isActive: true  },
+    isActive: true  ,
+    isGuru: true,
+    isBusiness: true    
+    },
     {
     _id: ObjectId('000000000000000000000005'),
     firstName: 'Karol',
@@ -66,7 +77,9 @@ db.users.insertMany([
     rating: 1,
     succesfulRate: .08,
     averageCommission: '$10',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
   },
   {
     _id: ObjectId('000000000000000000000006'),
@@ -78,7 +91,10 @@ db.users.insertMany([
     rating: 3,
     succesfulRate: .38,
     averageCommission: '$150',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
+
   },
       {
     _id: ObjectId('000000000000000000000007'),
@@ -90,7 +106,9 @@ db.users.insertMany([
     rating: 5,
     succesfulRate: .89,
     averageCommission: '$10',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
   },
     {
     _id: ObjectId('000000000000000000000008'),
@@ -102,7 +120,9 @@ db.users.insertMany([
     rating: 1,
     succesfulRate: .8,
     averageCommission: '$500150',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
   },
       {
     _id: ObjectId('000000000000000000000009'),
@@ -114,7 +134,9 @@ db.users.insertMany([
     rating: 5,
     succesfulRate: .99,
     averageCommission: '$1000',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
   },
   {
     _id: ObjectId('000000000000000000000010'),
@@ -126,7 +148,9 @@ db.users.insertMany([
     rating: 1,
     succesfulRate: .8,
     averageCommission: '$500150',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
   },
   {
     _id: ObjectId('00000000000000000000001a'),
@@ -138,8 +162,39 @@ db.users.insertMany([
     rating: 5,
     succesfulRate: .99,
     averageCommission: '$1000',
-    isActive: true
+    isActive: true,
+    isGuru: true,
+    isBusiness: true
   },
+  {
+    _id: ObjectId('00000000000000000000001b'),
+    firstName: 'Ambrozy',
+    lastName: 'Kleks',
+    businessName: 'Akademia Pana Kleksa',
+    email: 'kleks@akademia.edu',
+    businessCategory: 'Education',
+    rating: 5,
+    succesfulRate: .96,
+    averageCommission: '$100',
+    isActive: true,
+    isGuru: false,
+    isBusiness: true
+  },
+  {
+    _id: ObjectId('00000000000000000000001c'),
+    firstName: 'Luke',
+    lastName: 'Skywalker',
+    businessName: 'The Rebel Alliance',
+    email: 'luke@rebel.gov',
+    businessCategory: 'NGOs',
+    rating: 4,
+    succesfulRate: .82,
+    averageCommission: '$100',
+    isActive: true,
+    isGuru: true,
+    isBusiness: false
+  },
+
   
 ]);
 
