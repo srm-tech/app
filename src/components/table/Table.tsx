@@ -77,22 +77,18 @@ export default function Table({ columns, data, loading }: TableProps) {
     usePagination
   );
 
-  const [isLoading, setIsLoading] = React.useState(loading);
-
   return (
     <>
-      {/* 
-    <ul className="space-y-4 md:flex md:space-y-0 md:space-x-8">
-  { headerGroups.map((headerGroup) => (
+      <ul className='space-y-4 md:flex md:space-y-0 md:space-x-8'>
+        {headerGroups.map((headerGroup) =>
           headerGroup.headers.map((column) => (
-              <li className="flex-1">
-                { column.render('Header') }
-              { column.canFilter ? column.render('Filter') : null}
-              </li>
-       
+            <li className='flex-1'>
+              {column.render('Header')}
+              {column.canFilter ? column.render('Filter') : null}
+            </li>
           ))
-      ))}  
-    </ul> */}
+        )}
+      </ul>
 
       <table {...getTableProps()}>
         <thead>
