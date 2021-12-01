@@ -79,16 +79,16 @@ export default function Table({ columns, data, loading }: TableProps) {
 
   return (
     <>
-      <ul className='space-y-4 md:flex md:space-y-0 md:space-x-8'>
+      <div>
         {headerGroups.map((headerGroup) =>
           headerGroup.headers.map((column) => (
-            <li className='flex-1'>
+            <div key='filter-{column.toString()}'>
               {column.render('Header')}
               {column.canFilter ? column.render('Filter') : null}
-            </li>
+            </div>
           ))
         )}
-      </ul>
+      </div>
 
       <table {...getTableProps()}>
         <thead>
