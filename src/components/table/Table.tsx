@@ -11,15 +11,19 @@ import {
   DefaultColumnFilter,
   fuzzyTextFilterFn,
 } from '@/components/table/filters';
+import { ListCollectionsCursor } from 'mongoose/node_modules/mongodb';
+
+type TableProps = {
+  columns: any;
+  data: any;
+  loading: boolean;
+};
 
 // ------------main table component----------------------------------------------------
-export default function Table({ columns, data }) {
+export default function Table({ columns, data, loading }: TableProps) {
   const filterTypes = React.useMemo(
     () => ({
-      // Add a new fuzzyTextFilterFn filter type.
       fuzzyText: fuzzyTextFilterFn,
-      // Or, override the default text filter to use
-      // "startWith"
       text: (rows, id, filterValue) => {
         return rows.filter((row) => {
           const rowValue = row.values[id];
@@ -36,7 +40,6 @@ export default function Table({ columns, data }) {
 
   const defaultColumn = React.useMemo(
     () => ({
-      // Let's set up our default Filter UI
       Filter: DefaultColumnFilter,
     }),
     []
@@ -76,6 +79,17 @@ export default function Table({ columns, data }) {
 
   return (
     <>
+      <div>
+        {headerGroups.map((headerGroup) =>
+          headerGroup.headers.map((column) => (
+            <div key='filter-{column.toString()}'>
+              {column.render('Header')}
+              {column.canFilter ? column.render('Filter') : null}
+            </div>
+          ))
+        )}
+      </div>
+
       <table {...getTableProps()}>
         <thead>
           {
@@ -116,9 +130,9 @@ export default function Table({ columns, data }) {
                           ''
                         )}
                       </span>
-                      <div>
+                      {/* <div>
                         {column.canFilter ? column.render('Filter') : null}
-                      </div>
+                      </div> */}
                     </th>
                   ))
                 }

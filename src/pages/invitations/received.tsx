@@ -1,7 +1,8 @@
-import Table from '@/components/table/Table';
 import React from 'react';
-import useFetch from 'use-http';
 import StarRatingComponent from 'react-star-rating-component';
+import useFetch from 'use-http';
+
+import Table from '@/components/table/Table';
 
 export default function initiationsReceived() {
   const options = [];
@@ -61,7 +62,7 @@ export default function initiationsReceived() {
 
   return (
     <>
-      <Table columns={columns} data={data} />
+      <Table columns={columns} data={data} loading={loading} />
     </>
   );
 }
