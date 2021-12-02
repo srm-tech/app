@@ -9,7 +9,7 @@ export default function Hero() {
     <section className=''>
       <div className='mx-auto max-w-7xl'>
         <div className='lg:grid lg:grid-cols-12 lg:gap-8'>
-          <div className='px-4 sm:px-6 sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center'>
+          <div className='sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center'>
             <div>
               <Link href='/#roadmap' passHref>
                 <a className='inline-flex items-center p-1 pr-2 text-white bg-gray-900 rounded-full sm:text-base lg:text-sm xl:text-base hover:text-gray-200'>
@@ -64,7 +64,7 @@ export default function Hero() {
               </div> */}
             </div>
           </div>
-          <div className='mx-5 mt-16 sm:mt-24 lg:mt-0 lg:col-span-6 justify-self-end'>
+          <div className='mt-16 sm:mt-24 lg:mt-0 lg:col-span-6 justify-self-end'>
             <QuickForm />
           </div>
         </div>

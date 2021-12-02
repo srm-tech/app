@@ -15,7 +15,7 @@ export default function Nav() {
   const { data: session } = useSession();
 
   return (
-    <Popover>
+    <Popover className='mx-auto max-w-7xl'>
       <nav
         className='relative flex items-center justify-between'
         aria-label='Global'

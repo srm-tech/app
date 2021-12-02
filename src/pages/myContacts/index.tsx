@@ -3,6 +3,7 @@ import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
 import Table from '@/components/table/Table';
+import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 export default function myContacts() {
   const options = [];
@@ -105,8 +106,8 @@ export default function myContacts() {
   ];
 
   return (
-    <>
+    <DashboardLayout title='My Contacts'>
       <Table data={data} columns={columns} loading={loading} />
-    </>
+    </DashboardLayout>
   );
 }
