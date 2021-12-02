@@ -6,9 +6,9 @@ const database = 'guru';
 // The current database to use.
 use(database);
 
-db.users.drop();
+db.userProfiles.drop();
 
-db.users.insertMany([
+db.userProfiles.insertMany([
   {
     _id: ObjectId('000000000000000000000001'),
     firstName: 'Adam',

@@ -1,6 +1,7 @@
 import React from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
+
 import Table from '@/components/table/Table';
 
 export default function myContacts() {
@@ -17,31 +18,34 @@ export default function myContacts() {
       accessor: 'name',
       Cell: ({ row: { original } }) => (
         <>
-          <div className='cell-name'>{original.name}</div>
-          <div className='cell-email'>{original.email}</div>
-          <div className='cell-phone'>{original.phone}</div>
+          <div className='cell-name'>
+            {original.contact.firstName} {original.contact.lastName}
+          </div>
+          <div className='cell-email'>{original.contact.email}</div>
+          <div className='cell-phone'>{original.contact.phone}</div>
         </>
       ),
     },
-    { Header: 'business name', accessor: 'businessName' },
-    { Header: 'businessCategory', accessor: 'businessCategory' },
+    { Header: 'business name', accessor: 'contact.businessName' },
+    { Header: 'businessCategory', accessor: 'contact.businessCategory' },
     {
       Header: 'rating',
-      accessor: 'rating',
+      accessor: 'contact.rating',
       Cell: ({ value }) => <StarRatingComponent value={value} starCount={5} />,
     },
     {
       Header: 'succesful rate',
-      accessor: 'succesfulRate',
+      accessor: 'contact.succesfulRate',
       Cell: ({ value }) => <span>{value * 100}%</span>,
     },
-    { Header: 'average commission', accessor: 'averageCommission' },
+    { Header: 'average commission', accessor: 'contact.averageCommission' },
     { Header: 'status', accessor: 'status' },
     {
       Header: '',
       accessor: '_id',
       Cell: ({ row: { original } }) => {
         switch (original.status) {
+          // pending
           case 'pending':
             return (
               <>
@@ -53,7 +57,7 @@ export default function myContacts() {
                 </div>
               </>
             );
-
+          // empty
           default:
             return <></>;
         }

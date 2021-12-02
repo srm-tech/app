@@ -1,3 +1,4 @@
+import { ObjectId } from 'bson';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import getCurrentUser from '@/lib/get-current-user';
@@ -5,7 +6,6 @@ import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
 import models from '@/models';
-import { ObjectId } from 'bson';
 
 // TODO: replace userId
 export default handleErrors(

@@ -2,10 +2,11 @@ import { ObjectId } from '@/lib/db';
 
 const MyContacts = (collection) => ({
   create: async (data) => {
+    data.date = new Date();
     return collection.insertOne(data);
   },
   readMany: async ({ userId }) => {
-    return collection
+    const contacts = await collection
       .aggregate([
         {
           $match: {
@@ -14,33 +15,54 @@ const MyContacts = (collection) => ({
         },
         {
           $lookup: {
-            from: 'users',
+            from: 'userProfiles',
             localField: 'contactId',
             foreignField: '_id',
-            as: 'user',
+            as: 'contact',
           },
         },
-        { $unwind: '$user' },
         {
-          $addFields: {
-            // invitedById: '$_id',
-            name: {
-              $concat: ['$user.firstName', ' ', '$user.lastName'],
-            },
-            email: '$user.email',
-            phone: '$user.phone',
-            businessName: '$user.businessName',
-            businessCategory: '$user.businessCategory',
-            rating: '$user.rating',
-            succesfulRate: '$user.succesfulRate',
-            averageCommission: '$user.averageCommission',
-            isFavourite: '$isFavourite',
+          $unwind: '$contact',
+        },
+        {
+          $unionWith: {
+            coll: 'myContacts',
+            pipeline: [
+              {
+                $match: {
+                  contactId: userId,
+                },
+              },
+              {
+                $lookup: {
+                  from: 'userProfiles',
+                  localField: 'userId',
+                  foreignField: '_id',
+                  as: 'contact',
+                },
+              },
+              {
+                $unwind: '$contact',
+              },
+              {
+                $set: {
+                  status: {
+                    $cond: [
+                      { $eq: ['$status', 'pending'] },
+                      'waiting for approval',
+                      '$status',
+                    ],
+                  },
+                },
+              },
+            ],
           },
         },
-        { $unset: 'user' },
       ])
       .toArray();
+    return contacts;
   },
+
   search: async ({ userId, query = '' }) => {
     return collection
       ?.aggregate([
