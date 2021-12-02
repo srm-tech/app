@@ -1,7 +1,6 @@
 import React from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
-
 import Table from '@/components/table/Table';
 
 export default function myContacts() {
@@ -39,22 +38,24 @@ export default function myContacts() {
     { Header: 'average commission', accessor: 'averageCommission' },
     { Header: 'status', accessor: 'status' },
     {
-      Header: 'id',
+      Header: '',
       accessor: '_id',
       Cell: ({ row: { original } }) => {
-        if (original.status === 'pending') {
-          return (
-            <>
-              <div>
-                <button className='cell-button-accept'>Accept</button>
-              </div>
-              <div>
-                <button className='cell-button-decline'>Decline</button>
-              </div>
-            </>
-          );
-        } else {
-          return <></>;
+        switch (original.status) {
+          case 'pending':
+            return (
+              <>
+                <div>
+                  <button className='cell-button-accept'>Accept</button>
+                </div>
+                <div>
+                  <button className='cell-button-decline'>Decline</button>
+                </div>
+              </>
+            );
+
+          default:
+            return <></>;
         }
       },
     },

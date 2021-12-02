@@ -23,7 +23,7 @@ const MyContacts = (collection) => ({
         { $unwind: '$user' },
         {
           $addFields: {
-            invitedById: '$_id',
+            // invitedById: '$_id',
             name: {
               $concat: ['$user.firstName', ' ', '$user.lastName'],
             },
@@ -34,6 +34,7 @@ const MyContacts = (collection) => ({
             rating: '$user.rating',
             succesfulRate: '$user.succesfulRate',
             averageCommission: '$user.averageCommission',
+            isFavourite: '$isFavourite',
           },
         },
         { $unset: 'user' },
