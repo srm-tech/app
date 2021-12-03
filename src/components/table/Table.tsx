@@ -130,9 +130,6 @@ export default function Table({ columns, data, loading }: TableProps) {
                           ''
                         )}
                       </span>
-                      {/* <div>
-                        {column.canFilter ? column.render('Filter') : null}
-                      </div> */}
                     </th>
                   ))
                 }

@@ -7,10 +7,11 @@ const MyContacts = (collection) => ({
   },
   readMany: async ({ userId }) => {
     const contacts = await collection
-      .aggregate([
+      ?.aggregate([
         {
           $match: {
             userId: userId,
+            status: { $ne: 'declined' }, // don't get declined
           },
         },
         {
@@ -66,36 +67,58 @@ const MyContacts = (collection) => ({
   search: async ({ userId, query = '' }) => {
     return collection
       ?.aggregate([
-        //pipeline array
-        {
-          $project: {
-            search: {
-              $concat: [
-                '$firstName',
-                ' ',
-                '$lastName',
-                ' - ',
-                '$businessName',
-                ' - ',
-                '$businessCategory',
-              ],
-            },
-            name: { $concat: ['$firstName', ' ', '$lastName'] },
-            businessName: '$businessName',
-            userId: '$userId',
-            category: '$businessCategory',
-          },
-        }, //stage1
         {
           $match: {
-            $and: [
-              { search: { $regex: query, $options: 'i' } },
-              { userId: new ObjectId(userId) },
+            userId: userId,
+            status: { $ne: 'declined' }, // don't get declined
+            search: { $regex: query, $options: 'i' },
+          },
+        },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'contactId',
+            foreignField: '_id',
+            as: 'contact',
+          },
+        },
+        {
+          $unwind: '$contact',
+        },
+        {
+          $unionWith: {
+            coll: 'myContacts',
+            pipeline: [
+              {
+                $match: {
+                  contactId: userId,
+                },
+              },
+              {
+                $lookup: {
+                  from: 'userProfiles',
+                  localField: 'userId',
+                  foreignField: '_id',
+                  as: 'contact',
+                },
+              },
+              {
+                $unwind: '$contact',
+              },
+              {
+                $set: {
+                  status: {
+                    $cond: [
+                      { $eq: ['$status', 'pending'] },
+                      'waiting for approval',
+                      '$status',
+                    ],
+                  },
+                },
+              },
             ],
           },
-        }, //stage2
-        { $limit: 30 },
-        { $unset: 'userId' }, // remove filed from result
+        },
       ])
       .toArray();
   },

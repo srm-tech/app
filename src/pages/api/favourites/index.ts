@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import getCurrentUser from '@/lib/get-current-user';
-import models from '@/models';
 import { handleErrors } from '@/lib/middleware';
+
+import models from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -9,7 +11,10 @@ export default handleErrors(
     await models.client.connect();
     if (req.method === 'GET') {
       const user = getCurrentUser();
-      result = await models.Favourite.readMany(user._id);
+      result = await models.MyContacts.readMany({
+        userId: user._id,
+        favourites: true,
+      });
     } else {
       return res
         .status(405)

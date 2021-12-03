@@ -27,6 +27,13 @@ export default function introductions() {
     { Header: 'businessCategory', accessor: 'businessCategory' },
     { Header: 'status', accessor: 'status' },
     { Header: 'commission earned', accessor: 'commissionEarned' },
+    {
+      Header: '',
+      accessor: '_id',
+      Cell: ({ row: { original } }) => {
+        return <></>;
+      },
+    },
   ];
 
   const list = data || [];
