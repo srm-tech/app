@@ -44,13 +44,23 @@ export default function myContacts() {
       Header: '',
       accessor: '_id',
       Cell: ({ row: { original } }) => {
-        const acceptDeclineButton = (
+        const acceptDeclineButtons = (
           <>
             <div>
               <button className='cell-button-accept'>Accept</button>
             </div>
             <div>
               <button className='cell-button-decline'>Decline</button>
+            </div>
+          </>
+        );
+
+        const removeFromContactsButton = (
+          <>
+            <div>
+              <button className='cell-button-decline'>
+                Remove from contacts
+              </button>
             </div>
           </>
         );
@@ -75,7 +85,9 @@ export default function myContacts() {
 
         return (
           <>
-            {original.status === 'pending' ? acceptDeclineButton : <></>}
+            {original.status === 'pending'
+              ? acceptDeclineButtons
+              : removeFromContactsButton}
             {original.isFavourite ? removeFromFavButton : addToFavButton}
           </>
         );
