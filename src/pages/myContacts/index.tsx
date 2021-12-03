@@ -44,23 +44,41 @@ export default function myContacts() {
       Header: '',
       accessor: '_id',
       Cell: ({ row: { original } }) => {
-        switch (original.status) {
-          // pending
-          case 'pending':
-            return (
-              <>
-                <div>
-                  <button className='cell-button-accept'>Accept</button>
-                </div>
-                <div>
-                  <button className='cell-button-decline'>Decline</button>
-                </div>
-              </>
-            );
-          // empty
-          default:
-            return <></>;
-        }
+        const acceptDeclineButton = (
+          <>
+            <div>
+              <button className='cell-button-accept'>Accept</button>
+            </div>
+            <div>
+              <button className='cell-button-decline'>Decline</button>
+            </div>
+          </>
+        );
+
+        const addToFavButton = (
+          <>
+            <div>
+              <button className='cell-button-accept'>Add to favourites</button>
+            </div>
+          </>
+        );
+
+        const removeFromFavButton = (
+          <>
+            <div>
+              <button className='cell-button-decline'>
+                Remove from favourites
+              </button>
+            </div>
+          </>
+        );
+
+        return (
+          <>
+            {original.status === 'pending' ? acceptDeclineButton : <></>}
+            {original.isFavourite ? removeFromFavButton : addToFavButton}
+          </>
+        );
       },
     },
   ];
