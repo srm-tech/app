@@ -31,7 +31,9 @@ export default function myContacts() {
     {
       Header: 'rating',
       accessor: 'contact.rating',
-      Cell: ({ value }) => <StarRatingComponent value={value} starCount={5} />,
+      Cell: ({ value }) => (
+        <StarRatingComponent value={value} starCount={5} editing={false} />
+      ),
     },
     {
       Header: 'succesful rate',
@@ -39,6 +41,13 @@ export default function myContacts() {
       Cell: ({ value }) => <span>{value * 100}%</span>,
     },
     { Header: 'average commission', accessor: 'contact.averageCommission' },
+    {
+      Header: 'favourites',
+      accessor: 'isFavourite',
+      Cell: ({ row: { original } }) => (
+        <>{original.isFavourite ? <>&#x2665;</> : ''}</>
+      ),
+    },
     { Header: 'status', accessor: 'status' },
     {
       Header: '',

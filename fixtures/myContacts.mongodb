@@ -1,0 +1,93 @@
+use("guru");
+
+db.myContacts.drop();
+db.myContacts.insertMany([
+  {
+    contactId: ObjectId('000000000000000000000003'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T12:12:11+01:00'),
+    status: 'accepted'
+  },
+  {
+    contactId: ObjectId('000000000000000000000002'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-10-01T21:47:11+01:00'),
+    status: 'declined'
+  },
+  {
+    contactId: ObjectId('000000000000000000000004'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-10-19T21:23:00+01:00'),
+    status: 'pending'
+  },
+  {
+    contactId: ObjectId('000000000000000000000004'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'pending'
+  },
+    {
+    contactId: ObjectId('000000000000000000000005'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'pending'
+  },
+  
+   {
+    contactId: ObjectId('000000000000000000000006'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T12:12:11+01:00'),
+    status: 'accepted',
+    isFavourite: true
+  },
+  {
+    contactId: ObjectId('000000000000000000000007'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-10-01T21:47:11+01:00'),
+    status: 'declined'
+  },
+  {
+    contactId: ObjectId('000000000000000000000008'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-10-19T21:23:00+01:00'),
+    status: 'pending'
+  },
+  {
+    contactId: ObjectId('000000000000000000000009'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'pending'
+  },
+    {
+    contactId: ObjectId('000000000000000000000010'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'pending'
+  },
+   {
+    contactId: ObjectId('00000000000000000000001a'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-10-19T21:23:00+01:00'),
+    status: 'pending'
+  },
+  {
+    contactId: ObjectId('000000000000000000000002'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'declined'
+  },
+    {
+    contactId: ObjectId('00000000000000000000001a'),
+    userId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'accepted',
+    isFavourite: true
+  },
+    {
+    userId: ObjectId('00000000000000000000001a'),
+    contactId:   ObjectId('000000000000000000000001'),
+    date: ISODate('2021-11-11T14:52:11+01:00'),
+    status: 'accepted'
+  },
+  
+]);

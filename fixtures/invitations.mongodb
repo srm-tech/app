@@ -39,6 +39,7 @@ db.invitations.insertMany([
     to:   ObjectId('000000000000000000000001'),
     date: ISODate('2021-11-11T12:12:11+01:00'),
     status: 'accepted'
+    isFavourite: true
   },
   {
     from: ObjectId('000000000000000000000007'),
@@ -81,6 +82,7 @@ db.invitations.insertMany([
     to:   ObjectId('000000000000000000000001'),
     date: ISODate('2021-11-11T14:52:11+01:00'),
     status: 'accepted'
+    isFavourite: true
   },
     {
     to: ObjectId('00000000000000000000001a'),

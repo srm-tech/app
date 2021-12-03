@@ -1,7 +1,8 @@
-import DashboardLayout from '@/components/layouts/DashboardLayout';
-import Table from '@/components/table/Table';
 import React from 'react';
 import useFetch from 'use-http';
+
+import DashboardLayout from '@/components/layouts/DashboardLayout';
+import Table from '@/components/table/Table';
 
 export default function introductions() {
   const options = [];
