@@ -1,9 +1,9 @@
+import { SearchIcon } from '@heroicons/react/solid';
 import React from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
 import Table from '@/components/table/Table';
-import { SearchIcon } from '@heroicons/react/solid';
 
 searchForBusiness.getInitialProps = async ({ query }) => {
   const { data } = query;
