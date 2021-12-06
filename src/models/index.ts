@@ -12,7 +12,7 @@ import Invitation from './Invitations';
 import Message from './Messages';
 import MyContacts from './MyContacts';
 import Review from './Reviews';
-import User from './User';
+import UserProfile from './UserProfiles';
 
 const db = getDb();
 const collection = getCollection(db);
@@ -38,5 +38,5 @@ export default {
   Message: Message(collection('messages')),
   MyContacts: MyContacts(collection('myContacts')),
   Review: Review(collection('reviews')),
-  User: User(collection('users')),
+  UserProfile: UserProfile(collection('userProfiles')),
 };

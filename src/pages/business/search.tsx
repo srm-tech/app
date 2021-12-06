@@ -3,15 +3,24 @@ import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
 import Table from '@/components/table/Table';
+import { SearchIcon } from '@heroicons/react/solid';
 
-export default function myContacts() {
+searchForBusiness.getInitialProps = async ({ query }) => {
+  const { data } = query;
+  return { query };
+};
+
+export default function searchForBusiness(query) {
+  const url = process.env.BASE_URL + '/api/business/search';
+  const search = query.query.search;
   const options = [];
   const {
     loading,
     error,
     data = [],
-  } = useFetch(process.env.BASE_URL + '/api/myContacts', options, []);
+  } = useFetch(url + '?q=' + search, options, []);
 
+  const list = data || [];
   const columns = [
     {
       Header: 'name',
@@ -19,28 +28,28 @@ export default function myContacts() {
       Cell: ({ row: { original } }) => (
         <>
           <div className='cell-name'>
-            {original.contact.firstName} {original.contact.lastName}
+            {original.firstName} {original.lastName}
           </div>
-          <div className='cell-email'>{original.contact.email}</div>
-          <div className='cell-phone'>{original.contact.phone}</div>
+          <div className='cell-email'>{original.email}</div>
+          <div className='cell-phone'>{original.phone}</div>
         </>
       ),
     },
-    { Header: 'business name', accessor: 'contact.businessName' },
-    { Header: 'business category', accessor: 'contact.businessCategory' },
+    { Header: 'business name', accessor: 'businessName' },
+    { Header: 'business category', accessor: 'businessCategory' },
     {
       Header: 'rating',
-      accessor: 'contact.rating',
+      accessor: 'rating',
       Cell: ({ value }) => (
         <StarRatingComponent value={value} starCount={5} editing={false} />
       ),
     },
     {
       Header: 'succesful rate',
-      accessor: 'contact.succesfulRate',
+      accessor: 'succesfulRate',
       Cell: ({ value }) => <span>{value * 100}%</span>,
     },
-    { Header: 'average commission', accessor: 'contact.averageCommission' },
+    { Header: 'average commission', accessor: 'averageCommission' },
     {
       Header: 'favourites',
       accessor: 'isFavourite',
@@ -106,7 +115,24 @@ export default function myContacts() {
 
   return (
     <>
-      <Table data={data} columns={columns} loading={loading} />
+      <form className='flex w-full md:ml-0' method='GET' id='search-form'>
+        <label htmlFor='search-field' className='sr-only'>
+          Search
+        </label>
+        <div className='relative w-full text-gray-400 focus-within:text-gray-600'>
+          <div className='absolute inset-y-0 left-0 flex items-center pointer-events-none'>
+            <SearchIcon className='w-5 h-5' aria-hidden='true' />
+          </div>
+          <input
+            id='search-field'
+            className='block w-full h-full py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 border-transparent focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm'
+            placeholder='Search'
+            type='search'
+            name='search'
+          />
+        </div>
+      </form>
+      {<Table columns={columns} data={list} />}
     </>
   );
 }

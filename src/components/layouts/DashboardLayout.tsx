@@ -1,4 +1,3 @@
-import React, { FC, Fragment, useState } from 'react';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
   BellIcon,
@@ -12,6 +11,8 @@ import {
   XIcon,
 } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
+import React, { FC, Fragment, useState } from 'react';
+
 import Logo from '../Logo';
 
 const navigation = [
@@ -39,7 +40,7 @@ export default function DashboardLayout({ children }: { children: any }) {
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as='div'
-            className='fixed inset-0 flex z-40 md:hidden'
+            className='fixed inset-0 z-40 flex md:hidden'
             onClose={setSidebarOpen}
           >
             <Transition.Child
@@ -62,7 +63,7 @@ export default function DashboardLayout({ children }: { children: any }) {
               leaveFrom='translate-x-0'
               leaveTo='-translate-x-full'
             >
-              <div className='relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-dark'>
+              <div className='relative flex flex-col flex-1 w-full max-w-xs pt-5 pb-4 bg-dark'>
                 <Transition.Child
                   as={Fragment}
                   enter='ease-in-out duration-300'
@@ -72,24 +73,24 @@ export default function DashboardLayout({ children }: { children: any }) {
                   leaveFrom='opacity-100'
                   leaveTo='opacity-0'
                 >
-                  <div className='absolute top-0 right-0 -mr-12 pt-2'>
+                  <div className='absolute top-0 right-0 pt-2 -mr-12'>
                     <button
                       type='button'
-                      className='ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'
+                      className='flex items-center justify-center w-10 h-10 ml-1 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'
                       onClick={() => setSidebarOpen(false)}
                     >
                       <span className='sr-only'>Close sidebar</span>
                       <XIcon
-                        className='h-6 w-6 text-white'
+                        className='w-6 h-6 text-white'
                         aria-hidden='true'
                       />
                     </button>
                   </div>
                 </Transition.Child>
-                <div className='flex-shrink-0 flex items-center px-4'>
+                <div className='flex items-center flex-shrink-0 px-4'>
                   <Logo basePath='/dashboard' />
                 </div>
-                <div className='mt-5 flex-1 h-0 overflow-y-auto'>
+                <div className='flex-1 h-0 mt-5 overflow-y-auto'>
                   <nav className='px-2 space-y-1'>
                     {navigation.map((item) => (
                       <a
@@ -103,7 +104,7 @@ export default function DashboardLayout({ children }: { children: any }) {
                         )}
                       >
                         <item.icon
-                          className='mr-4 flex-shrink-0 h-6 w-6 text-dark-green'
+                          className='flex-shrink-0 w-6 h-6 mr-4 text-dark-green'
                           aria-hidden='true'
                         />
                         {item.name}
@@ -122,11 +123,11 @@ export default function DashboardLayout({ children }: { children: any }) {
         {/* Static sidebar for desktop */}
         <div className='hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0'>
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className='flex flex-col flex-grow pt-5 bg-dark overflow-y-auto'>
+          <div className='flex flex-col flex-grow pt-5 overflow-y-auto bg-dark'>
             <div className='flex items-center flex-shrink-0 px-4'>
               <Logo basePath='/dashboard' small />
             </div>
-            <div className='mt-5 flex-1 flex flex-col'>
+            <div className='flex flex-col flex-1 mt-5'>
               <nav className='flex-1 px-2 pb-4 space-y-1'>
                 {navigation.map((item) => (
                   <a
@@ -140,7 +141,7 @@ export default function DashboardLayout({ children }: { children: any }) {
                     )}
                   >
                     <item.icon
-                      className='mr-3 flex-shrink-0 h-6 w-6 text-dark-green'
+                      className='flex-shrink-0 w-6 h-6 mr-3 text-dark-green'
                       aria-hidden='true'
                     />
                     {item.name}
@@ -150,29 +151,34 @@ export default function DashboardLayout({ children }: { children: any }) {
             </div>
           </div>
         </div>
-        <div className='md:pl-64 flex flex-col flex-1'>
-          <div className='sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow'>
+        <div className='flex flex-col flex-1 md:pl-64'>
+          <div className='sticky top-0 z-10 flex flex-shrink-0 h-16 bg-white shadow'>
             <button
               type='button'
-              className='px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden'
+              className='px-4 text-gray-500 border-r border-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden'
               onClick={() => setSidebarOpen(true)}
             >
               <span className='sr-only'>Open sidebar</span>
-              <MenuAlt2Icon className='h-6 w-6' aria-hidden='true' />
+              <MenuAlt2Icon className='w-6 h-6' aria-hidden='true' />
             </button>
-            <div className='flex-1 px-4 flex justify-between'>
-              <div className='flex-1 flex'>
-                <form className='w-full flex md:ml-0' action='#' method='GET'>
+            <div className='flex justify-between flex-1 px-4'>
+              <div className='flex flex-1'>
+                <form
+                  className='flex w-full md:ml-0'
+                  action='#'
+                  method='GET'
+                  id='search-form'
+                >
                   <label htmlFor='search-field' className='sr-only'>
                     Search
                   </label>
                   <div className='relative w-full text-gray-400 focus-within:text-gray-600'>
                     <div className='absolute inset-y-0 left-0 flex items-center pointer-events-none'>
-                      <SearchIcon className='h-5 w-5' aria-hidden='true' />
+                      <SearchIcon className='w-5 h-5' aria-hidden='true' />
                     </div>
                     <input
                       id='search-field'
-                      className='block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm'
+                      className='block w-full h-full py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 border-transparent focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm'
                       placeholder='Search'
                       type='search'
                       name='search'
@@ -180,22 +186,22 @@ export default function DashboardLayout({ children }: { children: any }) {
                   </div>
                 </form>
               </div>
-              <div className='ml-4 flex items-center md:ml-6'>
+              <div className='flex items-center ml-4 md:ml-6'>
                 <button
                   type='button'
-                  className='bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                  className='p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                 >
                   <span className='sr-only'>View notifications</span>
-                  <BellIcon className='h-6 w-6' aria-hidden='true' />
+                  <BellIcon className='w-6 h-6' aria-hidden='true' />
                 </button>
 
                 {/* Profile dropdown */}
-                <Menu as='div' className='ml-3 relative'>
+                <Menu as='div' className='relative ml-3'>
                   <div>
-                    <Menu.Button className='max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
+                    <Menu.Button className='flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
                       <span className='sr-only'>Open user menu</span>
                       <img
-                        className='h-8 w-8 rounded-full'
+                        className='w-8 h-8 rounded-full'
                         src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
                         alt=''
                       />
@@ -210,7 +216,7 @@ export default function DashboardLayout({ children }: { children: any }) {
                     leaveFrom='transform opacity-100 scale-100'
                     leaveTo='transform opacity-0 scale-95'
                   >
-                    <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                    <Menu.Items className='absolute right-0 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
@@ -235,15 +241,15 @@ export default function DashboardLayout({ children }: { children: any }) {
 
           <main>
             <div className='py-6'>
-              <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8'>
+              <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
                 <h1 className='text-2xl font-semibold text-gray-900'>
                   Dashboard
                 </h1>
               </div>
-              <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8'>
+              <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
                 {/* Replace with your content */}
                 <div className='py-4'>
-                  <div className='border-4 border-dashed border-gray-200 rounded-lg h-96'>
+                  <div className='border-4 border-gray-200 border-dashed rounded-lg h-96'>
                     {children}
                   </div>
                 </div>

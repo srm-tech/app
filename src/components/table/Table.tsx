@@ -138,6 +138,7 @@ export default function Table({ columns, data, loading }: TableProps) {
           }
         </thead>
         {/* Apply the table body props */}
+
         <tbody {...getTableBodyProps()}>
           {
             // Loop over the table rows

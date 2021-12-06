@@ -9,26 +9,19 @@ import models from '@/models';
 // TODO: replace userId
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
+    console.log('achieved search function');
     let result;
     await models.client.connect();
-    if (req.method === 'POST') {
+    if (req.method === 'GET') {
       const user = getCurrentUser();
-      await validate([
-        check('email').isEmail(),
-        check('commisionPerReceivedLeadCash').isNumeric(),
-        check('commissionPerCompletedLead').isNumeric(),
-        check('commissionPerReceivedLeadPercent').isNumeric(),
-        check('message').isLength({ min: 1, max: 1024 }),
-      ])(req, res);
-
-      result = await models.Agreement.create({
-        userId: user._id,
-        ...req.body,
-      });
+      await validate([check('q').isLength({ min: 1, max: 255 })])(req, res);
+      result = await models.UserProfile.searchForBusiness(req.query.q);
+      // result = {}
     } else {
-      res.setHeader('Allow', 'POST');
+      res.setHeader('Allow', 'GET');
       return res.status(405).end('Method Not Allowed');
     }
+
     res.status(200).json(result);
     await models.client.close();
   }
