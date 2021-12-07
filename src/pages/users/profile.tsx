@@ -2,7 +2,6 @@ import React from 'react';
 
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import IGSwitch from '@/components/toggles/toggle';
-import { Switch } from '@headlessui/react';
 
 export default function profile() {
   return (
@@ -42,7 +41,7 @@ export default function profile() {
                         name='firstName'
                         id='firstName'
                         autoComplete='firstName'
-                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                       />
                     </div>
                   </div>
@@ -66,7 +65,7 @@ export default function profile() {
                         name='lastname'
                         id='lastname'
                         autoComplete='lastname'
-                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                       />
                     </div>
                   </div>
@@ -90,7 +89,7 @@ export default function profile() {
                         name='email'
                         id='email'
                         autoComplete='email'
-                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                       />
                     </div>
                   </div>
@@ -114,7 +113,7 @@ export default function profile() {
                         name='businessName'
                         id='businessName'
                         autoComplete='businessName'
-                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                       />
                     </div>
                   </div>
@@ -138,7 +137,7 @@ export default function profile() {
                         name='businessCategory'
                         id='businessCategory'
                         autoComplete='businessCategory'
-                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                        className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                       />
                     </div>
                   </div>
@@ -156,17 +155,17 @@ export default function profile() {
                     Am I Guru?
                   </label>
                   <div className='mt-1 sm:mt-0 sm:col-span-2'>
-                    <div className='flex max-w-lg rounded-md shadow-sm'>
-                      {/* <input
+                    {/* <div className='flex max-w-lg rounded-md shadow-sm'> */}
+                    {/* <input
                       type="text"
                       name="isGuru"
                       id="isGuru"
                       autoComplete="isGuru"
-                      className="flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      className="flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm"
                       
                     /> */}
-                      <IGSwitch id='isGuru' name='isGuru' />
-                    </div>
+                    <IGSwitch name='isGuru' checked={false} />
+                    {/* </div> */}
                   </div>
                 </div>
               </div>
@@ -182,22 +181,40 @@ export default function profile() {
                     Am I Business?
                   </label>
                   <div className='mt-1 sm:mt-0 sm:col-span-2'>
-                    <div className='flex max-w-lg rounded-md shadow-sm'>
-                      {/* <input
+                    {/* <div className='flex max-w-lg rounded-md shadow-sm'> */}
+                    {/* <input
                       type="text"
                       name="isBusiness"
                       id="isBusiness"
                       autoComplete="isBusiness"
-                      className="flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      className="flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm"
                       
                     /> */}
-                      <IGSwitch name='isBusiness' checked={false} />
-                    </div>
+                    <IGSwitch name='isBusiness' checked={false} />
+                    {/* </div> */}
                   </div>
                 </div>
               </div>
               {/* business category field ends here */}
             </div>
+
+            <div className='pt-5'>
+              <div className='flex justify-end'>
+                <button
+                  type='button'
+                  className='px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+                >
+                  Cancel
+                </button>
+                <button
+                  type='submit'
+                  className='inline-flex justify-center px-4 py-2 ml-3 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+
             {/* right panel ends here */}
           </div>
 
