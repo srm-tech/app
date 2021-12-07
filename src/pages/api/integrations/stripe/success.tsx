@@ -1,8 +1,9 @@
+import Link from 'next/link';
+
 import Footer from '@/components/Footer';
 import NewNav from '@/components/NewNav';
 import NewsLetter from '@/components/promotion/NewsLetter';
 import Seo from '@/components/Seo';
-import Link from 'next/link';
 
 export default function StripeConfirmationPage() {
   return (

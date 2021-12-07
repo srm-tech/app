@@ -1,10 +1,20 @@
+enum BannerType {
+  OK = 'bg-green-100',
+  WARN = 'bg-yellow-100',
+  ERROR = 'bg-red-100',
+}
+
 type BannerProps = {
   children: React.ReactNode;
+  type: BannerType;
 };
 
-export default function HeadBanner({ children = '' }: BannerProps) {
+export default function HeadBanner({
+  children = '',
+  type = BannerType.OK,
+}: BannerProps) {
   return (
-    <div className='relative bg-yellow-100'>
+    <div className={`relative ${type}`}>
       <div className='px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8'>
         <div className='pr-16 sm:text-center sm:px-16'>
           <p className='font-medium text-yellow-500'>

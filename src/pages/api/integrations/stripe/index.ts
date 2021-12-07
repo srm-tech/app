@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
-import { formatAmountForStripe } from '@/lib/stripe-helpers';
-import { env } from '@/config';
+
 import { handleErrors } from '@/lib/middleware';
+import { formatAmountForStripe } from '@/lib/stripe-helpers';
+
+import { env } from '@/config';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2020-08-27',

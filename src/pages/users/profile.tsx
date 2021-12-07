@@ -17,14 +17,19 @@ interface IFormInput {
 
 export default function profile() {
   const [loaderVisible, setLoaderVisible] = useState(false);
+  const [formValues, setFormValues] = useState({
+    firstName: '',
+  });
+  const [savedMessage, setSavedMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
 
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
+
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data);
     saveData(data);
   };
 
@@ -37,12 +42,23 @@ export default function profile() {
     process.env.BASE_URL
   );
 
-  async function loadData() {
-    const loaded = await get('/api/me');
-  }
+  //  useEffect(() => {
+  //      const loaded = get('/api/me');
+  //      setFormValues(loaded);
+  //   }, []
+  //  );
+
+  //  useEffect(() => {
+  //    reset(formValues)
+  //  }, [formValues]);
 
   async function saveData(data) {
     const saved = await post('/api/me/change', data);
+    if (response.ok) {
+      setSavedMessage(true);
+    } else {
+      setErrorMessage(true);
+    }
   }
 
   useEffect(() => {
@@ -73,6 +89,37 @@ export default function profile() {
 
               {/* right panel */}
               <div className='p-4 mt-5 md:mt-0 md:col-span-2'>
+                {/* error message */}
+                {errorMessage && (
+                  <div className='relative bg-red-100'>
+                    <div className='px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8'>
+                      <div className='pr-16 sm:text-center sm:px-16'>
+                        <p className='font-medium text-red-400'>
+                          <span>
+                            Uh, oh! A problem occured during saving your data!
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {/* end of error message */}
+                {/* ok message */}
+                {savedMessage && (
+                  <div className='relative bg-green-800'>
+                    <div className='px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8'>
+                      <div className='pr-16 sm:text-center sm:px-16'>
+                        <p className='font-medium text-white'>
+                          <span>
+                            Your profile has been changed successfully
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {/* end of ok message */}
+
                 <LoadingOverlay active={loaderVisible} spinner>
                   {/* first name field starts */}
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
@@ -94,6 +141,7 @@ export default function profile() {
                               required: true,
                               maxLength: 127,
                             })}
+                            defaultValue={formValues.firstName}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             // onChange={(e) => setFormData({...formData, firstName: e.target.value})}
                           />
