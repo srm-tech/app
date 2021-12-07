@@ -19,7 +19,14 @@ export default function profile() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [formValues, setFormValues] = useState({
     firstName: '',
+    lastName: '',
+    email: '',
+    businessName: '',
+    businessCategory: '',
+    isGuru: false,
+    isBusiness: false,
   });
+
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
@@ -33,24 +40,17 @@ export default function profile() {
     saveData(data);
   };
 
-  // const handleInputChange = e => {
-  //   const target = e.target;
-  //   const value = target.type === "checkbox" ? target.checked : target.value;
-  // }
-
   const { get, post, response, loading, error } = useFetch(
     process.env.BASE_URL
   );
 
-  //  useEffect(() => {
-  //      const loaded = get('/api/me');
-  //      setFormValues(loaded);
-  //   }, []
-  //  );
-
-  //  useEffect(() => {
-  //    reset(formValues)
-  //  }, [formValues]);
+  useEffect(() => {
+    async function loadData() {
+      const loaded = await get('/api/me');
+      setFormValues(loaded);
+    }
+    loadData();
+  }, []);
 
   async function saveData(data) {
     const saved = await post('/api/me/change', data);
@@ -63,11 +63,6 @@ export default function profile() {
 
   useEffect(() => {
     setLoaderVisible(loading);
-    // setFormData({
-    //   ...formData,
-    //   firstName: data.firstName,
-    // });
-    // console.log("data", data);
   }, [loading]);
 
   return (
@@ -134,16 +129,12 @@ export default function profile() {
                         <div className='flex max-w-lg rounded-md shadow-sm'>
                           <input
                             type='text'
-                            // name='firstName'
-                            // id='firstName'
-                            // autoComplete='firstName'
                             {...register('firstName', {
                               required: true,
                               maxLength: 127,
                             })}
                             defaultValue={formValues.firstName}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            // onChange={(e) => setFormData({...formData, firstName: e.target.value})}
                           />
                         </div>
                         {errors.firstName?.type === 'required' && (
@@ -173,8 +164,8 @@ export default function profile() {
                               required: true,
                               maxLength: 127,
                             })}
+                            defaultValue={formValues.lastName}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            // onChange={(e) => setFormData({...formData, lastName: e.target.value})}
                           />
                         </div>
                         {errors.lastName?.type === 'required' && (
@@ -208,7 +199,7 @@ export default function profile() {
                               },
                             })}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            // onChange={(e) => setFormData({...formData, email: e.target.value})}
+                            defaultValue={formValues.email}
                           />
                         </div>
                         {errors.email?.type === 'required' && (
@@ -245,7 +236,7 @@ export default function profile() {
                               maxLength: 255,
                             })}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            // onChange={(e) => setFormData({...formData, businessName: e.target.value})}
+                            defaultValue={formValues.businessName}
                           />
                         </div>
                         {errors.businessName?.type === 'required' && (
@@ -276,7 +267,7 @@ export default function profile() {
                               maxLength: 255,
                             })}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            // onChange={(e) => setFormData({...formData, businessCategory: e.target.value})}
+                            defaultValue={formValues.businessCategory}
                           />
                           {errors.businessCategory?.type === 'required' && (
                             <small className='text-red-900'>
@@ -303,6 +294,7 @@ export default function profile() {
                           <input
                             {...register('isGuru')}
                             type='checkbox'
+                            defaultChecked={formValues.isGuru}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                           />
                         </div>
@@ -315,7 +307,7 @@ export default function profile() {
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                     <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                       <label
-                        htmlFor='isGuru'
+                        htmlFor='isBusiness'
                         className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                       >
                         Am I Business?
@@ -326,6 +318,7 @@ export default function profile() {
                             {...register('isBusiness')}
                             type='checkbox'
                             className='flex-1 block min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            defaultChecked={formValues.isBusiness}
                           />
                         </div>
                       </div>
