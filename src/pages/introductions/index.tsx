@@ -39,7 +39,7 @@ export default function introductions() {
   const list = data || [];
 
   return (
-    <DashboardLayout>
+    <DashboardLayout title='Introductions'>
       <Table columns={columns} data={list} />
     </DashboardLayout>
   );

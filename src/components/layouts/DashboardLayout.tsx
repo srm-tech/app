@@ -12,14 +12,25 @@ import {
 } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
 import React, { FC, Fragment, useState } from 'react';
+import Link from 'next/link';
 
 import Logo from '../Logo';
 
 const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Introductions', href: '#', icon: MenuAlt2Icon, current: false },
-  { name: 'My Contacts', href: '#', icon: UsersIcon, current: false },
-  { name: 'Invitations', href: '#', icon: InboxIcon, current: false },
+  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
+  {
+    name: 'Introductions',
+    href: '/introductions',
+    icon: InboxIcon,
+    current: false,
+  },
+  // {
+  //   name: 'Invitations',
+  //   href: '/invitations',
+  //   icon: InboxIcon,
+  //   current: false,
+  // },
+  { name: 'My Contacts', href: '/myContacts', icon: UsersIcon, current: false },
 ];
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
@@ -31,7 +42,13 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function DashboardLayout({ children }: { children: any }) {
+export default function DashboardLayout({
+  children,
+  title,
+}: {
+  children: any;
+  title?: string;
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -93,22 +110,24 @@ export default function DashboardLayout({ children }: { children: any }) {
                 <div className='flex-1 h-0 mt-5 overflow-y-auto'>
                   <nav className='px-2 space-y-1'>
                     {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          item.current
-                            ? 'bg-green-800 text-white'
-                            : 'text-indigo-100 hover:bg-green-600',
-                          'group flex items-center px-2 py-2 text-base font-medium rounded-md'
-                        )}
-                      >
-                        <item.icon
-                          className='flex-shrink-0 w-6 h-6 mr-4 text-dark-green'
-                          aria-hidden='true'
-                        />
-                        {item.name}
-                      </a>
+                      <Link href={item.href} passHref>
+                        <a
+                          key={item.name}
+                          href={item.href}
+                          className={classNames(
+                            item.current
+                              ? 'bg-green-800 text-white'
+                              : 'text-indigo-100 hover:bg-green-600',
+                            'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                          )}
+                        >
+                          <item.icon
+                            className='flex-shrink-0 w-6 h-6 mr-4 text-dark-green'
+                            aria-hidden='true'
+                          />
+                          {item.name}
+                        </a>
+                      </Link>
                     ))}
                   </nav>
                 </div>
@@ -130,22 +149,23 @@ export default function DashboardLayout({ children }: { children: any }) {
             <div className='flex flex-col flex-1 mt-5'>
               <nav className='flex-1 px-2 pb-4 space-y-1'>
                 {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? 'bg-green-800 text-white'
-                        : 'text-indigo-100 hover:bg-green-600',
-                      'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
-                    )}
-                  >
-                    <item.icon
-                      className='flex-shrink-0 w-6 h-6 mr-3 text-dark-green'
-                      aria-hidden='true'
-                    />
-                    {item.name}
-                  </a>
+                  <Link href={item.href} passHref>
+                    <a
+                      key={item.name}
+                      className={classNames(
+                        item.current
+                          ? 'bg-green-800 text-white'
+                          : 'text-indigo-100 hover:bg-green-600',
+                        'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                      )}
+                    >
+                      <item.icon
+                        className='flex-shrink-0 w-6 h-6 mr-3 text-dark-green'
+                        aria-hidden='true'
+                      />
+                      {item.name}
+                    </a>
+                  </Link>
                 ))}
               </nav>
             </div>
@@ -161,7 +181,7 @@ export default function DashboardLayout({ children }: { children: any }) {
               <span className='sr-only'>Open sidebar</span>
               <MenuAlt2Icon className='w-6 h-6' aria-hidden='true' />
             </button>
-            <div className='flex justify-between flex-1 px-4'>
+            <div className='flex justify-between flex-1 px-8'>
               <div className='flex flex-1'>
                 <form
                   className='flex w-full md:ml-0'
@@ -220,15 +240,16 @@ export default function DashboardLayout({ children }: { children: any }) {
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
-                            <a
-                              href={item.href}
-                              className={classNames(
-                                active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm text-gray-700'
-                              )}
-                            >
-                              {item.name}
-                            </a>
+                            <Link href={item.href} passHref>
+                              <a
+                                className={classNames(
+                                  active ? 'bg-gray-100' : '',
+                                  'block px-4 py-2 text-sm text-gray-700'
+                                )}
+                              >
+                                {item.name}
+                              </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       ))}
@@ -243,13 +264,13 @@ export default function DashboardLayout({ children }: { children: any }) {
             <div className='py-6'>
               <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
                 <h1 className='text-2xl font-semibold text-gray-900'>
-                  Dashboard
+                  {title}
                 </h1>
               </div>
               <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
                 {/* Replace with your content */}
                 <div className='py-4'>
-                  <div className='border-4 border-gray-200 border-dashed rounded-lg h-96'>
+                  <div className='border-4 border-gray-200 rounded-lg h-96 p-2'>
                     {children}
                   </div>
                 </div>
