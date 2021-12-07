@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import getCurrentUser from '@/lib/get-current-user';
-import { check, validate } from '@/lib/validator';
-import models from '@/models';
 import { handleErrors } from '@/lib/middleware';
+import { check, validate } from '@/lib/validator';
+
+import models from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -15,13 +17,12 @@ export default handleErrors(
         check('lastName').isLength({ min: 1, max: 255 }),
         check('businessName').isLength({ min: 1, max: 255 }),
         check('businessCategory').isLength({ min: 1, max: 255 }),
-        check('businessCategorySecondary').isLength({ min: 1, max: 255 }),
         check('email').isEmail(),
-        check('phone').isLength({ min: 1, max: 50 }),
+        // check('phone').isLength({ min: 1, max: 50 }),
       ])(req, res);
-      result = await models.User.updateOne({
+      result = await models.UserProfile.updateOne({
         userId: user._id,
-        ...req.query,
+        ...req.body,
       });
     } else {
       res.setHeader('Allow', 'POST');
