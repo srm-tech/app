@@ -46,14 +46,14 @@ export default function profile() {
 
   useEffect(() => {
     async function loadData() {
-      const loaded = await get('/api/me');
+      const loaded = await get('/api/business/defaultAgreement');
       setFormValues(loaded);
     }
     loadData();
   }, []);
 
   async function saveData(data) {
-    const saved = await post('/api/me/change', data);
+    const saved = await post('/api/business/defaultAgreement', data);
     if (response.ok) {
       setSavedMessage(true);
     } else {
@@ -209,7 +209,7 @@ export default function profile() {
                         )}
                         {errors.email?.type === 'pattern' && (
                           <small className='text-red-900'>
-                            Email is invalid
+                            The email is invalid
                           </small>
                         )}
                         {/* {errors.email} */}

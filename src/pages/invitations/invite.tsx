@@ -18,13 +18,9 @@ interface IFormInput {
 export default function profile() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [formValues, setFormValues] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    businessName: '',
-    businessCategory: '',
-    isGuru: false,
-    isBusiness: false,
+    commisionPerReceivedLeadCash: 0,
+    commissionPerCompletedLead: 0,
+    commissionPerReceivedLeadPercent: 0,
   });
 
   const [savedMessage, setSavedMessage] = useState(false);
@@ -37,7 +33,8 @@ export default function profile() {
   } = useForm();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    saveData(data);
+    // saveData(data);
+    console.log(data);
   };
 
   const { get, post, response, loading, error } = useFetch(
@@ -46,7 +43,7 @@ export default function profile() {
 
   useEffect(() => {
     async function loadData() {
-      const loaded = await get('/api/me');
+      const loaded = await get('/api/business/defaultAgreement');
       setFormValues(loaded);
     }
     loadData();
@@ -114,7 +111,7 @@ export default function profile() {
                   </div>
                 )}
                 {/* end of ok message */}
-
+                {console.log('errors: ', errors)}
                 <LoadingOverlay active={loaderVisible} spinner>
                   <div className='space-y-8 divide-y divide-gray-200'>
                     <div>
@@ -122,7 +119,7 @@ export default function profile() {
                         {/* Email field starts here */}
                         <div className='sm:col-span-4'>
                           <label
-                            htmlFor='username'
+                            htmlFor='email'
                             className='block text-sm font-medium text-gray-700'
                           >
                             Email address
@@ -130,93 +127,154 @@ export default function profile() {
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <input
                               type='text'
-                              name='username'
-                              id='username'
-                              autoComplete='username'
+                              {...register('email', {
+                                required: true,
+                                pattern: {
+                                  value:
+                                    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                },
+                              })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
                           </div>
+
+                          {errors.email?.type === 'required' && (
+                            <small className='text-red-900'>
+                              This field is required
+                            </small>
+                          )}
+                          {errors.email?.type === 'pattern' && (
+                            <small className='text-red-900'>
+                              The email is invalid
+                            </small>
+                          )}
                         </div>
                         {/* Email field ends here */}
 
                         {/* Commission per received lead field starts here */}
                         <div className='sm:col-span-4'>
                           <label
-                            htmlFor='username'
+                            htmlFor='commissionPerReceivedLeadCash'
                             className='block text-sm font-medium text-gray-700'
                           >
                             Commission per received lead ($):
                           </label>
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <input
-                              type='text'
-                              name='username'
-                              id='username'
-                              autoComplete='username'
+                              type='number'
+                              {...register('commissionPerReceivedLeadCash', {
+                                required: true,
+                                min: 0,
+                              })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
                           </div>
+                          {errors.commissionPerReceivedLeadCash?.type ===
+                            'required' && (
+                            <small className='text-red-900'>
+                              This field is required
+                            </small>
+                          )}
+                          {errors.commissionPerReceivedLeadCash?.type ===
+                            'min' && (
+                            <small className='text-red-900'>
+                              The value is too low
+                            </small>
+                          )}
                         </div>
                         {/* Commission per received lead field ends here */}
 
                         {/* Commission per completed lead field starts here */}
                         <div className='sm:col-span-4'>
                           <label
-                            htmlFor='username'
+                            htmlFor='commissionPerCompletedLead'
                             className='block text-sm font-medium text-gray-700'
                           >
                             Commission per completed lead ($):
                           </label>
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <input
-                              type='text'
-                              name='username'
-                              id='username'
-                              autoComplete='username'
+                              type='number'
+                              {...register('commissionPerCompletedLead', {
+                                required: true,
+                                min: 0,
+                              })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
                           </div>
+                          {errors.commissionPerCompletedLead?.type ===
+                            'required' && (
+                            <small className='text-red-900'>
+                              This field is required
+                            </small>
+                          )}
+                          {errors.commissionPerCompletedLead?.type ===
+                            'min' && (
+                            <small className='text-red-900'>
+                              The value is too low
+                            </small>
+                          )}
                         </div>
                         {/* Commission per completed lead field ends here */}
 
                         {/* Commission per received lead (%) field starts here */}
                         <div className='sm:col-span-4'>
                           <label
-                            htmlFor='username'
+                            htmlFor='commissionPerReceivedLeadPercent'
                             className='block text-sm font-medium text-gray-700'
                           >
                             Commission per received lead (%):
                           </label>
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <input
-                              type='text'
-                              name='username'
-                              id='username'
-                              autoComplete='username'
+                              type='number'
+                              {...register('commissionPerReceivedLeadPercent', {
+                                required: true,
+                                min: 0,
+                              })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
                           </div>
+                          {errors.commissionPerReceivedLeadPercent?.type ===
+                            'required' && (
+                            <small className='text-red-900'>
+                              This field is required
+                            </small>
+                          )}
+                          {errors.commissionPerReceivedLeadPercent?.type ===
+                            'min' && (
+                            <small className='text-red-900'>
+                              This value is too low
+                            </small>
+                          )}
                         </div>
                         {/* Commission per received lead (%) field ends here */}
 
-                        {/* Message) field starts here */}
+                        {/* Message field starts here */}
                         <div className='sm:col-span-4'>
                           <label
-                            htmlFor='username'
+                            htmlFor='message'
                             className='block text-sm font-medium text-gray-700'
                           >
                             Message:
                           </label>
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <textarea
-                              name='username'
-                              id='username'
-                              autoComplete='username'
+                              {...register('message', {
+                                required: true,
+                                minLength: 1,
+                                maxLength: 1023,
+                              })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
                           </div>
+                          {errors.message?.type === 'required' && (
+                            <small className='text-red-900'>
+                              This field is required
+                            </small>
+                          )}
                         </div>
-                        {/* Messave per received lead (%) field ends here */}
+                        {/* Message field ends here */}
                       </div>
 
                       <div className='pt-5'>

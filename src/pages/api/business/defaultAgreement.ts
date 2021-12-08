@@ -11,22 +11,21 @@ export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
     await models.client.connect();
+    const user = getCurrentUser();
     if (req.method === 'POST') {
-      const user = getCurrentUser();
       await validate([
-        check('email').isEmail(),
         check('commisionPerReceivedLeadCash').isNumeric(),
         check('commissionPerCompletedLead').isNumeric(),
         check('commissionPerReceivedLeadPercent').isNumeric(),
-        check('message').isLength({ min: 1, max: 1024 }),
       ])(req, res);
-
       result = await models.Agreement.create({
         userId: user._id,
         ...req.body,
       });
+    } else if (req.method === 'GET') {
+      result = await models.Agreement.findOne(user._id);
     } else {
-      res.setHeader('Allow', 'POST');
+      res.setHeader('Allow', 'GET, POST');
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json(result);
