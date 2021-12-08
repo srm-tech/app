@@ -46,14 +46,14 @@ export default function profile() {
 
   useEffect(() => {
     async function loadData() {
-      const loaded = await get('/api/business/defaultAgreement');
+      const loaded = await get('/api/me');
       setFormValues(loaded);
     }
     loadData();
   }, []);
 
   async function saveData(data) {
-    const saved = await post('/api/business/defaultAgreement', data);
+    const saved = await post('/api/me/change', data);
     if (response.ok) {
       setSavedMessage(true);
     } else {
@@ -129,11 +129,11 @@ export default function profile() {
                         <div className='flex max-w-lg rounded-md shadow-sm'>
                           <input
                             type='text'
+                            defaultValue={formValues.firstName}
                             {...register('firstName', {
                               required: true,
                               maxLength: 127,
                             })}
-                            defaultValue={formValues.firstName}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                           />
                         </div>
@@ -160,11 +160,11 @@ export default function profile() {
                         <div className='flex max-w-lg rounded-md shadow-sm'>
                           <input
                             type='text'
+                            defaultValue={formValues.lastName}
                             {...register('lastName', {
                               required: true,
                               maxLength: 127,
                             })}
-                            defaultValue={formValues.lastName}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                           />
                         </div>
@@ -191,6 +191,7 @@ export default function profile() {
                         <div className='flex max-w-lg rounded-md shadow-sm'>
                           <input
                             type='text'
+                            defaultValue={formValues.email}
                             {...register('email', {
                               required: true,
                               pattern: {
@@ -199,7 +200,6 @@ export default function profile() {
                               },
                             })}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            defaultValue={formValues.email}
                           />
                         </div>
                         {errors.email?.type === 'required' && (
@@ -231,12 +231,12 @@ export default function profile() {
                         <div className='flex max-w-lg rounded-md shadow-sm'>
                           <input
                             type='text'
+                            defaultValue={formValues.businessName}
                             {...register('businessName', {
                               required: true,
                               maxLength: 255,
                             })}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            defaultValue={formValues.businessName}
                           />
                         </div>
                         {errors.businessName?.type === 'required' && (
@@ -262,12 +262,12 @@ export default function profile() {
                         <div className='flex max-w-lg rounded-md shadow-sm'>
                           <input
                             type='text'
+                            defaultValue={formValues.businessCategory}
                             {...register('businessCategory', {
                               required: true,
                               maxLength: 255,
                             })}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            defaultValue={formValues.businessCategory}
                           />
                           {errors.businessCategory?.type === 'required' && (
                             <small className='text-red-900'>
@@ -292,9 +292,9 @@ export default function profile() {
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
                         <div className='flex max-w-lg rounded-md'>
                           <input
-                            {...register('isGuru')}
                             type='checkbox'
                             defaultChecked={formValues.isGuru}
+                            {...register('isGuru')}
                             className='w-4 h-4 text-green-600 rounded focus:ring-green-500'
                           />
                         </div>
@@ -315,10 +315,10 @@ export default function profile() {
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
                         <div className='flex max-w-lg rounded-md'>
                           <input
-                            {...register('isBusiness')}
                             type='checkbox'
-                            className='w-4 h-4 text-green-600 rounded focus:ring-green-500'
                             defaultChecked={formValues.isBusiness}
+                            {...register('isBusiness')}
+                            className='w-4 h-4 text-green-600 rounded focus:ring-green-500'
                           />
                         </div>
                       </div>

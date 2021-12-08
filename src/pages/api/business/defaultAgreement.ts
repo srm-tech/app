@@ -14,7 +14,7 @@ export default handleErrors(
     const user = getCurrentUser();
     if (req.method === 'POST') {
       await validate([
-        check('commisionPerReceivedLeadCash').isNumeric(),
+        check('commissionPerReceivedLeadCash').isNumeric(),
         check('commissionPerCompletedLead').isNumeric(),
         check('commissionPerReceivedLeadPercent').isNumeric(),
       ])(req, res);

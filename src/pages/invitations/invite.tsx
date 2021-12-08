@@ -6,13 +6,11 @@ import useFetch from 'use-http';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 interface IFormInput {
-  firstName: string;
-  lastName: string;
+  commissionPerReceivedLeadCash: number;
+  commissionPerCompletedLead: number;
+  commissionPerReceivedLeadPercent: number;
   email: string;
-  businessName: string;
-  businessCategory: string;
-  isGuru: boolean;
-  isBusiness: boolean;
+  message: string;
 }
 
 export default function profile() {
@@ -33,8 +31,7 @@ export default function profile() {
   } = useForm();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    // saveData(data);
-    console.log(data);
+    saveData(data);
   };
 
   const { get, post, response, loading, error } = useFetch(
@@ -50,10 +47,14 @@ export default function profile() {
   }, []);
 
   async function saveData(data) {
-    const saved = await post('/api/me/change', data);
+    console.log('sent', data);
+    setSavedMessage(false);
+    setErrorMessage(false);
+    const saved = await post('/api/invitations/send', data);
     if (response.ok) {
       setSavedMessage(true);
     } else {
+      console.log('saved:', saved);
       setErrorMessage(true);
     }
   }
@@ -90,7 +91,7 @@ export default function profile() {
                       <div className='pr-16 sm:text-center sm:px-16'>
                         <p className='font-medium text-red-400'>
                           <span>
-                            Uh, oh! A problem occured during saving your data!
+                            Uh, oh! A problem occured while sending your email!
                           </span>
                         </p>
                       </div>
@@ -111,7 +112,6 @@ export default function profile() {
                   </div>
                 )}
                 {/* end of ok message */}
-                {console.log('errors: ', errors)}
                 <LoadingOverlay active={loaderVisible} spinner>
                   <div className='space-y-8 divide-y divide-gray-200'>
                     <div>
@@ -162,9 +162,11 @@ export default function profile() {
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <input
                               type='number'
+                              defaultValue={
+                                formValues.commissionPerReceivedLeadCash
+                              }
                               {...register('commissionPerReceivedLeadCash', {
                                 required: true,
-                                min: 0,
                               })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
@@ -173,12 +175,6 @@ export default function profile() {
                             'required' && (
                             <small className='text-red-900'>
                               This field is required
-                            </small>
-                          )}
-                          {errors.commissionPerReceivedLeadCash?.type ===
-                            'min' && (
-                            <small className='text-red-900'>
-                              The value is too low
                             </small>
                           )}
                         </div>
@@ -195,9 +191,11 @@ export default function profile() {
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <input
                               type='number'
+                              defaultValue={
+                                formValues.commissionPerCompletedLead
+                              }
                               {...register('commissionPerCompletedLead', {
                                 required: true,
-                                min: 0,
                               })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
@@ -206,12 +204,6 @@ export default function profile() {
                             'required' && (
                             <small className='text-red-900'>
                               This field is required
-                            </small>
-                          )}
-                          {errors.commissionPerCompletedLead?.type ===
-                            'min' && (
-                            <small className='text-red-900'>
-                              The value is too low
                             </small>
                           )}
                         </div>
@@ -228,9 +220,11 @@ export default function profile() {
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <input
                               type='number'
+                              defaultValue={
+                                formValues.commissionPerReceivedLeadPercent
+                              }
                               {...register('commissionPerReceivedLeadPercent', {
                                 required: true,
-                                min: 0,
                               })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
@@ -239,12 +233,6 @@ export default function profile() {
                             'required' && (
                             <small className='text-red-900'>
                               This field is required
-                            </small>
-                          )}
-                          {errors.commissionPerReceivedLeadPercent?.type ===
-                            'min' && (
-                            <small className='text-red-900'>
-                              This value is too low
                             </small>
                           )}
                         </div>

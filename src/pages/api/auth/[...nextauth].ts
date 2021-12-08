@@ -1,9 +1,10 @@
+import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
+import { ObjectId } from 'mongodb';
 import NextAuth from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import nodemailer from 'nodemailer';
+
 import { getDb } from '@/lib/db';
-import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
-import { ObjectId } from 'mongodb';
 const { client, dbName } = getDb();
 
 // For more information on each option (and a full list of options) go to

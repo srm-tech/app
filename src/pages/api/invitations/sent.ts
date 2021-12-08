@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import getCurrentUser from '@/lib/get-current-user';
-import models from '@/models';
 import { handleErrors } from '@/lib/middleware';
+
+import models from '@/models';
 
 // todo: replace userId
 export default handleErrors(
@@ -12,7 +14,7 @@ export default handleErrors(
       const user = getCurrentUser();
       result = await models.Invitation.getSent(user._id);
     } else {
-      res.setHeader('Allow', 'POST');
+      res.setHeader('Allow', 'GET');
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json(result);
