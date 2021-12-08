@@ -290,12 +290,12 @@ export default function profile() {
                         Am I Guru?
                       </label>
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
-                        <div className='flex max-w-lg rounded-md shadow-sm'>
+                        <div className='flex max-w-lg rounded-md'>
                           <input
                             {...register('isGuru')}
                             type='checkbox'
                             defaultChecked={formValues.isGuru}
-                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            className='w-4 h-4 text-green-600 rounded focus:ring-green-500'
                           />
                         </div>
                       </div>
@@ -313,11 +313,11 @@ export default function profile() {
                         Am I Business?
                       </label>
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
-                        <div className='flex max-w-lg rounded-md shadow-sm'>
+                        <div className='flex max-w-lg rounded-md'>
                           <input
                             {...register('isBusiness')}
                             type='checkbox'
-                            className='flex-1 block min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            className='w-4 h-4 text-green-600 rounded focus:ring-green-500'
                             defaultChecked={formValues.isBusiness}
                           />
                         </div>
