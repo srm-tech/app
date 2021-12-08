@@ -18,9 +18,9 @@ export default handleErrors(
       await validate([
         check('email').isEmail(),
         check('message').isLength({ min: 1, max: 1023 }),
-        check('commissionPerReceivedLeadCash').isAlphanumeric(),
-        check('commissionPerCompletedLead').isAlphanumeric(),
-        check('commissionPerReceivedLeadPercent').isAlphanumeric(),
+        check('commissionPerReceivedLeadCash').isNumeric(),
+        check('commissionPerCompletedLead').isNumeric(),
+        check('commissionPerReceivedLeadPercent').isNumeric(),
       ])(req, res);
       // const { name, email, text } = req.body;
 

@@ -28,6 +28,7 @@ export default function profile() {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
@@ -42,9 +43,10 @@ export default function profile() {
     async function loadData() {
       const loaded = await get('/api/business/defaultAgreement');
       setFormValues(loaded);
+      reset(loaded);
     }
     loadData();
-  }, []);
+  }, [reset]);
 
   async function saveData(data) {
     console.log('sent', data);

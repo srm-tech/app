@@ -4,6 +4,7 @@ import LoadingOverlay from 'react-loading-overlay';
 import useFetch from 'use-http';
 
 import DashboardLayout from '@/components/layouts/DashboardLayout';
+import { resetIdCounter } from 'downshift';
 
 interface IFormInput {
   firstName: string;
@@ -34,6 +35,7 @@ export default function profile() {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
@@ -48,11 +50,14 @@ export default function profile() {
     async function loadData() {
       const loaded = await get('/api/me');
       setFormValues(loaded);
+      reset(loaded);
     }
     loadData();
-  }, []);
+  }, [reset]);
 
   async function saveData(data) {
+    setSavedMessage(false);
+    setErrorMessage(false);
     const saved = await post('/api/me/change', data);
     if (response.ok) {
       setSavedMessage(true);
