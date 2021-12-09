@@ -1,17 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import LoadingOverlay from 'react-loading-overlay';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
-import Table from '@/components/table/Table';
+import Button from '@/components/buttons/Button';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
+import Table from '@/components/table/Table';
 
 export default function myContacts() {
-  const options = [];
-  const {
-    loading,
-    error,
-    data = [],
-  } = useFetch(process.env.BASE_URL + '/api/myContacts', options, []);
+  const [loaderVisible, setLoaderVisible] = useState(false);
+  const [data, setData] = useState([]);
+
+  const { get, post, response, loading, error } = useFetch(
+    process.env.BASE_URL
+  );
+
+  useEffect(() => {
+    async function loadData() {
+      const loaded = await get('/api/myContacts');
+      setData(loaded);
+    }
+    loadData();
+  }, []);
+
+  async function handleAccept(e, invitationId) {
+    const accept = await post('/api/invitations/accept', {
+      invitationId: invitationId,
+    });
+    setData([]);
+  }
+
+  async function handleDecline(e, invitationId) {
+    const decline = await post('/api/invitations/decline', {
+      invitationId: invitationId,
+    });
+  }
+
+  async function handleToggleFav(e, contactId) {
+    const fav = await post('/api/favourites/toggle', { contactId: contactId });
+  }
+
+  async function handleRemoveFromContacts(e, contactId) {
+    const remove = await post('/api/myContacts/remove', {
+      contactId: contactId,
+    });
+  }
+
+  useEffect(() => {
+    setLoaderVisible(loading);
+  }, [loading]);
 
   const columns = [
     {
@@ -54,13 +91,24 @@ export default function myContacts() {
       Header: '',
       accessor: '_id',
       Cell: ({ row: { original } }) => {
+        const id = original._id;
         const acceptDeclineButtons = (
           <>
             <div>
-              <button className='cell-button-accept'>Accept</button>
-            </div>
-            <div>
-              <button className='cell-button-decline'>Decline</button>
+              <Button
+                variants='primary'
+                className='text-xs'
+                onClick={(e) => handleAccept(e, id)}
+              >
+                Accept
+              </Button>
+              <Button
+                variants='secondary'
+                className='text-xs'
+                onClick={(e) => handleDecline(e, id)}
+              >
+                Decline
+              </Button>
             </div>
           </>
         );
@@ -68,9 +116,13 @@ export default function myContacts() {
         const removeFromContactsButton = (
           <>
             <div>
-              <button className='cell-button-decline'>
+              <Button
+                variants='secondary'
+                className='text-xs'
+                onClick={(e) => handleRemoveFromContacts(e, id)}
+              >
                 Remove from contacts
-              </button>
+              </Button>
             </div>
           </>
         );
@@ -78,7 +130,13 @@ export default function myContacts() {
         const addToFavButton = (
           <>
             <div>
-              <button className='cell-button-accept'>Add to favourites</button>
+              <Button
+                variants='primary'
+                className='text-xs'
+                onClick={(e) => handleToggleFav(e, id)}
+              >
+                Add to favourites
+              </Button>
             </div>
           </>
         );
@@ -86,18 +144,21 @@ export default function myContacts() {
         const removeFromFavButton = (
           <>
             <div>
-              <button className='cell-button-decline'>
+              <Button
+                variants='secondary'
+                className='text-xs'
+                onClick={(e) => handleToggleFav(e, id)}
+              >
                 Remove from favourites
-              </button>
+              </Button>
             </div>
           </>
         );
 
         return (
           <>
-            {original.status === 'pending'
-              ? acceptDeclineButtons
-              : removeFromContactsButton}
+            <small className='text-xs'>{original._id}</small>
+            {original.status === 'pending' ? acceptDeclineButtons : <></>}
             {original.isFavourite ? removeFromFavButton : addToFavButton}
           </>
         );
@@ -107,7 +168,9 @@ export default function myContacts() {
 
   return (
     <DashboardLayout title='My Contacts'>
-      <Table data={data} columns={columns} loading={loading} />
+      <LoadingOverlay active={loaderVisible} spinner>
+        <Table data={data} columns={columns} loading={loading} />
+      </LoadingOverlay>
     </DashboardLayout>
   );
 }

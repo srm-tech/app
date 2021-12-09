@@ -83,7 +83,7 @@ const Invitation = (collection) => ({
     const result = collection.updateOne(
       {
         _id: invitationId,
-        to: inviteeId,
+        contactId: inviteeId,
       },
       {
         $set: {

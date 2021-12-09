@@ -26,7 +26,6 @@ export default function profile() {
   });
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
-  const [commissionDropdown, setCommissionDropdown] = useState('');
 
   const [receivedCash, setReceivedCash] = useState(false);
   const [receivedPercent, setReceivedPercent] = useState(false);
@@ -76,14 +75,12 @@ export default function profile() {
   }, [reset]);
 
   async function saveData(data) {
-    console.log('sent', data);
     setSavedMessage(false);
     setErrorMessage(false);
     const saved = await post('/api/invitations/send', data);
     if (response.ok) {
       setSavedMessage(true);
     } else {
-      console.log('saved:', saved);
       setErrorMessage(true);
     }
   }

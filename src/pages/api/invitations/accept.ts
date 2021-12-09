@@ -1,8 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
+import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
-import { check, validate } from '@/lib/validator';
-import models from '@/models';
 import { handleErrors } from '@/lib/middleware';
+import { check, validate } from '@/lib/validator';
+
+import models from '@/models';
 
 // todo: replace userId
 export default handleErrors(
@@ -11,9 +14,12 @@ export default handleErrors(
     await models.client.connect();
     if (req.method === 'POST') {
       const user = getCurrentUser();
-      const invitationId = req.query.invitationId;
+      const invitationId = req.body.invitationId;
       await validate([check(invitationId).isMongoId()]);
-      result = await models.Invitation.accept(user._id, invitationId);
+      result = await models.MyContacts.accept(
+        new ObjectId(invitationId),
+        user._id
+      );
     } else {
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');
