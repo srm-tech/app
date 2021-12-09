@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import nodemailer from 'nodemailer';
 
 import getCurrentUser from '@/lib/get-current-user';
+import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
@@ -22,33 +22,17 @@ export default handleErrors(
         check('commissionPerCompletedLead').isNumeric(),
         check('commissionPerReceivedLeadPercent').isNumeric(),
       ])(req, res);
-      // const { name, email, text } = req.body;
 
-      const transporter = nodemailer.createTransport({
-        host:
-          process.env.EMAIL_SERVER_HOST ||
-          'email-smtp.ap-southeast-2.amazonaws.com',
-        port: process.env.EMAIL_SERVER_PORT || 587,
-        secure: Boolean(process.env.EMAIL_SECURE || 0),
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASS,
-        },
-      });
-
-      const mailOption = {
-        from: `${user.firstName} ${user.lastName} <${user.email}>`,
+      const mailData = {
+        // from: `${user.firstName} ${user.lastName} <${user.email}>`,
+        from: process.env.EMAIL_FROM,
         to: `${req.body.email}`,
         subject: `A business opportunity from ${user.firstName} ${user.lastName}`,
         text: text(req.body),
         html: html(req.body),
       };
-
-      transporter.sendMail(mailOption, (err, data) => {
-        if (err) {
-          return res.status(500).json({ message: err, statusCode: 500 });
-        }
-      });
+      sendMail(mailData);
+      ś;
     } else {
       res.setHeader('Allow', 'GET');
       return res.status(405).end('Method Not Allowed');

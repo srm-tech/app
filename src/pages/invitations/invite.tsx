@@ -19,6 +19,8 @@ export default function profile() {
     commisionPerReceivedLeadCash: 0,
     commissionPerCompletedLead: 0,
     commissionPerReceivedLeadPercent: 0,
+    message:
+      'I would like to invite you to my network and I am happy to share my revenue based on the below commission structure:',
   });
 
   const [savedMessage, setSavedMessage] = useState(false);
