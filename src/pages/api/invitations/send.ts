@@ -18,21 +18,21 @@ export default handleErrors(
       await validate([
         check('email').isEmail(),
         check('message').isLength({ min: 1, max: 1023 }),
-        check('commissionPerReceivedLeadCash').isNumeric(),
-        check('commissionPerCompletedLead').isNumeric(),
-        check('commissionPerReceivedLeadPercent').isNumeric(),
+        // check('commissionPerReceivedLeadCash').isNumeric(),
+        // check('commissionPerCompletedLead').isNumeric(),
+        // check('commissionPerReceivedLeadPercent').isNumeric(),
       ])(req, res);
 
+      req.body.name = `${user.firstName} ${user.lastName}`;
       const mailData = {
         // from: `${user.firstName} ${user.lastName} <${user.email}>`,
         from: process.env.EMAIL_FROM,
         to: `${req.body.email}`,
-        subject: `A business opportunity from ${user.firstName} ${user.lastName}`,
+        subject: `A business opportunity from ${req.body.name}`,
         text: text(req.body),
         html: html(req.body),
       };
       sendMail(mailData);
-      ś;
     } else {
       res.setHeader('Allow', 'GET');
       return res.status(405).end('Method Not Allowed');
@@ -42,13 +42,35 @@ export default handleErrors(
   }
 );
 
-function html(data) {
-  // message, commissionPerReceivedLeadCash, commissionPerCompletedLead, commissionPerReceivedLeadPercent }: Record<'message' | 'commissionPerReceivedLeadCash' | 'commissionPerCompletedLead' | 'commissionPerReceivedLeadPercent' , string>) {
+function commissionFormatter(data) {
+  let label;
+  let value;
+  switch (data.commissionType) {
+    case 'commissionPerReceivedLeadCash':
+      label = 'Commission per received lead ($)';
+      value = data.commissionPerReceivedLeadCash;
+      break;
+    case 'commissionPerCompletedLeadCash':
+      label = 'Commission per completed lead ($)';
+      value = data.commissionPerCompletedLead;
+      break;
+    case 'commissionPerReceivedLeadPercent':
+      label = 'Commission per received lead (%)';
+      value = data.commissionPerReceivedLeadPercent;
+      break;
+  }
+  return {
+    label: label,
+    value: value,
+  };
+}
 
-  // Some simple styling options
+function html(data) {
   const backgroundColor = '#f9f9f9';
   const textColor = '#444444';
   const mainBackgroundColor = '#ffffff';
+
+  const commission = commissionFormatter(data);
 
   return `
   <body style="background: ${backgroundColor}; padding-bottom: 20px; padding-top: 20px;">
@@ -61,14 +83,19 @@ function html(data) {
     </tr>
     <tr>
       <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        <p><strong>Commission per received lead ($):</strong> ${data.commissionPerReceivedLeadCash}</p>
-        <p><strong>Commission per completed lead ($):</strong> ${data.commissionPerCompletedLead}</p>
-        <p><strong>Commission per received lead (%):</strong> ${data.commissionPerReceivedLeadPercent}</p>
+        <p><strong>${commission.label}:</strong> ${commission.value}</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <p>Best Regards</p>
+        <p>${data.name}</p>
       </td>
     </tr>
     
     <tr>
-      <td align="center" style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
+      <td align="center" style="padding: 0px 0px 10px 0px; font-size: 10px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
         If you did not request this email you can safely ignore it.
       </td>
     </tr>
@@ -79,10 +106,10 @@ function html(data) {
 
 // Email Text body (fallback for email clients that don't render HTML, e.g. feature phones)
 function text(data) {
-  // message, commissionPerReceivedLeadCash, commissionPerCompletedLead, commissionPerReceivedLeadPercent }: Record<'message' | 'commissionPerReceivedLeadCash' | 'commissionPerCompletedLead' | 'commissionPerReceivedLeadPercent' , string>) {
+  const commission = commissionFormatter(data);
   return `${data.message}\n\n
-  Commission per received lead ($): ${data.commissionPerReceivedLeadCash}\n
-  Commission per completed lead ($):</strong> ${data.commissionPerCompletedLead}\n
-  Commission per received lead (%):</strong> ${data.commissionPerReceivedLeadPercent}\n\n
+  ${commission.label}: ${commission.value}\n\n
+  Best Regards,\n
+  ${data.name}
 `;
 }

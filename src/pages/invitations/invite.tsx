@@ -17,15 +17,20 @@ const defaultMessage =
   'I would like to invite you to my network and I am happy to share my revenue based on the below commission structure:';
 
 export default function profile() {
+  // states
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [formValues, setFormValues] = useState({
-    commisionPerReceivedLeadCash: 0,
+    commissionPerReceivedLeadCash: 0,
     commissionPerCompletedLead: 0,
     commissionPerReceivedLeadPercent: 0,
   });
-
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
+  const [commissionDropdown, setCommissionDropdown] = useState('');
+
+  const [receivedCash, setReceivedCash] = useState(false);
+  const [receivedPercent, setReceivedPercent] = useState(false);
+  const [completedCash, setCompletedCash] = useState(false);
 
   const {
     register,
@@ -41,6 +46,24 @@ export default function profile() {
   const { get, post, response, loading, error } = useFetch(
     process.env.BASE_URL
   );
+
+  function handleDropdown(e) {
+    const dropdown = e.target.value;
+    setReceivedCash(false);
+    setReceivedPercent(false);
+    setCompletedCash(false);
+    switch (dropdown) {
+      case 'commissionPerReceivedLeadCash':
+        setReceivedCash(true);
+        break;
+      case 'commissionPerCompletedLeadCash':
+        setCompletedCash(true);
+        break;
+      case 'commissionPerReceivedLeadPercent':
+        setReceivedPercent(true);
+        break;
+    }
+  }
 
   useEffect(() => {
     async function loadData() {
@@ -128,7 +151,7 @@ export default function profile() {
                             htmlFor='email'
                             className='block text-sm font-medium text-gray-700'
                           >
-                            Email address
+                            Email address:
                           </label>
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <input
@@ -168,7 +191,6 @@ export default function profile() {
                           <div className='flex mt-1 rounded-md shadow-sm'>
                             <textarea
                               {...register('message', {
-                                required: true,
                                 minLength: 1,
                                 maxLength: 1023,
                               })}
@@ -183,91 +205,136 @@ export default function profile() {
                         </div>
                         {/* Message field ends here */}
 
-                        {/* Commission per received lead field starts here */}
+                        {/* commission dropdown*/}
+                        {/* Message field starts here */}
                         <div className='sm:col-span-4'>
                           <label
-                            htmlFor='commissionPerReceivedLeadCash'
+                            htmlFor='commisionType'
                             className='block text-sm font-medium text-gray-700'
                           >
-                            Commission per received lead ($):
+                            Choose your commission:
                           </label>
                           <div className='flex mt-1 rounded-md shadow-sm'>
-                            <input
-                              type='number'
-                              defaultValue={
-                                formValues.commissionPerReceivedLeadCash
-                              }
-                              {...register('commissionPerReceivedLeadCash', {
+                            <select
+                              {...register('commissionType', {
                                 required: true,
                               })}
+                              onChange={handleDropdown}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            />
+                            >
+                              <option value=''></option>
+                              <option value='commissionPerReceivedLeadCash'>
+                                Commission per received lead (cash)
+                              </option>
+                              <option value='commissionPerCompletedLeadCash'>
+                                Commission per completed lead (cash)
+                              </option>
+                              <option value='commissionPerReceivedLeadPercent'>
+                                Commission per received lead (percent)
+                              </option>
+                            </select>
                           </div>
-                          {errors.commissionPerReceivedLeadCash?.type ===
-                            'required' && (
+                          {errors.commissionType?.type === 'required' && (
                             <small className='text-red-900'>
                               This field is required
                             </small>
                           )}
                         </div>
+
+                        {/* Commission per received lead field starts here */}
+                        {receivedCash && (
+                          <div className='sm:col-span-4'>
+                            <label
+                              htmlFor='commissionPerReceivedLeadCash'
+                              className='block text-sm font-medium text-gray-700'
+                            >
+                              Commission per received lead ($):
+                            </label>
+                            <div className='flex mt-1 rounded-md shadow-sm'>
+                              <input
+                                type='number'
+                                defaultValue={
+                                  formValues.commissionPerReceivedLeadCash
+                                }
+                                {...register('commissionPerReceivedLeadCash', {
+                                  required: true,
+                                })}
+                                className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                              />
+                            </div>
+                            {errors.commissionPerReceivedLeadCash?.type ===
+                              'required' && (
+                              <small className='text-red-900'>
+                                This field is required
+                              </small>
+                            )}
+                          </div>
+                        )}
                         {/* Commission per received lead field ends here */}
 
                         {/* Commission per completed lead field starts here */}
-                        <div className='sm:col-span-4'>
-                          <label
-                            htmlFor='commissionPerCompletedLead'
-                            className='block text-sm font-medium text-gray-700'
-                          >
-                            Commission per completed lead ($):
-                          </label>
-                          <div className='flex mt-1 rounded-md shadow-sm'>
-                            <input
-                              type='number'
-                              defaultValue={
-                                formValues.commissionPerCompletedLead
-                              }
-                              {...register('commissionPerCompletedLead', {
-                                required: true,
-                              })}
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            />
+                        {completedCash && (
+                          <div className='sm:col-span-4'>
+                            <label
+                              htmlFor='commissionPerCompletedLead'
+                              className='block text-sm font-medium text-gray-700'
+                            >
+                              Commission per completed lead ($):
+                            </label>
+                            <div className='flex mt-1 rounded-md shadow-sm'>
+                              <input
+                                type='number'
+                                defaultValue={
+                                  formValues.commissionPerCompletedLead
+                                }
+                                {...register('commissionPerCompletedLead', {
+                                  required: true,
+                                })}
+                                className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                              />
+                            </div>
+                            {errors.commissionPerCompletedLead?.type ===
+                              'required' && (
+                              <small className='text-red-900'>
+                                This field is required
+                              </small>
+                            )}
                           </div>
-                          {errors.commissionPerCompletedLead?.type ===
-                            'required' && (
-                            <small className='text-red-900'>
-                              This field is required
-                            </small>
-                          )}
-                        </div>
+                        )}
                         {/* Commission per completed lead field ends here */}
 
                         {/* Commission per received lead (%) field starts here */}
-                        <div className='sm:col-span-4'>
-                          <label
-                            htmlFor='commissionPerReceivedLeadPercent'
-                            className='block text-sm font-medium text-gray-700'
-                          >
-                            Commission per received lead (%):
-                          </label>
-                          <div className='flex mt-1 rounded-md shadow-sm'>
-                            <input
-                              type='number'
-                              defaultValue={
-                                formValues.commissionPerReceivedLeadPercent
-                              }
-                              {...register('commissionPerReceivedLeadPercent', {
-                                required: true,
-                              })}
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            />
+                        {receivedPercent && (
+                          <div className='sm:col-span-4'>
+                            <label
+                              htmlFor='commissionPerReceivedLeadPercent'
+                              className='block text-sm font-medium text-gray-700'
+                            >
+                              Commission per received lead (%):
+                            </label>
+                            <div className='flex mt-1 rounded-md shadow-sm'>
+                              <input
+                                type='number'
+                                defaultValue={
+                                  formValues.commissionPerReceivedLeadPercent
+                                }
+                                {...register(
+                                  'commissionPerReceivedLeadPercent',
+                                  {
+                                    required: true,
+                                  }
+                                )}
+                                className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                              />
+                            </div>
+                            {errors.commissionPerReceivedLeadPercent?.type ===
+                              'required' && (
+                              <small className='text-red-900'>
+                                This field is required
+                              </small>
+                            )}
                           </div>
-                          {errors.commissionPerReceivedLeadPercent?.type ===
-                            'required' && (
-                            <small className='text-red-900'>
-                              This field is required
-                            </small>
-                          )}
-                        </div>
+                        )}
                         {/* Commission per received lead (%) field ends here */}
                       </div>
 
