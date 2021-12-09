@@ -13,14 +13,15 @@ interface IFormInput {
   message: string;
 }
 
+const defaultMessage =
+  'I would like to invite you to my network and I am happy to share my revenue based on the below commission structure:';
+
 export default function profile() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [formValues, setFormValues] = useState({
     commisionPerReceivedLeadCash: 0,
     commissionPerCompletedLead: 0,
     commissionPerReceivedLeadPercent: 0,
-    message:
-      'I would like to invite you to my network and I am happy to share my revenue based on the below commission structure:',
   });
 
   const [savedMessage, setSavedMessage] = useState(false);
@@ -44,6 +45,7 @@ export default function profile() {
   useEffect(() => {
     async function loadData() {
       const loaded = await get('/api/business/defaultAgreement');
+      loaded.message = defaultMessage;
       setFormValues(loaded);
       reset(loaded);
     }
@@ -155,6 +157,32 @@ export default function profile() {
                         </div>
                         {/* Email field ends here */}
 
+                        {/* Message field starts here */}
+                        <div className='sm:col-span-4'>
+                          <label
+                            htmlFor='message'
+                            className='block text-sm font-medium text-gray-700'
+                          >
+                            Message:
+                          </label>
+                          <div className='flex mt-1 rounded-md shadow-sm'>
+                            <textarea
+                              {...register('message', {
+                                required: true,
+                                minLength: 1,
+                                maxLength: 1023,
+                              })}
+                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            />
+                          </div>
+                          {errors.message?.type === 'required' && (
+                            <small className='text-red-900'>
+                              This field is required
+                            </small>
+                          )}
+                        </div>
+                        {/* Message field ends here */}
+
                         {/* Commission per received lead field starts here */}
                         <div className='sm:col-span-4'>
                           <label
@@ -241,32 +269,6 @@ export default function profile() {
                           )}
                         </div>
                         {/* Commission per received lead (%) field ends here */}
-
-                        {/* Message field starts here */}
-                        <div className='sm:col-span-4'>
-                          <label
-                            htmlFor='message'
-                            className='block text-sm font-medium text-gray-700'
-                          >
-                            Message:
-                          </label>
-                          <div className='flex mt-1 rounded-md shadow-sm'>
-                            <textarea
-                              {...register('message', {
-                                required: true,
-                                minLength: 1,
-                                maxLength: 1023,
-                              })}
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            />
-                          </div>
-                          {errors.message?.type === 'required' && (
-                            <small className='text-red-900'>
-                              This field is required
-                            </small>
-                          )}
-                        </div>
-                        {/* Message field ends here */}
                       </div>
 
                       <div className='pt-5'>
