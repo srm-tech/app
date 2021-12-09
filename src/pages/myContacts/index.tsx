@@ -10,6 +10,7 @@ import Table from '@/components/table/Table';
 export default function myContacts() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [data, setData] = useState([]);
+  const [reload, setReload] = useState(true);
 
   const { get, post, response, loading, error } = useFetch(
     process.env.BASE_URL
@@ -20,24 +21,33 @@ export default function myContacts() {
       const loaded = await get('/api/myContacts');
       setData(loaded);
     }
-    loadData();
-  }, []);
+    if (reload) loadData();
+    setReload(false);
+    console.log('reload:', reload);
+  }, [reload]);
+
+  async function load() {
+    const loaded = await get('/api/myContacts');
+    setData(loaded);
+  }
 
   async function handleAccept(e, invitationId) {
     const accept = await post('/api/invitations/accept', {
       invitationId: invitationId,
     });
-    setData([]);
+    setReload(true);
   }
 
   async function handleDecline(e, invitationId) {
     const decline = await post('/api/invitations/decline', {
       invitationId: invitationId,
     });
+    setReload(true);
   }
 
   async function handleToggleFav(e, contactId) {
     const fav = await post('/api/favourites/toggle', { contactId: contactId });
+    setReload(true);
   }
 
   async function handleRemoveFromContacts(e, contactId) {
