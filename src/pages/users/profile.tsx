@@ -72,7 +72,7 @@ export default function profile() {
 
   return (
     <>
-      <DashboardLayout>
+      <DashboardLayout title='My Profile'>
         <form method='post' onSubmit={handleSubmit(onSubmit)}>
           <div className='user-form'>
             <div className='md:grid md:grid-cols-3 md:gap-6'>

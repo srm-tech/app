@@ -270,7 +270,7 @@ export default function DashboardLayout({
               <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
                 {/* Replace with your content */}
                 <div className='py-4'>
-                  <div className='border-4 border-gray-200 rounded-lg h-96 p-2'>
+                  <div className='border-4 border-gray-200 rounded-lg p-2'>
                     {children}
                   </div>
                 </div>
