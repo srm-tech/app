@@ -10,7 +10,7 @@ db.userProfiles.drop();
 
 db.userProfiles.insertMany([
   {
-    _id: ObjectId('000000000000000000000001'),
+    _id: ObjectId('000es000000000000000000001'),
     firstName: 'Adam',
     lastName: 'Abacki',
     businessName: 'Supersoft SA',

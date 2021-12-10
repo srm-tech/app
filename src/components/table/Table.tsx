@@ -82,7 +82,7 @@ export default function Table({ columns, data, loading }: TableProps) {
       <div>
         {headerGroups.map((headerGroup) =>
           headerGroup.headers.map((column) => (
-            <div key='filter-{column.toString()}'>
+            <div key={`filter-${column.id}`}>
               {column.render('Header')}
               {column.canFilter ? column.render('Filter') : null}
             </div>
@@ -97,7 +97,7 @@ export default function Table({ columns, data, loading }: TableProps) {
             headerGroups.map((headerGroup) => (
               // Apply the header row props
               <tr
-                key='row-{headerGroup.toString()}'
+                key={`row-${headerGroup.toString()}`}
                 {...headerGroup.getHeaderGroupProps()}
               >
                 {
@@ -105,7 +105,7 @@ export default function Table({ columns, data, loading }: TableProps) {
                   headerGroup.headers.map((column) => (
                     // Apply the header cell props
                     <th
-                      key='col-{column.toString()}'
+                      key={`col-${column.toString()}`}
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                     >
                       {
@@ -147,7 +147,7 @@ export default function Table({ columns, data, loading }: TableProps) {
               prepareRow(row);
               return (
                 // Apply the row props
-                <tr key='row-{row.toString()}' {...row.getRowProps()}>
+                <tr key={`row-${row.toString()}`} {...row.getRowProps()}>
                   {
                     // Loop over the rows cells
                     row.cells.map((cell) => {

@@ -38,6 +38,7 @@ export default handleErrors(
         // check('phone').isLength({ min: 1, max: 50 }),
       ])(req, res);
       req.body.contactId = new ObjectId(req.body.contactId);
+      req.body.dateInvited = new Date();
       result = await models.MyContacts.create({
         userId: user._id,
         ...req.body,

@@ -1,9 +1,11 @@
+import { LinkIcon } from '@heroicons/react/solid';
 import React, { useEffect, useState } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
 import Button from '@/components/buttons/Button';
+import Link from '@/components/buttons/Link';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import Table from '@/components/table/Table';
 
@@ -13,23 +15,22 @@ export default function myContacts() {
   const [reload, setReload] = useState(true);
 
   const { get, post, response, loading, error } = useFetch(
-    process.env.BASE_URL
+    process.env.BASE_URL,
+    { cachePolicy: 'no-cache' },
+    []
   );
 
-  useEffect(() => {
-    async function loadData() {
-      const loaded = await get('/api/myContacts');
-      setData(loaded);
-    }
-    if (reload) loadData();
+  async function loadData() {
+    const loaded = await get(`/api/myContacts`);
     setReload(false);
-    console.log('reload:', reload);
-  }, [reload]);
-
-  async function load() {
-    const loaded = await get('/api/myContacts');
     setData(loaded);
   }
+
+  useEffect(() => {
+    if (reload) {
+      loadData();
+    }
+  }, [reload]);
 
   async function handleAccept(e, invitationId) {
     const accept = await post('/api/invitations/accept', {
@@ -47,6 +48,7 @@ export default function myContacts() {
 
   async function handleToggleFav(e, contactId) {
     const fav = await post('/api/favourites/toggle', { contactId: contactId });
+    console.log('000');
     setReload(true);
   }
 
@@ -69,8 +71,10 @@ export default function myContacts() {
           <div className='cell-name'>
             {original.contact.firstName} {original.contact.lastName}
           </div>
-          <div className='cell-email'>{original.contact.email}</div>
-          <div className='cell-phone'>{original.contact.phone}</div>
+          <small>
+            <div className='cell-email'>{original.contact.email}</div>
+            <div className='cell-phone'>{original.contact.phone}</div>
+          </small>
         </>
       ),
     },
@@ -93,12 +97,22 @@ export default function myContacts() {
       Header: 'favourites',
       accessor: 'isFavourite',
       Cell: ({ row: { original } }) => (
-        <>{original.isFavourite ? <>&#x2665;</> : ''}</>
+        <Link href='' onClick={(e) => handleToggleFav(e, original._id)}>
+          {original.isFavourite ? (
+            <span className='text-red-700' aria-label='remove from favourites'>
+              &#x2665;
+            </span>
+          ) : (
+            <span className='text-red-100' aria-label='add to favourites'>
+              &#x2665;
+            </span>
+          )}
+        </Link>
       ),
     },
     { Header: 'status', accessor: 'status' },
     {
-      Header: '',
+      Header: 'actions',
       accessor: '_id',
       Cell: ({ row: { original } }) => {
         const id = original._id;
@@ -137,45 +151,12 @@ export default function myContacts() {
           </>
         );
 
-        const addToFavButton = (
-          <>
-            <div>
-              <Button
-                variants='primary'
-                className='text-xs'
-                onClick={(e) => handleToggleFav(e, id)}
-              >
-                Add to favourites
-              </Button>
-            </div>
-          </>
-        );
-
-        const removeFromFavButton = (
-          <>
-            <div>
-              <Button
-                variants='secondary'
-                className='text-xs'
-                onClick={(e) => handleToggleFav(e, id)}
-              >
-                Remove from favourites
-              </Button>
-            </div>
-          </>
-        );
-
         return (
-          <>
-            <small className='text-xs'>{original._id}</small>
-            {original.status === 'pending' ? acceptDeclineButtons : <></>}
-            {original.isFavourite ? removeFromFavButton : addToFavButton}
-          </>
+          <>{original.status === 'pending' ? acceptDeclineButtons : <></>}</>
         );
       },
     },
   ];
-
   return (
     <DashboardLayout title='My Contacts'>
       <LoadingOverlay active={loaderVisible} spinner>
