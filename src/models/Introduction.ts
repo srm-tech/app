@@ -7,13 +7,13 @@ const Introduction = (collection) => ({
         {
           $match: {
             action: 'sent',
-            to: new ObjectId(userId),
+            from: userId,
           },
         },
         {
           $lookup: {
-            from: 'users',
-            localField: 'from',
+            from: 'userProfiles',
+            localField: 'to',
             foreignField: '_id',
             as: 'user',
           },
@@ -21,23 +21,6 @@ const Introduction = (collection) => ({
         {
           $unwind: '$user',
         },
-        {
-          $addFields: {
-            userId: '$_id',
-            name: {
-              $concat: ['$user.firstName', ' ', '$user.lastName'],
-            },
-            email: '$user.email',
-            phone: '$user.phone',
-            businessName: '$user.businessName',
-            businessCategory: '$user.businessCategory',
-            rating: '$user.rating',
-            succesfulRate: '$user.succesfulRate',
-            averageCommission: '$user.averageCommission',
-            commissionEarned: '$user.commissionEarned',
-          },
-        },
-        { $unset: 'user' },
       ])
       .sort({ date: -1 })
       .toArray();
@@ -96,6 +79,31 @@ const Introduction = (collection) => ({
       to: userId,
     });
   },
+  getFinalise: async (fromId, objId, toId) => {
+    return await collection
+      .aggregate([
+        {
+          $match: {
+            action: 'sent',
+            from: fromId,
+            to: toId,
+            _id: objId,
+          },
+        },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'to',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: '$user',
+        },
+      ])
+      .toArray();
+  },
   accept: async (userId, objId) => {
     return await collection.updateOne(
       {
@@ -125,7 +133,6 @@ const Introduction = (collection) => ({
     );
   },
   reviewDefaultAgreement: async (data) => {
-    console.log(data);
     const obj = await collection.updateOne(
       {
         _id: new ObjectId(data.introId),
@@ -166,7 +173,10 @@ const Introduction = (collection) => ({
         },
       }
     );
-    return obj;
+
+    const update = await collection.updateOne({});
+
+    // return obj;
   },
 });
 

@@ -4,7 +4,6 @@ import LoadingOverlay from 'react-loading-overlay';
 import useFetch from 'use-http';
 
 import DashboardLayout from '@/components/layouts/DashboardLayout';
-import { resetIdCounter } from 'downshift';
 
 interface IFormInput {
   firstName: string;
@@ -72,7 +71,7 @@ export default function profile() {
 
   return (
     <>
-      <DashboardLayout title='My Profile'>
+      <DashboardLayout title='My Finalise job'>
         <form method='post' onSubmit={handleSubmit(onSubmit)}>
           <div className='user-form'>
             <div className='md:grid md:grid-cols-3 md:gap-6'>

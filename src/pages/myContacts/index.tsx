@@ -1,4 +1,3 @@
-import { LinkIcon } from '@heroicons/react/solid';
 import React, { useEffect, useState } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 import StarRatingComponent from 'react-star-rating-component';
@@ -15,7 +14,7 @@ export default function myContacts() {
   const [reload, setReload] = useState(true);
 
   const { get, post, response, loading, error } = useFetch(
-    process.env.BASE_URL,
+    `{$process.env.BASE_URL}`,
     { cachePolicy: 'no-cache' },
     []
   );
@@ -33,14 +32,14 @@ export default function myContacts() {
   }, [reload]);
 
   async function handleAccept(e, invitationId) {
-    const accept = await post('/api/invitations/accept', {
+    const accept = await post('/invitations/accept', {
       invitationId: invitationId,
     });
     setReload(true);
   }
 
   async function handleDecline(e, invitationId) {
-    const decline = await post('/api/invitations/decline', {
+    const decline = await post('/invitations/decline', {
       invitationId: invitationId,
     });
     setReload(true);
@@ -53,7 +52,7 @@ export default function myContacts() {
   }
 
   async function handleRemoveFromContacts(e, contactId) {
-    const remove = await post('/api/myContacts/remove', {
+    const remove = await post('/myContacts/remove', {
       contactId: contactId,
     });
   }
@@ -132,20 +131,6 @@ export default function myContacts() {
                 onClick={(e) => handleDecline(e, id)}
               >
                 Decline
-              </Button>
-            </div>
-          </>
-        );
-
-        const removeFromContactsButton = (
-          <>
-            <div>
-              <Button
-                variants='secondary'
-                className='text-xs'
-                onClick={(e) => handleRemoveFromContacts(e, id)}
-              >
-                Remove from contacts
               </Button>
             </div>
           </>
