@@ -79,6 +79,9 @@ const Introduction = (collection) => ({
       to: userId,
     });
   },
+  getOne: async (id) => {
+    return await collection.findOne({ _id: id });
+  },
   getFinalise: async (fromId, objId, toId) => {
     return await collection
       .aggregate([

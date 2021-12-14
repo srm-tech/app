@@ -17,6 +17,20 @@ export default function introductions() {
     []
   );
 
+  async function handleAccept(e, introId) {
+    const accept = await post('/invitations/accept', {
+      introId: introId,
+    });
+    setReload(true);
+  }
+
+  async function handleDecline(e, introId) {
+    const decline = await post('/invitations/decline', {
+      introId: introId,
+    });
+    setReload(true);
+  }
+
   async function loadData() {
     const loaded = await get(`/api/introductions`);
     console.log('loaded:', loaded);
@@ -67,18 +81,40 @@ export default function introductions() {
                 <input type='hidden' name='jobId' value={original._id} />
                 <input type='hidden' name='toId' value={original.toId} />
                 <Button type='submit' variants='primary' className='text-xs'>
-                  Reclaim
+                  Reclaim payment
                 </Button>
               </form>
             </div>
           </>
         );
 
+        const id = original._id;
+        const acceptDeclineButtons = (
+          <>
+            <div>
+              <Button
+                variants='primary'
+                className='text-xs'
+                onClick={(e) => handleAccept(e, id)}
+              >
+                Accept
+              </Button>
+              <Button
+                variants='secondary'
+                className='text-xs'
+                onClick={(e) => handleDecline(e, id)}
+              >
+                Decline
+              </Button>
+            </div>
+          </>
+        );
+
         return (
           <>
-            <small>{original._id}</small>
-            {reclaimButton}
-            {/* {original.status === 'accepted' ? reclaimButton : <></>} */}
+            {original.status === 'pending'
+              ? acceptDeclineButtons
+              : reclaimButton}
           </>
         );
       },

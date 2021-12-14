@@ -1,12 +1,14 @@
-import { UsersIcon } from '@heroicons/react/outline';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import LoadingOverlay from 'react-loading-overlay';
+import Stripe from 'stripe';
 import useFetch from 'use-http';
 
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 import { env } from '@/config';
+import { formatAmountForStripe } from '@/lib/stripe-helpers';
+import { tryGetPreviewData } from 'next/dist/server/api-utils';
 
 interface IFormInput {
   revenue: number;
@@ -15,7 +17,7 @@ interface IFormInput {
   total: number;
 }
 
-export default function profile() {
+export default function finalise() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [formValues, setFormValues] = useState({
     revenue: 0,
@@ -34,6 +36,7 @@ export default function profile() {
     reset,
   } = useForm();
 
+  // todo: do it better, please. I have done this quickly and dirty, and feel bad about it :'(
   function handleChange(e) {
     const data = e.target.form.elements;
     const revenue: number = isNaN(parseFloat(data[0].value))
@@ -72,7 +75,20 @@ export default function profile() {
   async function saveData(data) {
     setSavedMessage(false);
     setErrorMessage(false);
-    // const saved = await post('/api/me/change', data);
+
+    // told ya I've done this dirty?
+    const amount =
+      data.revenue +
+      data.reward +
+      data.tip +
+      (data.revenue + data.reward + data.tip) * env.TRANSACTION_FEE;
+
+    const paymentResult = await post('/api/job/makePayment', {
+      amount: amount,
+      jobId: '61a548a0aa75eb61c81cbaac', // todo: temporary!
+      to: '000000000000000000000002', // todo: temporary!
+    });
+    console.log('pay', paymentResult);
   }
 
   //   if (response.ok) {
@@ -127,7 +143,7 @@ export default function profile() {
                     <div className='px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8'>
                       <div className='pr-16 sm:text-center sm:px-16'>
                         <p className='font-medium text-white'>
-                          <span>Your invitation has been sent</span>
+                          <span>Your payment was successful</span>
                         </p>
                       </div>
                     </div>
@@ -241,7 +257,7 @@ export default function profile() {
                               type='number'
                               step='0.01'
                               {...register('guruFee', {
-                                required: true,
+                                required: false,
                               })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
