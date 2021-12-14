@@ -24,6 +24,13 @@ export default handleErrors(
       });
     } else if (req.method === 'GET') {
       result = await models.Agreement.findOne(user._id);
+      if (!result) {
+        result = {
+          commissionPerReceivedLeadCash: 0,
+          commissionPerCompletedLead: 0,
+          commissionPerReceivedLeadPercent: 0,
+        };
+      }
     } else {
       res.setHeader('Allow', 'GET, POST');
       return res.status(405).end('Method Not Allowed');

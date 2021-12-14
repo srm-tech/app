@@ -78,7 +78,9 @@ const UserProfile = (collection) => ({
     });
   },
   updateOne: async (data) => {
-    return collection.updateOne({ _id: data.userId }, { $set: data });
+    const _id = data.userId;
+    delete data._id;
+    return collection.updateOne({ _id: _id }, { $set: data });
   },
 });
 

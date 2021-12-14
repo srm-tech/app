@@ -82,14 +82,14 @@ const Introduction = (collection) => ({
   getOne: async (id) => {
     return await collection.findOne({ _id: id });
   },
-  getFinalise: async (fromId, objId, toId) => {
+  getFinalise: async (fromId, objId) => {
     return await collection
       .aggregate([
         {
           $match: {
             action: 'sent',
+            status: 'accepted',
             from: fromId,
-            to: toId,
             _id: objId,
           },
         },

@@ -13,6 +13,7 @@ interface IFormInput {
   businessCategory: string;
   isGuru: boolean;
   isBusiness: boolean;
+  stripeId: string;
 }
 
 export default function profile() {
@@ -25,6 +26,7 @@ export default function profile() {
     businessCategory: '',
     isGuru: false,
     isBusiness: false,
+    stripeId: '',
   });
 
   const [savedMessage, setSavedMessage] = useState(false);
@@ -329,6 +331,29 @@ export default function profile() {
                     </div>
                   </div>
                   {/* business category field ends here */}
+
+                  {/* Stripe ID field starts */}
+                  <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                    <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                      <label
+                        htmlFor='isBusiness'
+                        className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                      >
+                        Stripe ID
+                      </label>
+                      <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                        <div className='flex max-w-lg rounded-md'>
+                          <input
+                            type='text'
+                            defaultValue={formValues.stripeId}
+                            {...register('stripeId')}
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Stripe ID field ends here */}
 
                   <div className='pt-5'>
                     <div className='flex justify-end'>

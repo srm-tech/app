@@ -13,12 +13,10 @@ export default handleErrors(
     if (req.method === 'POST') {
       const user = getCurrentUser();
       const jobId = req.body.jobId;
-      const toId = req.body.toId;
 
       result = await models.Introduction.getFinalise(
         user._id,
-        new ObjectId(jobId),
-        new ObjectId(toId)
+        new ObjectId(jobId)
       );
 
       if (!result) {

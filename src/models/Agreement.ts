@@ -5,6 +5,9 @@ const Agreement = (collection) => ({
     data.reviewedId = new ObjectId(data.reviewedId);
     return collection.insertOne(data);
   },
+  createJob: async (data) => {
+    return collection.insertOne(data);
+  },
   findOne: async (userId) => {
     return collection.findOne({
       userId: new ObjectId(userId),

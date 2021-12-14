@@ -1,14 +1,18 @@
+import bodyParser from 'body-parser';
+import { GetServerSideProps } from 'next';
+import getRawBody from 'raw-body';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import LoadingOverlay from 'react-loading-overlay';
 import Stripe from 'stripe';
 import useFetch from 'use-http';
+import util from 'util';
+
+import { formatAmountForStripe } from '@/lib/stripe-helpers';
 
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 import { env } from '@/config';
-import { formatAmountForStripe } from '@/lib/stripe-helpers';
-import { tryGetPreviewData } from 'next/dist/server/api-utils';
 
 interface IFormInput {
   revenue: number;
@@ -16,8 +20,45 @@ interface IFormInput {
   tip: number;
   total: number;
 }
+const getBody = util.promisify(bodyParser.urlencoded());
 
-export default function finalise() {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  if (req.method === 'POST') {
+    await getBody(req, res);
+    return {
+      props: {
+        ...req.body,
+      },
+    };
+  } else {
+    return {
+      redirect: {
+        destination: '/introductions',
+        permanent: false,
+      },
+    };
+  }
+};
+
+export default function finalise(props) {
+  // todo: do it better, please. I have done this quickly and dirty, and feel bad about it :'(
+  function handleChange(e) {
+    const data = e.target.form.elements;
+    const revenue: number = isNaN(parseFloat(data[0].value))
+      ? 0
+      : parseFloat(data[0].value);
+    const reward: number = isNaN(parseFloat(data[1].value))
+      ? 0
+      : parseFloat(data[1].value);
+    const tip: number = isNaN(parseFloat(data[2].value))
+      ? 0
+      : parseFloat(data[2].value);
+    const guruFee = (revenue + reward + tip) * env.TRANSACTION_FEE;
+    const total = revenue + reward + tip + guruFee;
+    data[3].value = guruFee.toFixed(2);
+    data[4].value = total.toFixed(2);
+  }
+
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [formValues, setFormValues] = useState({
     revenue: 0,
@@ -36,23 +77,6 @@ export default function finalise() {
     reset,
   } = useForm();
 
-  // todo: do it better, please. I have done this quickly and dirty, and feel bad about it :'(
-  function handleChange(e) {
-    const data = e.target.form.elements;
-    const revenue: number = isNaN(parseFloat(data[0].value))
-      ? 0
-      : parseFloat(data[0].value);
-    const reward: number = isNaN(parseFloat(data[1].value))
-      ? 0
-      : parseFloat(data[1].value);
-    const tip: number = isNaN(parseFloat(data[2].value))
-      ? 0
-      : parseFloat(data[2].value);
-    const guruFee = (revenue + reward + tip) * env.TRANSACTION_FEE;
-    const total = revenue + reward + tip + guruFee;
-    data[3].value = guruFee.toFixed(2);
-    data[4].value = total.toFixed(2);
-  }
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     saveData(data);
   };
@@ -63,8 +87,7 @@ export default function finalise() {
 
   useEffect(() => {
     async function loadData() {
-      // const loaded = await get('/api/job/finalise', {
-      // });
+      const loaded = await get('/api/job/finalise', {});
       // setFormValues(loaded);
       // reset(loaded);
       // setFormValues();

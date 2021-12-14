@@ -28,13 +28,8 @@ export default handleErrors(
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
         apiVersion: '2020-08-27',
       });
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
-        currency: env.CURRENCY,
-        payment_method_types: ['card'],
-        on_behalf_of: job[0].user.stripeId, // connected user Stripe id
-      });
-      console.log('pi', paymentIntent);
+
+      // console.log('pi', paymentIntent);
     } else {
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');

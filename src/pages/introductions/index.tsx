@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 import useFetch from 'use-http';
@@ -38,10 +39,6 @@ export default function introductions() {
     setData(loaded);
   }
 
-  async function handleReclaim(e, introId) {
-    window.location.href = '/';
-  }
-
   useEffect(() => {
     if (reload) {
       loadData();
@@ -79,7 +76,6 @@ export default function introductions() {
             <div>
               <form action='/job/finalise' method='post'>
                 <input type='hidden' name='jobId' value={original._id} />
-                <input type='hidden' name='toId' value={original.toId} />
                 <Button type='submit' variants='primary' className='text-xs'>
                   Reclaim payment
                 </Button>

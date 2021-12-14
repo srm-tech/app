@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
+import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
@@ -12,26 +13,40 @@ export default handleErrors(
     await models.client.connect();
     const _userId = getCurrentUser();
     const user = await models.UserProfile.getOne(_userId._id);
-
-    const result = { message: 'OK' };
+    let result;
     if (req.method === 'POST') {
       await validate([
         check('email').isEmail(),
         check('message').isLength({ min: 1, max: 1023 }),
-        // check('commissionPerReceivedLeadCash').isNumeric(),
-        // check('commissionPerCompletedLead').isNumeric(),
-        // check('commissionPerReceivedLeadPercent').isNumeric(),
       ])(req, res);
 
       req.body.name = `${user.firstName} ${user.lastName}`;
       const mailData = {
-        // from: `${user.firstName} ${user.lastName} <${user.email}>`,
         from: process.env.EMAIL_FROM,
         to: `${req.body.email}`,
         subject: `A business opportunity from ${req.body.name}`,
         text: text(req.body),
         html: html(req.body),
       };
+      const commission = commissionFormatter(req.body);
+      const idData = {
+        userId: new ObjectId(req.body.userId),
+        email: req.body.email,
+        commissionType: req.body.commissionType,
+      };
+      idData[req.body.commissionType] = commission.value;
+
+      const id = await models.Agreement.createJob(idData);
+
+      result = await models.Introduction.create({
+        from: new ObjectId(user._id),
+        to: null,
+        status: 'pending',
+        date: new Date(),
+        action: 'sent',
+        agreementId: id.insertedId,
+      });
+
       sendMail(mailData);
     } else {
       res.setHeader('Allow', 'GET');
