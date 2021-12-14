@@ -18,14 +18,14 @@ export default function introductions() {
   );
 
   async function handleAccept(e, introId) {
-    const accept = await post('/invitations/accept', {
+    const accept = await post('/introductions/accept', {
       introId: introId,
     });
     setReload(true);
   }
 
   async function handleDecline(e, introId) {
-    const decline = await post('/invitations/decline', {
+    const decline = await post('/introductions/decline', {
       introId: introId,
     });
     setReload(true);
