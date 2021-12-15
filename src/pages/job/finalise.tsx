@@ -25,6 +25,7 @@ const getBody = util.promisify(bodyParser.urlencoded());
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   if (req.method === 'POST') {
     await getBody(req, res);
+
     return {
       props: {
         ...req.body,
@@ -69,6 +70,8 @@ export default function finalise(props) {
 
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
+  const [jobData, setJobData] = useState({});
+  const [mailSent, setMailSent] = useState(false);
 
   const {
     register,
@@ -77,6 +80,7 @@ export default function finalise(props) {
     reset,
   } = useForm();
 
+  // const onSubmit = data => console.log("!", data);
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     saveData(data);
   };
@@ -85,19 +89,22 @@ export default function finalise(props) {
     process.env.BASE_URL
   );
 
-  useEffect(() => {
-    async function loadData() {
-      const loaded = await get('/api/job/finalise', {});
-      // setFormValues(loaded);
-      // reset(loaded);
-      // setFormValues();
-    }
-    // loadData();
-  }, [reset]);
+  async function loadData() {
+    const loaded = await post('/api/job/finalise', {
+      jobId: props.jobId,
+    });
+    setJobData(loaded);
+  }
+
+  // useEffect(() => {
+  //   loadData();
+  // }, []);
 
   async function saveData(data) {
+    console.log('save2!');
     setSavedMessage(false);
     setErrorMessage(false);
+    setMailSent(false);
 
     // told ya I've done this dirty?
     const amount =
@@ -106,25 +113,29 @@ export default function finalise(props) {
       data.tip +
       (data.revenue + data.reward + data.tip) * env.TRANSACTION_FEE;
 
-    const paymentResult = await post('/api/job/makePayment', {
-      amount: amount,
-      jobId: '61a548a0aa75eb61c81cbaac', // todo: temporary!
-      to: '000000000000000000000002', // todo: temporary!
-    });
-    console.log('pay', paymentResult);
-  }
+    // todo: temp data for make payment
+    const paymentData = {
+      amount: 1500,
+      fee: 45,
+      jobId: '61a548a0aa75eb61c81cbaac',
+      stripeId: null,
+    };
 
-  //   if (response.ok) {
-  //     setSavedMessage(true);
-  //   } else {
-  //     setErrorMessage(true);
-  //   }
-  // }
+    if (!paymentData.stripeId) {
+      const sentMail = await post('/api/job/sendMail', {
+        jobId: paymentData.jobId,
+        amount: paymentData.amount,
+      });
+      if (sentMail) {
+        setMailSent(true);
+      }
+    }
+  }
 
   useEffect(() => {
     setLoaderVisible(loading);
   }, [loading]);
-
+  console.log(errors);
   return (
     <>
       <DashboardLayout>
@@ -173,17 +184,27 @@ export default function finalise(props) {
                   </div>
                 )}
                 {/* end of ok message */}
+                {/* sent mail  message */}
+                {mailSent && (
+                  <div className='relative bg-green-800'>
+                    <div className='px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8'>
+                      <div className='pr-16 sm:text-center sm:px-16'>
+                        <p className='font-medium text-white'>
+                          <span>
+                            Your Guru hasn't got his/hers Stripe account yet. We
+                            have to wait for him to create one. Click here to
+                            return to introductions page.
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {/* end of sent mail message */}
                 <LoadingOverlay active={loaderVisible} spinner>
                   <div className='space-y-8 divide-y divide-gray-200'>
                     <div>
                       <div className='grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6'>
-                        {/* Guru */}
-                        <div className='flex p-2 mt-1 rounded-md shadow-md sm:col-span-4'>
-                          <small>Guru:</small>
-                        </div>
-
-                        {/* Guru ends here */}
-
                         {/* Revenue field starts here */}
                         <div className='sm:col-span-4'>
                           <label
@@ -196,10 +217,10 @@ export default function finalise(props) {
                             <input
                               type='number'
                               step='0.01'
+                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                               {...register('revenue', {
                                 required: true,
                               })}
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
                           </div>
 
@@ -223,10 +244,10 @@ export default function finalise(props) {
                             <input
                               type='number'
                               step='0.01'
+                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                               {...register('reward', {
                                 required: true,
                               })}
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
                           </div>
 
@@ -250,10 +271,10 @@ export default function finalise(props) {
                             <input
                               type='number'
                               step='0.01'
+                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                               {...register('tip', {
                                 required: true,
                               })}
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
                           </div>
 
@@ -279,10 +300,10 @@ export default function finalise(props) {
                               defaultValue={0}
                               type='number'
                               step='0.01'
+                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                               {...register('guruFee', {
                                 required: false,
                               })}
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             />
                           </div>
 
@@ -306,10 +327,8 @@ export default function finalise(props) {
                             <input
                               disabled={true}
                               type='number'
-                              {...register('total', {
-                                required: true,
-                              })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                              {...register('total')}
                             />
                           </div>
 
@@ -323,12 +342,14 @@ export default function finalise(props) {
                       </div>
                       <div className='pt-5'>
                         <div className='flex justify-end'>
-                          <button
-                            type='submit'
-                            className='inline-flex justify-center px-4 py-2 ml-3 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
-                          >
-                            Confirm
-                          </button>
+                          {!mailSent && (
+                            <button
+                              type='submit'
+                              className='inline-flex justify-center px-4 py-2 ml-3 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+                            >
+                              Confirm
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>

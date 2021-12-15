@@ -34,7 +34,6 @@ export default function introductions() {
 
   async function loadData() {
     const loaded = await get(`/api/introductions`);
-    console.log('loaded:', loaded);
     setReload(false);
     setData(loaded);
   }
@@ -118,7 +117,6 @@ export default function introductions() {
   ];
 
   const list = data || [];
-  console.log('data:', data);
   return (
     <DashboardLayout title='Introductions'>
       <LoadingOverlay active={loaderVisible} spinner>

@@ -82,6 +82,17 @@ const UserProfile = (collection) => ({
     delete data._id;
     return collection.updateOne({ _id: _id }, { $set: data });
   },
+  addStripe: async (data) => {
+    return collection.updateOne(
+      { _id: data._id },
+      {
+        $set: {
+          stripeId: data.stripeId,
+          accountLink: data.accountLink,
+        },
+      }
+    );
+  },
 });
 
 export default UserProfile;

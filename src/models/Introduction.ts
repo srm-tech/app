@@ -181,6 +181,19 @@ const Introduction = (collection) => ({
 
     // return obj;
   },
+  updateStatus: async (jobId, status) => {
+    const obj = await collection.updateOne(
+      {
+        _id: jobId,
+      },
+      {
+        $set: {
+          status: status,
+        },
+      }
+    );
+    return obj;
+  },
 });
 
 export default Introduction;

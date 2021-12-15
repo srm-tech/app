@@ -16,20 +16,22 @@ export default handleErrors(
     await models.client.connect();
     if (req.method === 'POST') {
       const user = getCurrentUser();
+
+      validate([
+        check('amount').isNumeric(),
+        check('jobId').isMongoId(),
+        check('fee').isNumeric(),
+      ]);
+
       const amount = req.body.amount;
       const jobId = req.body.jobId;
-      const toId = req.body.to;
+      const fee = req.body.fee;
+      const stripeId = req.body.stripeId;
 
       const job = await models.Introduction.getFinalise(
         user._id,
-        new ObjectId(jobId),
-        new ObjectId(toId)
+        new ObjectId(jobId)
       );
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2020-08-27',
-      });
-
-      // console.log('pi', paymentIntent);
     } else {
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');
