@@ -80,6 +80,7 @@ const Introduction = (collection) => ({
     });
   },
   getOne: async (id) => {
+    console.log('id', id);
     return await collection.findOne({ _id: id });
   },
   getFinalise: async (fromId, objId) => {

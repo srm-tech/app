@@ -38,11 +38,7 @@ export default handleErrors(
         apiVersion: '2020-08-27',
       });
 
-      // todo: fix it!
-      // const account = await stripe.accounts.create({type: 'standard'});
-      const account = {
-        id: 'acct_1K6ldwRFsSLgGzfG',
-      };
+      const account = await stripe.accounts.create({ type: 'standard' });
       const accountLink = await stripe.accountLinks.create({
         account: account.id,
         refresh_url: `${process.env.BASE_URL}/refresh`,
@@ -66,11 +62,13 @@ export default handleErrors(
         addDataToProfile.modifiedCount === 1
       ) {
         result = {
+          statusCode: 200,
           message: 'OK',
         };
       } else {
         result = {
-          message: 'Something wrong',
+          statusCode: 200,
+          message: 'Not changed',
         };
       }
 

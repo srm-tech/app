@@ -76,7 +76,7 @@ export default function introductions() {
               <form action='/job/finalise' method='post'>
                 <input type='hidden' name='jobId' value={original._id} />
                 <Button type='submit' variants='primary' className='text-xs'>
-                  Reclaim payment
+                  Finish job
                 </Button>
               </form>
             </div>

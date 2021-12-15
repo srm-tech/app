@@ -1,14 +1,10 @@
 import bodyParser from 'body-parser';
 import { GetServerSideProps } from 'next';
-import getRawBody from 'raw-body';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import LoadingOverlay from 'react-loading-overlay';
-import Stripe from 'stripe';
 import useFetch from 'use-http';
 import util from 'util';
-
-import { formatAmountForStripe } from '@/lib/stripe-helpers';
 
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
@@ -23,22 +19,14 @@ interface IFormInput {
 const getBody = util.promisify(bodyParser.urlencoded());
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  if (req.method === 'POST') {
-    await getBody(req, res);
-
-    return {
-      props: {
-        ...req.body,
-      },
-    };
-  } else {
-    return {
-      redirect: {
-        destination: '/introductions',
-        permanent: false,
-      },
-    };
-  }
+  // if (req.method === 'POST') {
+  await getBody(req, res);
+  return {
+    props: {
+      ...req.body,
+    },
+  };
+  // }
 };
 
 export default function finalise(props) {
@@ -70,6 +58,7 @@ export default function finalise(props) {
 
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
+  const [errorMessageText, setErrorMessageText] = useState('');
   const [jobData, setJobData] = useState({});
   const [mailSent, setMailSent] = useState(false);
 
@@ -101,10 +90,10 @@ export default function finalise(props) {
   // }, []);
 
   async function saveData(data) {
-    console.log('save2!');
     setSavedMessage(false);
     setErrorMessage(false);
     setMailSent(false);
+    setErrorMessageText('');
 
     // told ya I've done this dirty?
     const amount =
@@ -117,17 +106,32 @@ export default function finalise(props) {
     const paymentData = {
       amount: 1500,
       fee: 45,
-      jobId: '61a548a0aa75eb61c81cbaac',
-      stripeId: null,
+      jobId: '61b8ff87de6abd36eee83cee',
+      stripeId: 'acct_1K702VRP3ieqtpLe',
     };
 
     if (!paymentData.stripeId) {
-      const sentMail = await post('/api/job/sendMail', {
+      const result = await post('/api/job/sendMail', {
         jobId: paymentData.jobId,
         amount: paymentData.amount,
       });
-      if (sentMail) {
+      if (result.statusCode === 200) {
         setMailSent(true);
+      } else {
+        setErrorMessage(true);
+        setErrorMessageText(result.message);
+      }
+    } else {
+      const result = await post('/api/job/makePayment', {
+        jobId: paymentData.jobId,
+        amount: paymentData.amount,
+        fee: paymentData.fee,
+      });
+      if (result.statusCode !== 200) {
+        setErrorMessage(true);
+        setErrorMessageText(result.message);
+      } else {
+        window.location.href = result.url;
       }
     }
   }
@@ -135,7 +139,6 @@ export default function finalise(props) {
   useEffect(() => {
     setLoaderVisible(loading);
   }, [loading]);
-  console.log(errors);
   return (
     <>
       <DashboardLayout>
@@ -162,9 +165,11 @@ export default function finalise(props) {
                     <div className='px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8'>
                       <div className='pr-16 sm:text-center sm:px-16'>
                         <p className='font-medium text-red-400'>
-                          <span>
-                            Uh, oh! A problem occured while sending your email!
-                          </span>
+                          Uh, oh! A problem occured while processing your
+                          payment!
+                        </p>
+                        <p className='text-red-400'>
+                          <small>{errorMessageText}</small>
                         </p>
                       </div>
                     </div>

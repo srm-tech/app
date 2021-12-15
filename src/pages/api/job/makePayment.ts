@@ -8,6 +8,8 @@ import { check, validate } from '@/lib/validator';
 
 import { env } from '@/config';
 import models from '@/models';
+import { formatAmountForStripe } from '@/lib/stripe-helpers';
+import { redirect } from 'next/dist/server/api-utils';
 
 // todo: replace userId
 export default handleErrors(
@@ -23,15 +25,74 @@ export default handleErrors(
         check('fee').isNumeric(),
       ]);
 
-      const amount = req.body.amount;
+      let amount = req.body.amount;
+      amount = parseInt(amount); // Stripe deals with cents
       const jobId = req.body.jobId;
-      const fee = req.body.fee;
-      const stripeId = req.body.stripeId;
+      let fee = req.body.fee;
+      fee = parseInt(fee); // see above
 
-      const job = await models.Introduction.getFinalise(
+      let job = await models.Introduction.getFinalise(
         user._id,
         new ObjectId(jobId)
       );
+
+      // if not job found – 404
+      if (!job) {
+        return res.status(404).end('not found');
+      }
+      job = job[0]; // dirty & ugly, but works ;)
+
+      // just for the convenience
+      const from = await models.UserProfile.getOne(job.from);
+      const to = job.user;
+
+      // stripe
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+        apiVersion: '2020-08-27',
+      });
+
+      // check if business has stripeId, if not – create it
+      if (!from.stripeId) {
+        const account = await stripe.accounts.create({ type: 'standard' });
+        const business = {
+          _id: from._id,
+          stripeId: account.id,
+        };
+        await models.UserProfile.addStripe(business);
+        from.stripeId = account.id;
+      }
+
+      // const session = {
+      //   url: 'https://www.google.pl',
+      //   statusCode: 200
+      // }
+
+      const session = await stripe.checkout.sessions.create(
+        {
+          payment_method_types: ['card'],
+          line_items: [
+            {
+              name: `Payment for ${to.firstName} ${to.lastName} via introduce.guru`,
+              amount: formatAmountForStripe(amount, env.CURRENCY),
+              currency: env.CURRENCY,
+              quantity: 1,
+            },
+          ],
+          payment_intent_data: {
+            application_fee_amount: formatAmountForStripe(fee, env.CURRENCY),
+          },
+          mode: 'payment',
+          success_url: `${process.env.BASE_URL}/job/paymentFinished`,
+          cancel_url: `${process.env.BASE_URL}/job/paymentCancelled`,
+        },
+        {
+          stripeAccount: to.stripeId,
+        }
+      );
+      result = {
+        statusCode: 200,
+        url: session.url,
+      };
     } else {
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');
