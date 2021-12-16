@@ -14,13 +14,13 @@ export default function myContacts() {
   const [reload, setReload] = useState(true);
 
   const { get, post, response, loading, error } = useFetch(
-    `{$process.env.BASE_URL}`,
+    `${process.env.BASE_URL}`,
     { cachePolicy: 'no-cache' },
     []
   );
 
   async function loadData() {
-    const loaded = await get(`/api/myContacts`);
+    const loaded = await get('/api/myContacts');
     setReload(false);
     setData(loaded);
   }
@@ -142,6 +142,7 @@ export default function myContacts() {
       },
     },
   ];
+  console.log('data:', data);
   return (
     <DashboardLayout title='My Contacts'>
       <LoadingOverlay active={loaderVisible} spinner>
