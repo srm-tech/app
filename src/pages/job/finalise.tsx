@@ -19,14 +19,8 @@ interface IFormInput {
   commissionType: string;
   commissionValue: number;
 }
-const getBody = util.promisify(bodyParser.urlencoded());
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  res,
-  query,
-}) => {
-  await getBody(req, res);
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   return {
     props: {
       jobId: query.jobId,

@@ -80,6 +80,13 @@ export default handleErrors(
           stripeAccount: to.stripeId,
         }
       );
+      // console.log(session)
+
+      result = {
+        statusCode: 200,
+        message: 'OK',
+        url: session.url,
+      };
     } else {
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');

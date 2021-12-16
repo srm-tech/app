@@ -1,9 +1,34 @@
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import useFetch from 'use-http';
 
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import Seo from '@/components/Seo';
 
-export default function StripeConfirmationPage() {
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  return {
+    props: {
+      jobId: query.jobId,
+    },
+  };
+};
+
+export default function StripeConfirmationPage(props) {
+  const { get, post, response, loading, error } = useFetch(
+    process.env.BASE_URL
+  );
+
+  async function setStatus() {
+    await post('/api/job/setStatusPaid', {
+      jobId: props.jobId,
+    });
+  }
+
+  useEffect(() => {
+    setStatus();
+  }, []);
+
   return (
     <>
       <Seo templateTitle='Payment finished' />
