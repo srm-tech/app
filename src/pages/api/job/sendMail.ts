@@ -27,7 +27,6 @@ export default handleErrors(
       if (!job) {
         return res.status(404).end('not found');
       }
-      job = job[0];
 
       // get sender data
       const user = await models.UserProfile.getOne(new ObjectId(job.from));

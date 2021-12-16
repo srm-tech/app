@@ -15,37 +15,75 @@ interface IFormInput {
   reward: number;
   tip: number;
   total: number;
+  guruFee: number;
+  commissionType: string;
+  commissionValue: number;
 }
 const getBody = util.promisify(bodyParser.urlencoded());
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  // if (req.method === 'POST') {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  query,
+}) => {
   await getBody(req, res);
   return {
     props: {
-      ...req.body,
+      jobId: query.jobId,
     },
   };
-  // }
 };
 
 export default function finalise(props) {
   // todo: do it better, please. I have done this quickly and dirty, and feel bad about it :'(
+  function calculate(values: IFormInput) {
+    if (values.commissionType === 'commissionPerReceivedLeadPercent') {
+      values.reward = (values.revenue * values.commissionValue) / 100;
+    }
+    values.guruFee = (values.reward + values.tip) * env.TRANSACTION_FEE;
+    values.total = values.reward + values.tip + values.guruFee;
+
+    return values;
+  }
+
   function handleChange(e) {
     const data = e.target.form.elements;
-    const revenue: number = isNaN(parseFloat(data[0].value))
+    const revenue: number = isNaN(parseFloat(data.revenue.value))
       ? 0
-      : parseFloat(data[0].value);
-    const reward: number = isNaN(parseFloat(data[1].value))
+      : parseFloat(data.revenue.value);
+    const reward: number = isNaN(parseFloat(data.reward.value))
       ? 0
-      : parseFloat(data[1].value);
-    const tip: number = isNaN(parseFloat(data[2].value))
+      : parseFloat(data.reward.value);
+    const tip: number = isNaN(parseFloat(data.tip.value))
       ? 0
-      : parseFloat(data[2].value);
-    const guruFee = (revenue + reward + tip) * env.TRANSACTION_FEE;
-    const total = revenue + reward + tip + guruFee;
-    data[3].value = guruFee.toFixed(2);
-    data[4].value = total.toFixed(2);
+      : parseFloat(data.tip.value);
+    const guruFee: number = isNaN(parseFloat(data.guruFee.value))
+      ? 0
+      : parseFloat(data.guruFee.value);
+    const total: number = isNaN(parseFloat(data.total.value))
+      ? 0
+      : parseFloat(data.total.value);
+    const commissionType: string = data.commissionType.value;
+    const commissionValue: number = isNaN(
+      parseFloat(data.commissionValue.value)
+    )
+      ? 0
+      : parseFloat(data.commissionValue.value);
+    let values = {
+      revenue: revenue,
+      reward: reward,
+      tip: tip,
+      guruFee: guruFee,
+      total: total,
+      commissionType: commissionType,
+      commissionValue: commissionValue,
+    };
+
+    values = calculate(values);
+
+    data.reward.value = values.reward.toFixed(2);
+    data.guruFee.value = values.guruFee.toFixed(2);
+    data.total.value = values.total.toFixed(2);
   }
 
   const [loaderVisible, setLoaderVisible] = useState(false);
@@ -69,7 +107,6 @@ export default function finalise(props) {
     reset,
   } = useForm();
 
-  // const onSubmit = data => console.log("!", data);
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     saveData(data);
   };
@@ -79,15 +116,35 @@ export default function finalise(props) {
   );
 
   async function loadData() {
-    const loaded = await post('/api/job/finalise', {
-      jobId: props.jobId,
-    });
+    const loaded = await get(`/api/job/finalise?jobId=${props.jobId}`);
+    let data: IFormInput = {
+      commissionType: '',
+      commissionValue: 0,
+      revenue: 0,
+      reward: 0,
+      guruFee: 0,
+      tip: 0,
+      total: 0,
+    };
+    if (loaded) {
+      if (
+        loaded.agreement.commissionType === 'commissionPerCompletedLeadCash' ||
+        loaded.agreement.commissionType === 'commissionPerCompletedLead'
+      ) {
+        data.reward = loaded.agreement[loaded.agreement.commissionType];
+      }
+      data.commissionType = loaded.agreement.commissionType;
+      data.commissionValue = loaded.agreement[loaded.agreement.commissionType];
+    }
+    data = calculate(data);
+    // setFormValues(data);
     setJobData(loaded);
+    reset(data);
   }
 
-  // useEffect(() => {
-  //   loadData();
-  // }, []);
+  useEffect(() => {
+    loadData();
+  }, [reset]);
 
   async function saveData(data) {
     setSavedMessage(false);
@@ -96,21 +153,21 @@ export default function finalise(props) {
     setErrorMessageText('');
 
     // told ya I've done this dirty?
-    const amount =
-      data.revenue +
-      data.reward +
-      data.tip +
-      (data.revenue + data.reward + data.tip) * env.TRANSACTION_FEE;
+    data.reward = parseFloat(data.reward);
+    data.tip = parseFloat(data.tip);
+    data.guruFee = (data.reward + data.tip) * env.TRANSACTION_FEE;
 
-    // todo: temp data for make payment
+    const amount = data.reward + data.tip + data.guruFee;
+
     const paymentData = {
-      amount: 1500,
-      fee: 45,
-      jobId: '61b8ff87de6abd36eee83cee',
-      stripeId: 'acct_1K702VRP3ieqtpLe',
+      amount: amount,
+      fee: data.guruFee,
+      jobId: props.jobId,
+      stripeId: jobData.user.stripeId,
     };
 
     if (!paymentData.stripeId) {
+      // the Guru doesn't have the Stripe account connected
       const result = await post('/api/job/sendMail', {
         jobId: paymentData.jobId,
         amount: paymentData.amount,
@@ -122,6 +179,7 @@ export default function finalise(props) {
         setErrorMessageText(result.message);
       }
     } else {
+      // the Guru does have the Stripe connected
       const result = await post('/api/job/makePayment', {
         jobId: paymentData.jobId,
         amount: paymentData.amount,
@@ -249,6 +307,7 @@ export default function finalise(props) {
                             <input
                               type='number'
                               step='0.01'
+                              disabled={true}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                               {...register('reward', {
                                 required: true,
@@ -344,6 +403,24 @@ export default function finalise(props) {
                           )}
                         </div>
                         {/* Total field ends here */}
+
+                        {/* Agreement part starts here */}
+                        {/* todo: make them hidden */}
+                        <div className='sm:col-span-4'>
+                          <input
+                            type='hidden'
+                            disabled={true}
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            {...register('commissionType')}
+                          />
+                          <input
+                            type='hidden'
+                            disabled={true}
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            {...register('commissionValue')}
+                          />
+                        </div>
+                        {/* Agreement part ends here */}
                       </div>
                       <div className='pt-5'>
                         <div className='flex justify-end'>

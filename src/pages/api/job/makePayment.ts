@@ -4,12 +4,11 @@ import Stripe from 'stripe';
 import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
+import { formatAmountForStripe } from '@/lib/stripe-helpers';
 import { check, validate } from '@/lib/validator';
 
 import { env } from '@/config';
 import models from '@/models';
-import { formatAmountForStripe } from '@/lib/stripe-helpers';
-import { redirect } from 'next/dist/server/api-utils';
 
 // todo: replace userId
 export default handleErrors(
@@ -26,32 +25,29 @@ export default handleErrors(
       ]);
 
       let amount = req.body.amount;
-      amount = parseInt(amount); // Stripe deals with cents
+      amount = parseInt(amount);
       const jobId = req.body.jobId;
       let fee = req.body.fee;
-      fee = parseInt(fee); // see above
+      fee = parseInt(fee);
 
       let job = await models.Introduction.getFinalise(
         user._id,
         new ObjectId(jobId)
       );
-
       // if not job found – 404
       if (!job) {
         return res.status(404).end('not found');
       }
-      job = job[0]; // dirty & ugly, but works ;)
 
       // just for the convenience
       const from = await models.UserProfile.getOne(job.from);
       const to = job.user;
-
       // stripe
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
         apiVersion: '2020-08-27',
       });
 
-      // check if business has stripeId, if not – create it
+      // check if business has a stripeId, if not – create it
       if (!from.stripeId) {
         const account = await stripe.accounts.create({ type: 'standard' });
         const business = {
@@ -61,11 +57,6 @@ export default handleErrors(
         await models.UserProfile.addStripe(business);
         from.stripeId = account.id;
       }
-
-      // const session = {
-      //   url: 'https://www.google.pl',
-      //   statusCode: 200
-      // }
 
       const session = await stripe.checkout.sessions.create(
         {
@@ -82,17 +73,13 @@ export default handleErrors(
             application_fee_amount: formatAmountForStripe(fee, env.CURRENCY),
           },
           mode: 'payment',
-          success_url: `${process.env.BASE_URL}/job/paymentFinished`,
-          cancel_url: `${process.env.BASE_URL}/job/paymentCancelled`,
+          success_url: `${process.env.BASE_URL}/job/paymentFinished?jobId=${jobId}`,
+          cancel_url: `${process.env.BASE_URL}/job/finalise?jobId=${jobId}`,
         },
         {
           stripeAccount: to.stripeId,
         }
       );
-      result = {
-        statusCode: 200,
-        url: session.url,
-      };
     } else {
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');

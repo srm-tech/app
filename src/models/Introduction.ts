@@ -84,16 +84,8 @@ const Introduction = (collection) => ({
     return await collection.findOne({ _id: id });
   },
   getFinalise: async (fromId, objId) => {
-    return await collection
+    const result = await collection
       .aggregate([
-        {
-          $match: {
-            action: 'sent',
-            status: 'accepted',
-            from: fromId,
-            _id: objId,
-          },
-        },
         {
           $lookup: {
             from: 'userProfiles',
@@ -105,8 +97,32 @@ const Introduction = (collection) => ({
         {
           $unwind: '$user',
         },
+        {
+          $lookup: {
+            from: 'agreements',
+            localField: 'agreementId',
+            foreignField: '_id',
+            as: 'agreement',
+          },
+        },
+        {
+          $unwind: '$agreement',
+        },
+        {
+          $match: {
+            action: 'sent',
+            status: 'accepted',
+            from: fromId,
+            _id: objId,
+          },
+        },
       ])
       .toArray();
+    if (result) {
+      return result[0];
+    } else {
+      return [];
+    }
   },
   accept: async (userId, objId) => {
     return await collection.updateOne(

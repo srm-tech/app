@@ -1,10 +1,11 @@
-import Table from '@/components/table/Table';
 import React from 'react';
-import useFetch from 'use-http';
 import StarRatingComponent from 'react-star-rating-component';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import useFetch from 'use-http';
 
-export default function initiationsReceived() {
+import DashboardLayout from '@/components/layouts/DashboardLayout';
+import Table from '@/components/table/Table';
+
+export default function invitation() {
   const options = [];
   const {
     loading,

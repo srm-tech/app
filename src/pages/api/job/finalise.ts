@@ -10,9 +10,9 @@ export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
     await models.client.connect();
-    if (req.method === 'POST') {
+    if (req.method === 'GET') {
       const user = getCurrentUser();
-      const jobId = req.body.jobId;
+      const jobId = req.query.jobId;
 
       result = await models.Introduction.getFinalise(
         user._id,

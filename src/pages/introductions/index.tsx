@@ -73,7 +73,7 @@ export default function introductions() {
         const reclaimButton = (
           <>
             <div>
-              <form action='/job/finalise' method='post'>
+              <form action='/job/finalise' method='get'>
                 <input type='hidden' name='jobId' value={original._id} />
                 <Button type='submit' variants='primary' className='text-xs'>
                   Finish job
