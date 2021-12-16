@@ -40,8 +40,8 @@ export default handleErrors(
       const account = await stripe.accounts.create({ type: 'standard' });
       const accountLink = await stripe.accountLinks.create({
         account: account.id,
-        refresh_url: `${process.env.BASE_URL}/refresh`,
-        return_url: `${process.env.BASE_URL}/myContacts`,
+        refresh_url: `${process.env.BASE_URL}/api/job/refreshToken?jobId=${jobId}`,
+        return_url: `${process.env.BASE_URL}/introductions`,
         type: 'account_onboarding',
       });
 

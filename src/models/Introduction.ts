@@ -111,7 +111,9 @@ const Introduction = (collection) => ({
         {
           $match: {
             action: 'sent',
-            status: 'accepted',
+            status: {
+              $in: ['accepted', 'waiting for Guru'],
+            },
             from: fromId,
             _id: objId,
           },
