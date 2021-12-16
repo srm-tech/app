@@ -9,6 +9,7 @@ import util from 'util';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 import { env } from '@/config';
+import Link from '@/components/buttons/Link';
 
 interface IFormInput {
   revenue: number;
@@ -249,8 +250,11 @@ export default function finalise(props) {
                         <p className='font-medium text-white'>
                           <span>
                             Your Guru hasn't got his/hers Stripe account yet. We
-                            have to wait for him to create one. Click here to
-                            return to introductions page.
+                            have to wait for him to create one.
+                            <Link href='/introductions'>
+                              {' '}
+                              Click here to return to introductions page.
+                            </Link>
                           </span>
                         </p>
                       </div>
