@@ -19,14 +19,15 @@ export default function introductions() {
   );
 
   async function handleAccept(e, introId) {
-    const accept = await post('/introductions/accept', {
+    const accept = await post('/api/introductions/accept', {
       introId: introId,
     });
     setReload(true);
   }
 
   async function handleDecline(e, introId) {
-    const decline = await post('/introductions/decline', {
+    console.log('decline');
+    const decline = await post('/api/introductions/decline', {
       introId: introId,
     });
     setReload(true);
@@ -69,8 +70,7 @@ export default function introductions() {
       Header: '',
       accessor: '_id',
       Cell: ({ row: { original } }) => {
-        console.log(original);
-        const reclaimButton = (
+        const finishJob = (
           <>
             <div>
               <form action='/job/finalise' method='get'>
@@ -107,9 +107,8 @@ export default function introductions() {
 
         return (
           <>
-            {original.status === 'pending'
-              ? acceptDeclineButtons
-              : reclaimButton}
+            {original.status === 'pending' ? acceptDeclineButtons : null}
+            {original.status === 'accepted' ? finishJob : null}
           </>
         );
       },

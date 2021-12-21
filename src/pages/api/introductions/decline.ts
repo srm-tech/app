@@ -17,8 +17,8 @@ export default handleErrors(
       const introId = req.body.introId;
       await validate([check(introId).isMongoId()]);
       result = await models.Introduction.decline(
-        new ObjectId(introId),
-        user._id
+        user._id,
+        new ObjectId(introId)
       );
     } else {
       res.setHeader('Allow', 'POST');

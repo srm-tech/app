@@ -6,10 +6,10 @@ import LoadingOverlay from 'react-loading-overlay';
 import useFetch from 'use-http';
 import util from 'util';
 
+import Link from '@/components/buttons/Link';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 import { env } from '@/config';
-import Link from '@/components/buttons/Link';
 
 interface IFormInput {
   revenue: number;
@@ -82,12 +82,6 @@ export default function finalise(props) {
   }
 
   const [loaderVisible, setLoaderVisible] = useState(false);
-  const [formValues, setFormValues] = useState({
-    revenue: 0,
-    reward: 0,
-    tip: 0,
-    total: 0,
-  });
 
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
