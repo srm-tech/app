@@ -50,7 +50,13 @@ export default function DashboardLayout({
   title?: string;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const activeNavigation = navigation.map((item) => {
+    item.current = false;
+    if (item.href === location.pathname) {
+      item.current = true;
+    }
+    return item;
+  });
   return (
     <>
       <div>
@@ -109,7 +115,7 @@ export default function DashboardLayout({
                 </div>
                 <div className='flex-1 h-0 mt-5 overflow-y-auto'>
                   <nav className='px-2 space-y-1'>
-                    {navigation.map((item) => (
+                    {activeNavigation.map((item) => (
                       <Link href={item.href} passHref>
                         <a
                           key={item.name}
