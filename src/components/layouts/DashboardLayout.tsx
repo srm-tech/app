@@ -10,6 +10,7 @@ import {
   UsersIcon,
   XIcon,
 } from '@heroicons/react/outline';
+import { useRouter } from 'next/router';
 import { SearchIcon } from '@heroicons/react/solid';
 import React, { FC, Fragment, useState } from 'react';
 import Link from 'next/link';
@@ -50,9 +51,10 @@ export default function DashboardLayout({
   title?: string;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
   const activeNavigation = navigation.map((item) => {
     item.current = false;
-    if (item.href === location.pathname) {
+    if (item.href === router.pathname) {
       item.current = true;
     }
     return item;
