@@ -29,7 +29,7 @@ export default handleErrors(
       }
 
       // get sender data
-      const user = await models.UserProfile.getOne(new ObjectId(job.from));
+      const user = await models.UserProfile.getOne(new ObjectId(job.business));
       req.body.name = `${user.firstName} ${user.lastName}`;
 
       // stripe

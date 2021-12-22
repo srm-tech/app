@@ -9,13 +9,13 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $match: {
             action: 'sent',
-            from: userId,
+            business: userId,
           },
         },
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'to',
+            localField: 'customer',
             foreignField: '_id',
             as: 'user',
           },
@@ -77,7 +77,6 @@ const Introduction = (collection: Collection<Document>) => ({
           },
         },
       ])
-      .sort({ date: -1 })
       .toArray();
   },
   drafts: async (userId: ObjectId) => {
@@ -137,13 +136,13 @@ const Introduction = (collection: Collection<Document>) => ({
   getOne: async (id) => {
     return await collection.findOne({ _id: id });
   },
-  getFinalise: async (fromId, objId) => {
+  getFinalise: async (businessId, objId) => {
     const result = await collection
       .aggregate([
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'to',
+            localField: 'customer',
             foreignField: '_id',
             as: 'user',
           },
@@ -168,7 +167,7 @@ const Introduction = (collection: Collection<Document>) => ({
             status: {
               $in: ['accepted', 'waiting for Guru'],
             },
-            from: fromId,
+            business: businessId,
             _id: objId,
           },
         },
@@ -184,7 +183,7 @@ const Introduction = (collection: Collection<Document>) => ({
     return await collection.updateOne(
       {
         _id: objId,
-        from: userId,
+        business: userId,
       },
       {
         $set: {
@@ -197,7 +196,7 @@ const Introduction = (collection: Collection<Document>) => ({
     return await collection.updateOne(
       {
         _id: objId,
-        from: userId,
+        business: userId,
       },
       {
         $set: {
