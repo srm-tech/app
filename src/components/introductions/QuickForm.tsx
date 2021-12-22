@@ -5,6 +5,7 @@ import ComboSelect from '../ComboSelect';
 import { useSession, signIn } from 'next-auth/react';
 import InlineError from '../errors/InlineError';
 import { handleErrors } from '@/lib/middleware';
+import { useRouter } from 'next/router';
 
 export interface Item {
   _id: string;
@@ -23,6 +24,7 @@ export const QuickForm = () => {
   const [query, setQuery] = React.useState<null | Item>(null);
   const [business, setBusiness] = React.useState<null | Item>(null);
   const [contactType, setContactType] = React.useState('phone');
+  const router = useRouter();
   const { data: session } = useSession();
   const formRef = React.useRef<any>();
   const { post, response, loading, error } = useFetch('/introductions');
@@ -36,11 +38,12 @@ export const QuickForm = () => {
       contactType,
     });
     if (response.ok) {
-      alert('You have successfully submitted.');
+      // alert('You have successfully submitted.');
       setName('');
       setContact('');
       setBusiness(null);
       setContactType('phone');
+      router.push('/introductions');
     }
     if (response.status === 422) {
       setErrorMessage(getValidationMessage(response.data));
