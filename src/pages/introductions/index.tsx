@@ -65,7 +65,7 @@ export default function introductions() {
     },
     { Header: 'businessCategory', accessor: 'user.businessCategory' },
     { Header: 'status', accessor: 'status' },
-    { Header: 'commission earned', accessor: 'commissionEarned' },
+    { Header: 'commission', accessor: 'commissionEarned' },
     {
       Header: '',
       accessor: '_id',
