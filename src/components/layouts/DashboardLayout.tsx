@@ -34,7 +34,7 @@ const navigation = [
   { name: 'My Contacts', href: '/myContacts', icon: UsersIcon, current: false },
 ];
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
+  { name: 'Your Profile', href: '/users/profile' },
   { name: 'Settings', href: '#' },
   { name: 'Sign out', href: '#' },
 ];
@@ -278,7 +278,7 @@ export default function DashboardLayout({
               <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
                 {/* Replace with your content */}
                 <div className='py-4'>
-                  <div className='border-4 border-gray-200 rounded-lg p-2'>
+                  <div className='p-2 border-4 border-gray-200 rounded-lg'>
                     {children}
                   </div>
                 </div>
