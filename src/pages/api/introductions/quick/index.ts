@@ -8,9 +8,11 @@ export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
     await models.client.connect();
-    const user = getCurrentUser();
+
+    const guruUser = await getCurrentUser(req, res);
+    if (!guruUser) return res.status(404).send('User not found');
     if (req.method === 'GET') {
-      result = await models.Introduction.readMany(user._id);
+      result = await models.Introduction.readMany(guruUser._id);
     } else if (req.method === 'POST') {
       await validate([
         check('contactType').isIn(['phone', 'email']),
@@ -18,19 +20,30 @@ export default handleErrors(
           ? check('contact').isEmail()
           : check('contact').isLength({ min: 1, max: 55 }),
         check('name').isLength({ min: 1, max: 55 }),
-        check('categoryId').isMongoId(),
       ])(req, res);
       const [firstName, lastName] = req.body.name?.split(' ');
+      const contact = req.body.contact;
+      // check if contact exists
+      let guruContact = await models.UserProfile.searchForCustomer(
+        contact,
+        req.body.contactType
+      );
+      // if contact doesn't exist, create one
+      if (!guruContact) {
+        guruContact = await models.UserProfile.create({
+          status: 'draft',
+          date: new Date(),
+          fullName: req.body.name,
+          firstName,
+          lastName,
+          phone: (req.body.contactType === 'phone' && req.body.contact) || '',
+          email: (req.body.contactType === 'email' && req.body.contact) || '',
+        });
+      }
       result = await models.Introduction.create({
-        userId: user._id,
-        status: 'draft',
-        date: new Date(),
-        fullName: req.body.contact,
-        firstName,
-        lastName,
-        phone: (req.body.contactType === 'phone' && req.body.phone) || '',
-        email: (req.body.contactType === 'email' && req.body.email) || '',
-        categoryId: req.body.categoryId,
+        customer: guruContact._id,
+        business: req.body.businessId,
+        introducedBy: guruUser._id,
       });
     } else {
       return res

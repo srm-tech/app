@@ -10,7 +10,7 @@ export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
     await models.client.connect();
-    const user = getCurrentUser();
+    const user = await getCurrentUser(req, res);
     if (req.method === 'GET') {
       result = await models.Introduction.readMany(user._id);
     } else if (req.method === 'POST') {

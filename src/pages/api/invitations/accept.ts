@@ -13,7 +13,7 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'POST') {
-      const user = getCurrentUser();
+      const user = await getCurrentUser(req, res);
       const invitationId = req.body.invitationId;
       await validate([check(invitationId).isMongoId()]);
       result = await models.MyContacts.accept(

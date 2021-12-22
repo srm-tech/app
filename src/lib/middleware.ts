@@ -31,7 +31,7 @@ export const handleErrors =
     try {
       await callback(req, res);
     } catch (e) {
-      console.error(e);
+      console.error('handleErrors:', e);
 
       return res
         .status(500)

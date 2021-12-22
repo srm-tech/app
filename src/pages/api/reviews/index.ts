@@ -9,7 +9,7 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'POST') {
-      const user = getCurrentUser();
+      const user = await getCurrentUser(req, res);
       await validate([
         check('stars').isNumeric(),
         check('comment').isLength({ min: 0, max: 1023 }),

@@ -11,7 +11,7 @@ import models from '@/models';
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     await models.client.connect();
-    const _userId = getCurrentUser();
+    const _userId = await getCurrentUser(req, res);
     const user = await models.UserProfile.getOne(_userId._id);
     let result;
     if (req.method === 'POST') {

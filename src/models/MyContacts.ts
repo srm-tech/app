@@ -1,6 +1,7 @@
 import { ObjectId } from '@/lib/db';
+import { Collection } from 'mongodb';
 
-const MyContacts = (collection) => ({
+const MyContacts = (collection: Collection<Document>) => ({
   create: async (data) => {
     data.date = new Date();
     return collection.insertOne(data);

@@ -5,7 +5,7 @@ db.myContacts.insertMany([
   {
     contactId: ObjectId('000000000000000000000003'),
     userId:   ObjectId('000000000000000000000001'),
-    date: ISODate('2021-11-11T12:12:11+01:00'),
+    date: ISODate('2021-11-11T12:12:11+01:00'), 
     status: 'accepted'
   },
   {

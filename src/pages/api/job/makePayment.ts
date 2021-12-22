@@ -16,7 +16,7 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'POST') {
-      const user = getCurrentUser();
+      const user = await getCurrentUser(req, res);
 
       validate([
         check('amount').isNumeric(),
@@ -80,8 +80,6 @@ export default handleErrors(
           stripeAccount: to.stripeId,
         }
       );
-      // console.log(session)
-
       result = {
         statusCode: 200,
         message: 'OK',

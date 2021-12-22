@@ -11,7 +11,7 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'POST') {
-      const user = getCurrentUser();
+      const user = await getCurrentUser(req, res);
       await validate([
         check('phone_or_email').isString(),
         check('name').isLength({ min: 0, max: 255 }),

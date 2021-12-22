@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:debug": "NODE_OPTIONS='--inspect=0.0.0.0:9229' next",
     "build": "next build",
     "start": "next start",
     "prepare": "husky install",

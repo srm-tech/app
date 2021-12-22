@@ -6,7 +6,7 @@ import { handleErrors } from '@/lib/middleware';
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    const user = getCurrentUser()._id;
+    const user = await getCurrentUser(req, res)._id;
     await models.client.connect();
 
     if (req.method === 'POST') {

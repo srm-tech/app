@@ -7,7 +7,7 @@ import { handleErrors } from '@/lib/middleware';
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    const userId = getCurrentUser()._id;
+    const userId = await getCurrentUser(req, res)._id;
     await models.client.connect();
     if (req.method === 'POST') {
       validate([check('introductionId').isMongoId()]);

@@ -1,6 +1,7 @@
 import { ObjectId } from '@/lib/db';
+import { Collection } from 'mongodb';
 
-const Introduction = (collection) => ({
+const Introduction = (collection: Collection<Document>) => ({
   readMany: async (userId: ObjectId) => {
     return collection
       .aggregate([
@@ -80,7 +81,6 @@ const Introduction = (collection) => ({
     });
   },
   getOne: async (id) => {
-    console.log('id', id);
     return await collection.findOne({ _id: id });
   },
   getFinalise: async (fromId, objId) => {

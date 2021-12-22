@@ -1,6 +1,7 @@
 import { ObjectId } from '@/lib/db';
+import { Collection } from 'mongodb';
 
-const Message = (collection) => ({
+const Message = (collection: Collection<Document>) => ({
   create: async (data: any) => {
     return collection.insertOne({
       from: data.userId,

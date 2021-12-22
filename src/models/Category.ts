@@ -1,6 +1,7 @@
 import { ObjectId } from '@/lib/db';
+import { Collection } from 'mongodb';
 
-const Category = (collection) => ({
+const Category = (collection: Collection<Document>) => ({
   read: async (id: ObjectId) => {
     return collection.findOne({ _id: id });
   },

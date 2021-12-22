@@ -13,7 +13,7 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'POST') {
-      const _user = getCurrentUser();
+      const _user = await getCurrentUser(req, res);
       const jobId = req.body.jobId;
       const amount = req.body.amount;
 

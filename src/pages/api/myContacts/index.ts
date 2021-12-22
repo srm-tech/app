@@ -13,7 +13,7 @@ export default handleErrors(
     await models.client.connect();
     let result;
 
-    const user = getCurrentUser();
+    const user = await getCurrentUser(req, res);
 
     if (req.method === 'GET') {
       if (req.query.q !== undefined) {

@@ -4,29 +4,33 @@ db.introductions.drop();
 
 db.introductions.insertMany([
   {
-    from: ObjectId('000000000000000000000001'),
-    to: ObjectId('000000000000000000000002'),
+    customer: ObjectId('000000000000000000000001'),
+    business: ObjectId('000000000000000000000002'),
+    introducedBy: ObjectId('000000000000000000000003'),
     status: 'pending',
     date: ISODate('2021-11-01T14:22:11+01:00'),
     action: "sent"
   },
   {
-    from: ObjectId('000000000000000000000002'),
-    to: ObjectId('000000000000000000000001'),
+    customer: ObjectId('000000000000000000000002'),
+    business: ObjectId('000000000000000000000001'),
+    introducedBy: ObjectId('000000000000000000000003'),
     status: 'pending',
     date: ISODate('2021-11-01T14:22:11+01:00'),
     action: "sent"
   },
   {
-    from: ObjectId('000000000000000000000003'),
-    to: ObjectId('000000000000000000000001'),
+    customer: ObjectId('000000000000000000000003'),
+    business: ObjectId('000000000000000000000001'),
+    introducedBy: ObjectId('000000000000000000000003'),
     status: 'pending',
     date: ISODate('2021-11-01T14:22:11+01:00'),
     action: "sent"
   },
   {
-    from: ObjectId('000000000000000000000004'),
-    to: ObjectId('000000000000000000000001'),
+    customer: ObjectId('000000000000000000000004'),
+    business: ObjectId('000000000000000000000001'),
+    introducedBy: ObjectId('000000000000000000000003'),
     status: 'completed',
     date: ISODate('2021-11-01T14:22:11+01:00'),
     action: "sent"

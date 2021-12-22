@@ -3,6 +3,8 @@ import useFetch from 'use-http';
 import ContactType from './ContactTypeSelect';
 import ComboSelect from '../ComboSelect';
 import { useSession, signIn } from 'next-auth/react';
+import InlineError from '../errors/InlineError';
+import { handleErrors } from '@/lib/middleware';
 
 export interface Item {
   _id: string;
@@ -11,8 +13,12 @@ export interface Item {
   category: string;
 }
 
+const getValidationMessage = (data) =>
+  `${data.errors[0].msg} ${data.errors[0].param}`;
+
 export const QuickForm = () => {
   const [name, setName] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
   const [contact, setContact] = React.useState('');
   const [query, setQuery] = React.useState<null | Item>(null);
   const [business, setBusiness] = React.useState<null | Item>(null);
@@ -20,16 +26,13 @@ export const QuickForm = () => {
   const { data: session } = useSession();
   const formRef = React.useRef<any>();
   const { post, response, loading, error } = useFetch('/introductions');
-
   const _handleSubmit = async (e) => {
     e.preventDefault();
 
     await post('/quick', {
-      _id: business?._id,
       name,
       contact,
-      business: business?.businessName,
-      category: business?.category,
+      businessId: business?._id,
       contactType,
     });
     if (response.ok) {
@@ -39,10 +42,13 @@ export const QuickForm = () => {
       setBusiness(null);
       setContactType('phone');
     }
+    if (response.status === 422) {
+      setErrorMessage(getValidationMessage(response.data));
+    }
   };
 
   return (
-    <div className='bg-white rounded-lg sm:max-w-md sm:w-full'>
+    <div className='bg-white rounded-lg sm:max-w-md sm:w-full m-auto'>
       <form ref={formRef} className='space-y-6' onSubmit={_handleSubmit}>
         <div className='flex flex-col'>
           <div className='px-8 pt-4'>
@@ -114,6 +120,11 @@ export const QuickForm = () => {
               className='w-20 h-20 mt-4'
             />
           </div>
+          {error && (
+            <div className='px-8 py-4'>
+              <InlineError message={errorMessage} />
+            </div>
+          )}
           <div className='px-8 py-4'>
             <button
               type='submit'

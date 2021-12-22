@@ -69,7 +69,6 @@ export default function introductions() {
       Header: '',
       accessor: '_id',
       Cell: ({ row: { original } }) => {
-        console.log(original);
         const reclaimButton = (
           <>
             <div>

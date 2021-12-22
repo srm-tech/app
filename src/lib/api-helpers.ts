@@ -18,7 +18,7 @@ export async function easyGetAll(
   obj: any
 ) {
   try {
-    const user = getCurrentUser();
+    const user = await getCurrentUser(req, res);
     const result = await obj.readMany(user._id);
     res.status(200).json(result);
   } catch (err: any) {

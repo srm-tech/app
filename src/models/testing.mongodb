@@ -1,0 +1,73 @@
+// MongoDB Playground
+// To disable this template go to Settings | MongoDB | Use Default Template For Playground.
+// Make sure you are connected to enable completions and to be able to run a playground.
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// Select the database to use.
+use('guru');
+
+db.connections.find({user1: ObjectId('000000000000000000000000')})
+
+db.connections.insertMany(
+  {
+    user1: ObjectId('000000000000000000000000'),
+    user2: ObjectId('61c1fb1e99cae0716c1008cc'),
+    date: ISODate('2021-10-12T00:16:11+01:00'),
+    status: "completed"
+  }
+])
+
+use('guru');
+db.userProfiles.aggregateOne([
+  {
+    $lookup: {
+      from: 'connections',
+      localField: '_id',
+      foreignField: 'user2',
+      as: 'myConnection',
+    },
+  },
+  
+  { 
+    $match: { "phone": "786865787" }
+  },
+  {
+    $unwind: '$myConnection',
+    // $addFields: {
+    //   userId: '$_id',
+    // }
+  },
+  { 
+    $project: {
+      "myConnection.user2._id": 1,
+    } 
+  },
+  { 
+    $unset: 'myConnection'
+  },
+  { $limit: 1 }
+])
+
+use('guru');
+db.connections.aggregate([
+  {
+    $lookup: {
+      from: 'userProfiles',
+      localField: 'user2',
+      foreignField: '_id',
+      as: 'up',
+    },
+      
+      $unwind: '$up',
+    
+  },
+  
+  { $match: { up: {$all:{ phone: "786865787"} }}},
+  // { /**
+  //  * specifications: The fields to
+  //  *   include or exclude.
+  //  */
+  // $project: {
+  //   myConnections: 1
+  // } },
+])

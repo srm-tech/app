@@ -9,7 +9,7 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'GET') {
-      const user = getCurrentUser();
+      const user = await getCurrentUser(req, res);
       result = await models.DashboardIntroductionsWidget.get({
         userId: user._id,
       });

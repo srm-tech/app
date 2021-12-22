@@ -15,7 +15,7 @@ import { Item } from './introductions/QuickForm';
 
 export default function ComboSelect({ query, value, onChange, onSelect }) {
   const debounceSetCurrentValue = useRef<any>(null);
-  const { get, data, response, loading, error } = useFetch('/myContacts');
+  const { get, data, response, loading, error } = useFetch('/search/business');
 
   let inputItems: Item[] = [];
   if (response.ok) {
@@ -23,7 +23,7 @@ export default function ComboSelect({ query, value, onChange, onSelect }) {
       _id: item._id,
       label: item.name,
       businessName: item.businessName,
-      category: item.category,
+      category: item.businessCategory,
     }));
   }
 

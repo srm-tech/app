@@ -80,7 +80,6 @@ export default function Pricing() {
     });
 
     if (response.statusCode === 500) {
-      console.error(response.message);
       setErrorMessage('Oops... Something went wrong!');
       return;
     }
@@ -90,8 +89,6 @@ export default function Pricing() {
     const { error } = await stripe!.redirectToCheckout({
       sessionId: response.id,
     });
-
-    console.warn(error.message); // for devs
   };
 
   return (

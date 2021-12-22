@@ -11,7 +11,7 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'GET') {
-      const user = getCurrentUser();
+      const user = await getCurrentUser(req, res);
       const jobId = req.query.jobId;
 
       result = await models.Introduction.getFinalise(

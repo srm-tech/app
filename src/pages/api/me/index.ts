@@ -9,8 +9,8 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'GET') {
-      const user = getCurrentUser();
-      result = await models.UserProfile.getOne(user._id);
+      const user = await getCurrentUser(req, res);
+      result = await models.UserProfile.getOne(user?._id);
     } else {
       res.setHeader('Allow', 'GET');
       return res.status(405).end('Method Not Allowed');

@@ -9,7 +9,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const user = getCurrentUser();
+    const user = await getCurrentUser(req, res);
     const result = await Introduction.drafts(user._id);
     res.status(200).json(result);
   } catch (err: any) {

@@ -1,4 +1,19 @@
-const UserProfile = (collection) => ({
+import { Collection, ObjectId } from 'mongodb';
+
+export interface UserProfile {
+  _id: ObjectId;
+  firstName: string;
+  lastName: string;
+  businessName: string;
+  email: string;
+  businessCategory: string;
+  rating: number;
+  succesfulRate: number;
+  averageCommission: number;
+  isActive: boolean;
+}
+
+const UserProfile = (collection: Collection<Document>) => ({
   create: async (data) => {
     return collection?.insertOne(data);
   },
@@ -35,6 +50,37 @@ const UserProfile = (collection) => ({
         }, //stage2
       ])
       .toArray();
+  },
+  searchForCustomer: async (contact: string, type: 'email' | 'phone') => {
+    const connections = await collection
+      .aggregate([
+        {
+          $lookup: {
+            from: 'connections',
+            localField: '_id',
+            foreignField: 'user2',
+            as: 'myConnection',
+          },
+        },
+
+        {
+          $match: { phone: '786865787' },
+        },
+        {
+          $unwind: '$myConnection',
+        },
+        {
+          $project: {
+            'myConnection.user2._id': 1,
+          },
+        },
+        {
+          $unset: 'myConnection',
+        },
+        { $limit: 1 },
+      ])
+      .toArray();
+    return connections[0];
   },
   searchForGuru: async ({ query = '' }) => {
     return collection
@@ -75,6 +121,11 @@ const UserProfile = (collection) => ({
   getOne: async (userId) => {
     return collection.findOne({
       _id: userId,
+    });
+  },
+  getOneByEmail: async (email) => {
+    return collection.findOne({
+      email,
     });
   },
   updateOne: async (data) => {

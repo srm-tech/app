@@ -36,7 +36,7 @@ export default {
   Introduction: Introduction(collection('introductions')),
   Invitation: Invitation(collection('invitations')),
   Message: Message(collection('messages')),
-  MyContacts: MyContacts(collection('myContacts')),
+  MyContacts: MyContacts(collection('userProfiles')),
   Review: Review(collection('reviews')),
   UserProfile: UserProfile(collection('userProfiles')),
 };

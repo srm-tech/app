@@ -13,7 +13,7 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'GET') {
-      const _user = getCurrentUser();
+      const _user = await getCurrentUser(req, res);
       const _id = req.query.jobId;
       const jobId = new ObjectId(_id);
 

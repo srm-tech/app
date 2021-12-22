@@ -11,7 +11,7 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'POST') {
-      const user = getCurrentUser();
+      const user = await getCurrentUser(req, res);
       const jobId = req.body.jobId;
 
       result = await models.Introduction.updateStatus(

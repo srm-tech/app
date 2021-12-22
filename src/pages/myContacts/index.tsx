@@ -47,7 +47,6 @@ export default function myContacts() {
 
   async function handleToggleFav(e, contactId) {
     const fav = await post('/api/favourites/toggle', { contactId: contactId });
-    console.log('000');
     setReload(true);
   }
 
@@ -142,7 +141,6 @@ export default function myContacts() {
       },
     },
   ];
-  console.log('data:', data);
   return (
     <DashboardLayout title='My Contacts'>
       <LoadingOverlay active={loaderVisible} spinner>

@@ -13,9 +13,11 @@ export default handleErrors(
     let result;
     await models.client.connect();
     if (req.method === 'GET') {
-      const user = getCurrentUser();
+      const user = await getCurrentUser(req, res);
       await validate([check('q').isLength({ min: 1, max: 255 })])(req, res);
-      result = await models.UserProfile.searchForBusiness(req.query.q);
+      result = await models.UserProfile.searchForBusiness(
+        req.query.q.toString()
+      );
       // result = {}
     } else {
       res.setHeader('Allow', 'GET');

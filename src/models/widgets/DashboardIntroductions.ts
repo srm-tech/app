@@ -1,4 +1,6 @@
-const DashboardIntroductionsWidget = (collection) => ({
+import { Collection } from 'mongodb';
+
+const DashboardIntroductionsWidget = (collection: Collection<Document>) => ({
   get: async ({ userId }) => {
     const introductionsPending = await collection
       ?.find({ to: userId, status: 'pending' })

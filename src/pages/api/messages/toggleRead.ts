@@ -7,7 +7,7 @@ export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
     await models.client.connect();
-    const user = getCurrentUser();
+    const user = await getCurrentUser(req, res);
 
     if (req.method !== 'POST') {
       result = await models.Message.toggleRead(

@@ -1,4 +1,6 @@
-const DashBoardConnectionsWidget = (collection) => ({
+import { Collection } from 'mongodb';
+
+const DashBoardConnectionsWidget = (collection: Collection<Document>) => ({
   get: async ({ userId }) => {
     const c1 =
       (await collection.find({ user1: userId, status: 'completed' }).toArray())

@@ -10,7 +10,7 @@ export default handleErrors(
     await models.client.connect();
     let result;
     if (req.method === 'POST') {
-      const user = getCurrentUser();
+      const user = await getCurrentUser(req, res);
       const introId = req.query.introId;
       await validate([check('invitationId').isMongoId()]);
       result = await models.Introduction.decline(user._id, introId);

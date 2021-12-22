@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient, ObjectId, Db, Collection } from 'mongodb';
 import { env } from '@/lib/envConfig';
 
 const uri = `${env.DB_URI}/${env.DB_NAME}?keepAlive=true&socketTimeoutMS=10000&connectTimeoutMS=10000&retryWrites=true&w=majority`;
@@ -11,9 +11,18 @@ export const getDb = () => {
   const db = client.db(env.DB_NAME);
   return { client, db, dbName: env.DB_NAME };
 };
-export const getCollection = (dbOptions) => (collectionName: string) => {
-  const { client, db } = dbOptions;
-  return db.collection(collectionName);
-};
+
+interface DBOptions {
+  client: MongoClient;
+  db: Db;
+  dbName: string;
+}
+
+export const getCollection =
+  (dbOptions: DBOptions) =>
+  (collectionName: string): Collection<Document> => {
+    const { client, db } = dbOptions;
+    return db.collection(collectionName);
+  };
 
 export { ObjectId };
