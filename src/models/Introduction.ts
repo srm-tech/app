@@ -1,5 +1,6 @@
-import { ObjectId } from '@/lib/db';
 import { Collection } from 'mongodb';
+
+import { ObjectId } from '@/lib/db';
 
 const Introduction = (collection: Collection<Document>) => ({
   readMany: async (userId: ObjectId) => {
@@ -21,6 +22,59 @@ const Introduction = (collection: Collection<Document>) => ({
         },
         {
           $unwind: '$user',
+        },
+        {
+          $set: {
+            'user.firstName': {
+              $cond: [
+                {
+                  $in: ['$status', ['pending', 'declined']],
+                },
+                {
+                  $concat: [
+                    {
+                      $substr: ['$user.firstName', 0, 1],
+                    },
+                    '*****',
+                  ],
+                },
+                '$user.firstName',
+              ],
+            },
+          },
+        },
+        {
+          $set: {
+            'user.lastName': {
+              $cond: [
+                {
+                  $in: ['$status', ['pending', 'declined']],
+                },
+                {
+                  $concat: [
+                    {
+                      $substr: ['$user.lastName', 0, 1],
+                    },
+                    '*****',
+                  ],
+                },
+                '$user.lastName',
+              ],
+            },
+          },
+        },
+        {
+          $set: {
+            'user.email': {
+              $cond: [
+                {
+                  $in: ['$status', ['pending', 'declined']],
+                },
+                '',
+                '$user.email',
+              ],
+            },
+          },
         },
       ])
       .sort({ date: -1 })
@@ -135,7 +189,6 @@ const Introduction = (collection: Collection<Document>) => ({
       {
         $set: {
           status: 'accepted',
-          date: new Date(),
         },
       }
     );
@@ -149,7 +202,6 @@ const Introduction = (collection: Collection<Document>) => ({
       {
         $set: {
           status: 'declined',
-          date: new Date(),
         },
       }
     );

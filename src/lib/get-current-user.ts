@@ -1,7 +1,8 @@
 import { ObjectId } from 'bson';
-import { getSession } from 'next-auth/react';
-import models from '@/models';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
+
+import models from '@/models';
 import type { UserProfile } from '@/models/UserProfiles';
 
 export default async function getCurrentUser(

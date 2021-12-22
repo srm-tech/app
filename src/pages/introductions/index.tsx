@@ -58,6 +58,7 @@ export default function introductions() {
           <div className='cell-name'>
             {original.user.firstName} {original.user.lastName}
           </div>
+          <div className='cell-company'>{original.user.businessName}</div>
           <div className='cell-email'>{original.user.email}</div>
           <div className='cell-phone'>{original.user.phone}</div>
         </>
