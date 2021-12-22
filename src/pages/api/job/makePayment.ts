@@ -30,7 +30,7 @@ export default handleErrors(
       let fee = req.body.fee;
       fee = parseInt(fee);
 
-      let job = await models.Introduction.getFinalise(
+      const job = await models.Introduction.getFinalise(
         user._id,
         new ObjectId(jobId)
       );

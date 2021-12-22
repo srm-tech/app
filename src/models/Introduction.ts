@@ -130,7 +130,7 @@ const Introduction = (collection: Collection<Document>) => ({
     return await collection.updateOne(
       {
         _id: objId,
-        to: userId,
+        from: userId,
       },
       {
         $set: {
@@ -144,7 +144,7 @@ const Introduction = (collection: Collection<Document>) => ({
     return await collection.updateOne(
       {
         _id: objId,
-        to: userId,
+        from: userId,
       },
       {
         $set: {
