@@ -4,6 +4,7 @@ import Stripe from 'stripe';
 import sendMail from '@/lib/mail';
 import { htmlNewStripeAccount, htmlStripeReminder } from '@/lib/utils';
 
+import getCollections from '@/models';
 import models from '@/models';
 
 export default async function handler(
@@ -12,6 +13,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     await models.client.connect();
+    const { Introduction } = await getCollections();
 
     try {
       const { authorization } = req.headers;
@@ -24,49 +26,52 @@ export default async function handler(
         });
 
         for (const job of jobs) {
-          const name = `${job.user.firstName} ${job.user.lastName}`;
-          const id = job._id;
-          console.log('job id:', job._id, ' Guru name: ', name);
+          // job: create token if does not exist todo: not necessary
 
-          if (!job.stripeId) {
-            const account = await stripe.accounts.create({
-              type: 'standard',
-              country: job.user.country,
-              email: job.user.email,
-            });
-            const accountLink = await stripe.accountLinks.create({
-              account: account.id,
-              refresh_url: `${process.env.BASE_URL}/api/job/refreshToken?jobId=${id}`,
-              return_url: `${process.env.BASE_URL}/introductions`,
-              type: 'account_onboarding',
-            });
+          // const name = `${job.user.firstName} ${job.user.lastName}`;
+          // const id = job._id;
 
-            job.user.stripeId = account.id;
-            job.user.accountLink = accountLink.url;
+          // if (!job.stripeId) {
+          //   const account = await stripe.accounts.create({
+          //     type: 'standard',
+          //     country: job.user.country,
+          //     email: job.user.email,
+          //   });
+          //   const accountLink = await stripe.accountLinks.create({
+          //     account: account.id,
+          //     refresh_url: `${process.env.BASE_URL}/api/job/refreshToken?jobId=${id}`,
+          //     return_url: `${process.env.BASE_URL}/introductions`,
+          //     type: 'account_onboarding',
+          //   });
 
-            const guru = {
-              _id: job.user._id,
-              stripeId: account.id,
-              accountLink: accountLink.url,
-            };
+          //   job.user.stripeId = account.id;
+          //   job.user.accountLink = accountLink.url;
 
-            const addDataToProfile = await models.UserProfile.addStripe(guru);
-            await models.Introduction.updateStatus(job._id, 'waiting for Guru');
+          //   const guru = {
+          //     _id: job.user._id,
+          //     stripeId: account.id,
+          //     accountLink: accountLink.url,
+          //   };
 
-            const data = {
-              name: `${job.user.firstName} ${job.user.lastName}`,
-              accountLink: accountLink.url,
-            };
+          //   const addDataToProfile = await models.UserProfile.addStripe(guru);
+          //   await models.Introduction.updateStatus(job._id, 'waiting for Guru');
 
-            const mailData = {
-              from: process.env.EMAIL_FROM,
-              to: job.user.email,
-              subject: `A payment from ${data.name} is waiting for you in introduce.guru!`,
-              // text: text(req.body),
-              html: htmlNewStripeAccount(data),
-            };
-            sendMail(mailData);
-          }
+          //   const data = {
+          //     name: `${job.user.firstName} ${job.user.lastName}`,
+          //     accountLink: accountLink.url,
+          //   };
+
+          //   const mailData = {
+          //     from: process.env.EMAIL_FROM,
+          //     to: job.user.email,
+          //     subject: `A payment from ${data.name} is waiting for you in introduce.guru!`,
+          //     // text: text(req.body),
+          //     html: htmlNewStripeAccount(data),
+          //   };
+          //   sendMail(mailData);
+          // }
+
+          // job: send reminder
 
           const stripeAccount = await stripe.accounts.retrieve(
             job.user.stripeId
@@ -78,7 +83,7 @@ export default async function handler(
           };
 
           if (!result.charges) {
-            await models.Introduction.updateStatus(job._id, 'waiting for Guru');
+            await Introduction.updateStatus(job._id, 'waiting for Guru');
 
             const data = {
               name: `${job.user.firstName} ${job.user.lastName}`,
@@ -93,6 +98,7 @@ export default async function handler(
               html: htmlStripeReminder(data),
             };
             sendMail(mailData);
+            await Introduction.saveReminderDate(job._id);
           }
         }
         res.status(200).json({ success: true, result: jobs });

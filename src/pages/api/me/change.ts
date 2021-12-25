@@ -22,6 +22,7 @@ export default handleErrors(
         check('address1').isLength({ min: 1, max: 255 }),
         check('address2').optional().isLength({ min: 0, max: 255 }),
         check('address3').optional().isLength({ min: 0, max: 255 }),
+        check('abn').isLength({ min: 11, max: 11 }),
         check('country').isLength({ min: 2, max: 2 }),
       ];
 
