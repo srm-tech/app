@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import getCurrentUser from '@/lib/get-current-user';
+import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 import getCollections from '@/models';
-import { handleErrors } from '@/lib/middleware';
 
 // TODO: replace userId
 export default handleErrors(

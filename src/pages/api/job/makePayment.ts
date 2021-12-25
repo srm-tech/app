@@ -25,34 +25,39 @@ export default handleErrors(
       ]);
 
       let amount = req.body.amount;
-      amount = parseInt(amount);
+      amount = parseFloat(amount);
       const jobId = req.body.jobId;
       let fee = req.body.fee;
-      fee = parseInt(fee);
+      fee = parseFloat(fee);
 
       const job = await Introduction.getFinalise(user._id, new ObjectId(jobId));
+
       // if not job found – 404
       if (!job) {
         return res.status(404).end('not found');
       }
 
       // just for the convenience
-      const from = await UserProfile.getOne(job.from);
       const to = job.user;
+      // const to = await models.UserProfile.getOne(job.business);
+      // const from = job.user;
+      const business = await UserProfile.getOne(job.business);
+      const customer = job.user;
+
       // stripe
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
         apiVersion: '2020-08-27',
       });
 
       // check if business has a stripeId, if not – create it
-      if (!from.stripeId) {
+      if (!business.stripeId) {
         const account = await stripe.accounts.create({ type: 'standard' });
-        const business = {
-          _id: from._id,
+        const stripeConnection = {
+          _id: business._id,
           stripeId: account.id,
         };
-        await UserProfile.addStripe(business);
-        from.stripeId = account.id;
+        await UserProfile.addStripe(stripeConnection);
+        business.stripeId = account.id; // add "stripeId" to the object in memory
       }
 
       const session = await stripe.checkout.sessions.create(
@@ -60,7 +65,7 @@ export default handleErrors(
           payment_method_types: ['card'],
           line_items: [
             {
-              name: `Payment for ${to.firstName} ${to.lastName} via introduce.guru`,
+              name: `Payment for ${customer.firstName} ${customer.lastName} via introduce.guru`,
               amount: formatAmountForStripe(amount, env.CURRENCY),
               currency: env.CURRENCY,
               quantity: 1,
@@ -68,13 +73,20 @@ export default handleErrors(
           ],
           payment_intent_data: {
             application_fee_amount: formatAmountForStripe(fee, env.CURRENCY),
+            receipt_email: business.email,
           },
           mode: 'payment',
-          success_url: `${process.env.BASE_URL}/job/paymentFinished?jobId=${jobId}`,
+
+          success_url: `${
+            process.env.BASE_URL
+          }/job/paymentFinished?jobId=${jobId}&amount=${formatAmountForStripe(
+            amount,
+            env.CURRENCY
+          )}`,
           cancel_url: `${process.env.BASE_URL}/job/finalise?jobId=${jobId}`,
         },
         {
-          stripeAccount: to.stripeId,
+          stripeAccount: customer.stripeId,
         }
       );
       result = {

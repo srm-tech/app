@@ -1,15 +1,14 @@
-import bodyParser from 'body-parser';
 import { GetServerSideProps } from 'next';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import LoadingOverlay from 'react-loading-overlay';
 import useFetch from 'use-http';
-import util from 'util';
 
 import Link from '@/components/buttons/Link';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 import { env } from '@/config';
+import { formatCommissionDescriptions } from '@/lib/utils';
 
 interface IFormInput {
   revenue: number;
@@ -41,8 +40,8 @@ export default function finalise(props) {
     return values;
   }
 
-  function handleChange(e) {
-    const data = e.target.form.elements;
+  function processForm(data) {
+    // console.log("raw reward:", data.reward.value, "raw fee:", data.guruFee.value, "raw total:", data.total.value);
     const revenue: number = isNaN(parseFloat(data.revenue.value))
       ? 0
       : parseFloat(data.revenue.value);
@@ -73,12 +72,20 @@ export default function finalise(props) {
       commissionType: commissionType,
       commissionValue: commissionValue,
     };
+    // console.log("values:", values);
 
     values = calculate(values);
+    // console.log("calculated values:", values);
 
     data.reward.value = values.reward.toFixed(2);
     data.guruFee.value = values.guruFee.toFixed(2);
     data.total.value = values.total.toFixed(2);
+    return values;
+  }
+
+  function handleChange(e) {
+    const data = e.target.form.elements;
+    processForm(data);
   }
 
   const [loaderVisible, setLoaderVisible] = useState(false);
@@ -88,6 +95,7 @@ export default function finalise(props) {
   const [errorMessageText, setErrorMessageText] = useState('');
   const [jobData, setJobData] = useState({});
   const [mailSent, setMailSent] = useState(false);
+  const [agreement, setAgreement] = useState({});
 
   const {
     register,
@@ -96,9 +104,9 @@ export default function finalise(props) {
     reset,
   } = useForm();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    saveData(data);
-  };
+  // const onSubmit: SubmitHandler<IFormInput> = (data) => {
+  //   saveData(data);
+  // };
 
   const { get, post, response, loading, error } = useFetch(
     process.env.BASE_URL
@@ -126,14 +134,20 @@ export default function finalise(props) {
       data.commissionValue = loaded.agreement[loaded.agreement.commissionType];
     }
     data = calculate(data);
-    // setFormValues(data);
     setJobData(loaded);
+    setAgreement(formatCommissionDescriptions(loaded.agreement));
     reset(data);
   }
 
   useEffect(() => {
     loadData();
   }, [reset]);
+
+  function handleFormClick(e) {
+    const formData = e.target.form.elements;
+    const data = processForm(formData);
+    saveData(data);
+  }
 
   async function saveData(data) {
     setSavedMessage(false);
@@ -154,6 +168,8 @@ export default function finalise(props) {
       jobId: props.jobId,
       stripeId: jobData.user.stripeId,
     };
+
+    console.log('paymentData:', paymentData);
 
     if (!paymentData.stripeId) {
       // the Guru doesn't have the Stripe account connected
@@ -191,7 +207,7 @@ export default function finalise(props) {
       <DashboardLayout>
         <form
           method='post'
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={(e) => e.preventDefault()}
           onChange={(e) => handleChange(e)}
         >
           <div className='user-form'>
@@ -200,7 +216,12 @@ export default function finalise(props) {
               <div className='p-4 text-white bg-green-800 md:col-span-1'>
                 <div className='px-4 sm:px-0'>
                   <h1 className='text-lg font-medium leading-6'>Review job</h1>
-                  <p className='mt-1 text-sm'></p>
+                  <p className='pt-4 mt-1 text-sm'>
+                    <strong>Your agreement:</strong>
+                  </p>
+                  <p className='mt-1 text-sm'>
+                    {agreement.key}: {agreement.value}
+                  </p>
                 </div>
               </div>
 
@@ -419,6 +440,7 @@ export default function finalise(props) {
                           {!mailSent && (
                             <button
                               type='submit'
+                              onClick={(e) => handleFormClick(e)}
                               className='inline-flex justify-center px-4 py-2 ml-3 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
                             >
                               Confirm

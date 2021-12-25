@@ -1,19 +1,88 @@
 import { Collection, ObjectId } from 'mongodb';
 
+function prepareFieldObfuscator(fields, obfuscate = true) {
+  const query = [];
+
+  fields.forEach(function (field: any) {
+    if (obfuscate) {
+      query.push({
+        $replaceWith: {
+          $setField: {
+            field: field.newField,
+            input: '$$ROOT',
+            value: {
+              $cond: [
+                {
+                  $in: ['$status', ['pending', 'declined']],
+                },
+                {
+                  $concat: [
+                    {
+                      $substr: [field.field, 0, 1],
+                    },
+                    field.replacement,
+                  ],
+                },
+                field.field,
+              ],
+            },
+          },
+        },
+      });
+    }
+
+    query.push({
+      $unset: field.field.slice(1),
+    });
+  });
+  return query;
+}
+
 const Introduction = (collection: Collection<Document>) => ({
   readMany: async (userId: ObjectId) => {
+    const query = prepareFieldObfuscator([
+      {
+        field: '$user.firstName',
+        newField: 'firstName',
+        replacement: '*****',
+      },
+      {
+        field: '$user.lastName',
+        newField: 'lastName',
+        replacement: '*****',
+      },
+      {
+        field: '$user.email',
+        newField: 'email',
+        replacement: '****@****.***',
+      },
+    ]);
+
+    const unset = {
+      $unset: [
+        'introducedBy',
+        'agreementId',
+        'customer',
+        'user.isGuru',
+        'user.isActive',
+        'user.accountLink',
+        'user.stripeId',
+      ],
+    };
+
+    const addFields = {
+      $addFields: {
+        sumCommissionCustomer: { $sum: '$user.commissionCustomer' },
+        sumCommissionBusiness: { $sum: '$user.commissionBusiness' },
+      },
+    };
+
     return collection
       .aggregate([
         {
-          $match: {
-            action: 'sent',
-            from: userId,
-          },
-        },
-        {
           $lookup: {
             from: 'userProfiles',
-            localField: 'to',
+            localField: 'customer',
             foreignField: '_id',
             as: 'user',
           },
@@ -21,10 +90,77 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $unwind: '$user',
         },
+        ...query,
+        addFields,
+        {
+          $addFields: {
+            position: 'business',
+          },
+        },
+        unset,
+        {
+          $match: {
+            action: 'sent',
+            business: userId,
+          },
+        },
+        {
+          $unionWith: {
+            coll: 'introductions',
+            pipeline: [
+              {
+                $match: {
+                  action: 'sent',
+                  customer: userId,
+                },
+              },
+              {
+                $lookup: {
+                  from: 'userProfiles',
+                  localField: 'business',
+                  foreignField: '_id',
+                  as: 'user',
+                },
+              },
+              {
+                $unwind: '$user',
+              },
+              {
+                $lookup: {
+                  from: 'reviews',
+                  localField: '_id',
+                  foreignField: 'jobId',
+                  as: 'review',
+                },
+              },
+              {
+                $addFields: {
+                  firstName: '$user.firstName',
+                  lastName: '$user.lastName',
+                  email: '$user.email',
+                  position: 'guru',
+                },
+              },
+              addFields,
+              unset,
+              {
+                $set: {
+                  status: {
+                    $cond: [
+                      { $eq: ['$status', 'pending'] },
+                      'waiting for approval',
+                      '$status',
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
       ])
-      .sort({ date: -1 })
       .toArray();
   },
+
   drafts: async (userId: ObjectId) => {
     return collection
       .aggregate([
@@ -85,13 +221,19 @@ const Introduction = (collection: Collection<Document>) => ({
   getOne: async (id) => {
     return await collection.findOne({ _id: new ObjectId(id) });
   },
-  getFinalise: async (fromId, objId) => {
+  getFinalise: async (businessId, objId, status = null) => {
+    let statuses;
+    if (!status) {
+      statuses = ['waiting for guru', 'accepted'];
+    } else {
+      statuses = [status];
+    }
     const result = await collection
       .aggregate([
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'to',
+            localField: 'customer',
             foreignField: '_id',
             as: 'user',
           },
@@ -114,9 +256,9 @@ const Introduction = (collection: Collection<Document>) => ({
           $match: {
             action: 'sent',
             status: {
-              $in: ['accepted', 'waiting for Guru'],
+              $in: statuses,
             },
-            from: fromId,
+            business: businessId,
             _id: objId,
           },
         },
@@ -132,12 +274,11 @@ const Introduction = (collection: Collection<Document>) => ({
     return await collection.updateOne(
       {
         _id: objId,
-        from: userId,
+        business: userId,
       },
       {
         $set: {
           status: 'accepted',
-          date: new Date(),
         },
       }
     );
@@ -146,12 +287,11 @@ const Introduction = (collection: Collection<Document>) => ({
     return await collection.updateOne(
       {
         _id: objId,
-        from: userId,
+        business: userId,
       },
       {
         $set: {
           status: 'declined',
-          date: new Date(),
         },
       }
     );
@@ -185,6 +325,7 @@ const Introduction = (collection: Collection<Document>) => ({
     );
     return obj;
   },
+  // todo: is this method necessary?
   finalise: async (data) => {
     const obj = await collection.updateOne(
       {
@@ -200,7 +341,7 @@ const Introduction = (collection: Collection<Document>) => ({
 
     // const update = await collection.updateOne({});
 
-    // return obj;
+    return obj;
   },
   updateStatus: async (jobId, status) => {
     const obj = await collection.updateOne(
@@ -214,6 +355,118 @@ const Introduction = (collection: Collection<Document>) => ({
       }
     );
     return obj;
+  },
+  details: async (objId: ObjectId) => {
+    const result = collection
+      .aggregate([
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'customer',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: '$user',
+        },
+        {
+          $lookup: {
+            from: 'agreements',
+            localField: 'agreementId',
+            foreignField: '_id',
+            as: 'agreement',
+          },
+        },
+        {
+          $unwind: '$agreement',
+        },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'business',
+            foreignField: '_id',
+            as: 'business',
+          },
+        },
+        {
+          $unwind: '$business',
+        },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'introducedBy',
+            foreignField: '_id',
+            as: 'introduced',
+          },
+        },
+        {
+          $unwind: '$introduced',
+        },
+        {
+          $match: {
+            _id: objId,
+          },
+        },
+      ])
+      .toArray();
+    return result;
+  },
+  waitingForGuru: async () => {
+    const result = collection
+      .aggregate([
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'customer',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: '$user',
+        },
+        {
+          $lookup: {
+            from: 'agreements',
+            localField: 'agreementId',
+            foreignField: '_id',
+            as: 'agreement',
+          },
+        },
+        {
+          $unwind: '$agreement',
+        },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'business',
+            foreignField: '_id',
+            as: 'business',
+          },
+        },
+        {
+          $unwind: '$business',
+        },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'introducedBy',
+            foreignField: '_id',
+            as: 'introduced',
+          },
+        },
+        {
+          $unwind: '$introduced',
+        },
+        {
+          $match: {
+            status: 'waiting for Guru',
+          },
+        },
+      ])
+      .toArray();
+    return result;
   },
 });
 

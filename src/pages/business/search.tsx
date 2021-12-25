@@ -4,6 +4,7 @@ import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
 import Table from '@/components/table/Table';
+import Link from '@/components/buttons/Link';
 
 searchForBusiness.getInitialProps = async ({ query }) => {
   const { data } = query;
@@ -30,34 +31,66 @@ export default function searchForBusiness(query) {
           <div className='cell-name'>
             {original.firstName} {original.lastName}
           </div>
-          <div className='cell-email'>{original.email}</div>
-          <div className='cell-phone'>{original.phone}</div>
         </>
       ),
     },
-    { Header: 'business name', accessor: 'businessName' },
     { Header: 'business category', accessor: 'businessCategory' },
     {
-      Header: 'rating',
-      accessor: 'rating',
+      Header: 'average rating',
+      accessor: 'avgRate',
       Cell: ({ value }) => (
-        <StarRatingComponent value={value} starCount={5} editing={false} />
+        <StarRatingComponent
+          value={value}
+          starCount={5}
+          editing={false}
+          emptyStarColor='#ccc'
+          starColor='#fa0'
+        />
       ),
     },
+
     {
-      Header: 'succesful rate',
-      accessor: 'successfulRate',
-      Cell: ({ value }) => <span>{value * 100}%</span>,
+      Header: 'average commission',
+      accessor: 'avgCommissionCustomer',
+      Cell: ({ row: { original } }) => (
+        <>
+          <div>
+            <span className='text-yellow-500'>
+              sent:{' '}
+              {original.avgCommissionBusiness
+                ? original.avgCommissionBusiness.toFixed(2)
+                : 0}{' '}
+              A$
+            </span>
+            <br />
+            <span className='text-green-500'>
+              received:{' '}
+              {original.avgCommissionCustomer
+                ? original.avgCommissionCustomer.toFixed(2)
+                : 0}{' '}
+              A$
+            </span>
+          </div>
+        </>
+      ),
     },
-    { Header: 'average commission', accessor: 'averageCommission' },
     {
       Header: 'favourites',
       accessor: 'isFavourite',
       Cell: ({ row: { original } }) => (
-        <>{original.isFavourite ? <>&#x2665;</> : ''}</>
+        <Link href='' onClick={(e) => handleToggleFav(e, original._id)}>
+          {original.isFavourite ? (
+            <span className='text-red-700' aria-label='remove from favourites'>
+              &#x2665;
+            </span>
+          ) : (
+            <span className='text-red-100' aria-label='add to favourites'>
+              &#x2665;
+            </span>
+          )}
+        </Link>
       ),
     },
-    { Header: 'status', accessor: 'status' },
     {
       Header: '',
       accessor: '_id',
@@ -103,10 +136,10 @@ export default function searchForBusiness(query) {
 
         return (
           <>
-            {original.status === 'pending'
+            {/* {original.status === 'pending'
               ? acceptDeclineButtons
               : removeFromContactsButton}
-            {original.isFavourite ? removeFromFavButton : addToFavButton}
+            {original.isFavourite ? removeFromFavButton : addToFavButton} */}
           </>
         );
       },

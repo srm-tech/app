@@ -41,3 +41,6 @@ sitemap.xml
 .env*.local
 # Docker generated
 data/
+
+# Webstorm
+.idea/

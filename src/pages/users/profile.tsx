@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import LoadingOverlay from 'react-loading-overlay';
+import countryList from 'react-select-country-list';
 import useFetch from 'use-http';
 
 import DashboardLayout from '@/components/layouts/DashboardLayout';
@@ -11,9 +12,15 @@ interface IFormInput {
   email: string;
   businessName: string;
   businessCategory: string;
-  isGuru: boolean;
-  isBusiness: boolean;
   stripeId: string;
+  address1: string;
+  address2: string;
+  address3: string;
+  country: string;
+  commissionType: string;
+  commissionPerReceivedLeadCash: string;
+  commissionPerCompletedLead: string;
+  commissionPerReceivedLeadPercent: string;
 }
 
 export default function profile() {
@@ -24,20 +31,29 @@ export default function profile() {
     email: '',
     businessName: '',
     businessCategory: '',
-    isGuru: false,
-    isBusiness: false,
     stripeId: '',
+    address1: '',
+    address2: '',
+    address3: '',
+    country: '',
+    commissionType: '',
+    commissionPerReceivedLeadCash: '',
+    commissionPerCompletedLead: '',
+    commissionPerReceivedLeadPercent: '',
   });
-
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
-
+  const [receivedCash, setReceivedCash] = useState(false);
+  const [receivedPercent, setReceivedPercent] = useState(false);
+  const [completedCash, setCompletedCash] = useState(false);
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
   } = useForm();
+
+  const countryOptions = useMemo(() => countryList().getData(), []);
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     saveData(data);
@@ -47,10 +63,47 @@ export default function profile() {
     process.env.BASE_URL
   );
 
+  function switchDropdown(dropdown) {
+    console.log('dripdown:', dropdown);
+    switch (dropdown) {
+      case 'commissionPerReceivedLeadCash':
+        setReceivedCash(true);
+        break;
+      case 'commissionPerCompletedLeadCash':
+        setCompletedCash(true);
+        break;
+      case 'commissionPerReceivedLeadPercent':
+        setReceivedPercent(true);
+        break;
+    }
+  }
+
+  function handleDropdown(e) {
+    const dropdown = e.target.value;
+    console.log('change:', dropdown);
+    setReceivedCash(false);
+    setReceivedPercent(false);
+    setCompletedCash(false);
+    switchDropdown(dropdown);
+  }
+
   useEffect(() => {
     async function loadData() {
       const loaded = await get('/api/me');
       setFormValues(loaded);
+
+      // todo: dont repeat with switchDropdown function! Plz, make it better!
+      switch (loaded.commissionType) {
+        case 'commissionPerReceivedLeadCash':
+          setReceivedCash(true);
+          break;
+        case 'commissionPerCompletedLeadCash':
+          setCompletedCash(true);
+          break;
+        case 'commissionPerReceivedLeadPercent':
+          setReceivedPercent(true);
+          break;
+      }
       reset(loaded);
     }
     loadData();
@@ -122,6 +175,15 @@ export default function profile() {
                 {/* end of ok message */}
 
                 <LoadingOverlay active={loaderVisible} spinner>
+                  <div>
+                    <h3 className='text-lg font-medium leading-6 text-gray-900'>
+                      Personal Information
+                    </h3>
+                    <p className='max-w-2xl mt-1 text-sm text-gray-500'>
+                      Use a permanent address where you can receive mail.
+                    </p>
+                  </div>
+
                   {/* first name field starts */}
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                     <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
@@ -224,6 +286,12 @@ export default function profile() {
                   </div>
                   {/* email field ends here */}
 
+                  <div className='pt-8 space-y-6 divide-y divide-gray-200 sm:pt-10 sm:space-y-5'>
+                    <h3 className='text-lg font-medium leading-6 text-gray-900'>
+                      Business Information
+                    </h3>
+                  </div>
+
                   {/* business name field starts */}
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                     <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
@@ -286,74 +354,269 @@ export default function profile() {
                   </div>
                   {/* business category field ends here */}
 
-                  {/* is guru field starts */}
+                  {/* address line 1 starts */}
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                     <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                       <label
-                        htmlFor='isGuru'
+                        htmlFor='businessCategory'
                         className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                       >
-                        Am I Guru?
+                        Address:
                       </label>
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
-                        <div className='flex max-w-lg rounded-md'>
-                          <input
-                            type='checkbox'
-                            defaultChecked={formValues.isGuru}
-                            {...register('isGuru')}
-                            className='w-4 h-4 text-green-600 rounded focus:ring-green-500'
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* business category field ends here */}
-
-                  {/* is is business field starts */}
-                  <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
-                    <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
-                      <label
-                        htmlFor='isBusiness'
-                        className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
-                      >
-                        Am I Business?
-                      </label>
-                      <div className='mt-1 sm:mt-0 sm:col-span-2'>
-                        <div className='flex max-w-lg rounded-md'>
-                          <input
-                            type='checkbox'
-                            defaultChecked={formValues.isBusiness}
-                            {...register('isBusiness')}
-                            className='w-4 h-4 text-green-600 rounded focus:ring-green-500'
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* business category field ends here */}
-
-                  {/* Stripe ID field starts */}
-                  <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
-                    <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
-                      <label
-                        htmlFor='isBusiness'
-                        className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
-                      >
-                        Stripe ID
-                      </label>
-                      <div className='mt-1 sm:mt-0 sm:col-span-2'>
-                        <div className='flex max-w-lg rounded-md'>
+                        <div className='flex max-w-lg rounded-md shadow-sm'>
                           <input
                             type='text'
-                            defaultValue={formValues.stripeId}
-                            {...register('stripeId')}
+                            defaultValue={formValues.address1}
+                            {...register('address1', {
+                              required: true,
+                              maxLength: 255,
+                            })}
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                          />
+                          {errors.address1?.type === 'required' && (
+                            <small className='text-red-900'>
+                              This field is required
+                            </small>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* address line 1 ends here */}
+
+                  {/* address line 2 starts */}
+                  <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                    <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                      <label
+                        htmlFor='businessCategory'
+                        className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                      >
+                        Address (line 2):
+                      </label>
+                      <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                        <div className='flex max-w-lg rounded-md shadow-sm'>
+                          <input
+                            type='text'
+                            defaultValue={formValues.address1}
+                            {...register('address2', {
+                              maxLength: 255,
+                            })}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/* Stripe ID field ends here */}
+                  {/* address line 2 ends here */}
+
+                  {/* address line 3 starts */}
+                  <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                    <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                      <label
+                        htmlFor='businessCategory'
+                        className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                      >
+                        Address (line 3):
+                      </label>
+                      <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                        <div className='flex max-w-lg rounded-md shadow-sm'>
+                          <input
+                            type='text'
+                            defaultValue={formValues.address1}
+                            {...register('address3', {
+                              maxLength: 255,
+                            })}
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* address line 3 ends here */}
+
+                  {/* country starts */}
+                  <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                    <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                      <label
+                        htmlFor='businessCategory'
+                        className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                      >
+                        Country:
+                      </label>
+                      <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                        <select
+                          {...register('country', {
+                            required: true,
+                          })}
+                          className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                        >
+                          <option value=''>Select a country...</option>
+                          {countryOptions.map((option) => (
+                            <option value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    {errors.country?.type === 'required' && (
+                      <small className='text-red-900'>
+                        This field is required
+                      </small>
+                    )}
+                  </div>
+                  {/* country ends here */}
+
+                  <div className='pt-8 space-y-6 divide-y divide-gray-200 sm:pt-10 sm:space-y-5'>
+                    <h3 className='text-lg font-medium leading-6 text-gray-900'>
+                      Default agreement
+                    </h3>
+                  </div>
+
+                  {/* commission starts */}
+                  <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                    <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                      <label
+                        htmlFor='commissionType'
+                        className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                      >
+                        Choose your commission:
+                      </label>
+                      <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                        <select
+                          {...register('commissionType', {
+                            required: true,
+                          })}
+                          onChange={handleDropdown}
+                          className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                        >
+                          <option value=''></option>
+                          <option value='commissionPerReceivedLeadCash'>
+                            Commission per received lead ($)
+                          </option>
+                          <option value='commissionPerCompletedLeadCash'>
+                            Commission per completed lead ($)
+                          </option>
+                          <option value='commissionPerReceivedLeadPercent'>
+                            Commission per received lead (%)
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    {errors.commissionType?.type === 'required' && (
+                      <small className='text-red-900'>
+                        This field is required
+                      </small>
+                    )}
+                  </div>
+                  {/* commission ends here */}
+
+                  {/* Commission per received lead field starts here */}
+                  {receivedCash && (
+                    <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                      <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                        <label
+                          htmlFor='commissionPerReceivedLeadCash'
+                          className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                        >
+                          Commission per received lead ($):
+                        </label>
+                        <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                          <div className='flex max-w-lg rounded-md shadow-sm'>
+                            <input
+                              type='number'
+                              step='0.01'
+                              defaultValue={
+                                formValues.commissionPerReceivedLeadCash
+                              }
+                              {...register('commissionPerReceivedLeadCash', {
+                                maxLength: 255,
+                              })}
+                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      {errors.commissionPerReceivedLeadCash?.type ===
+                        'required' && (
+                        <small className='text-red-900'>
+                          This field is required
+                        </small>
+                      )}
+                    </div>
+                  )}
+                  {/* Commission per received lead field ends here */}
+
+                  {/* Commission per completed lead field starts here */}
+                  {completedCash && (
+                    <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                      <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                        <label
+                          htmlFor='commissionPerCompletedLead'
+                          className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                        >
+                          Commission per completed lead ($):
+                        </label>
+                        <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                          <div className='flex max-w-lg rounded-md shadow-sm'>
+                            <input
+                              type='number'
+                              step='0.01'
+                              defaultValue={
+                                formValues.commissionPerCompletedLead
+                              }
+                              {...register('commissionPerCompletedLead', {
+                                maxLength: 255,
+                              })}
+                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      {errors.commissionPerCompletedLead?.type ===
+                        'required' && (
+                        <small className='text-red-900'>
+                          This field is required
+                        </small>
+                      )}
+                    </div>
+                  )}
+                  {/* Commission per received lead field ends here */}
+
+                  {/* Commission per received lead (%) field starts here */}
+                  {receivedPercent && (
+                    <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                      <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                        <label
+                          htmlFor='commissionPerReceivedLeadPercent'
+                          className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                        >
+                          Commission per received lead (%):
+                        </label>
+                        <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                          <div className='flex max-w-lg rounded-md shadow-sm'>
+                            <input
+                              type='number'
+                              step='0.01'
+                              defaultValue={
+                                formValues.commissionPerReceivedLeadPercent
+                              }
+                              {...register('commissionPerReceivedLeadPercent', {
+                                maxLength: 255,
+                              })}
+                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      {errors.commissionPerReceivedLeadPercent?.type ===
+                        'required' && (
+                        <small className='text-red-900'>
+                          This field is required
+                        </small>
+                      )}
+                    </div>
+                  )}
+                  {/* Commission per received lead (%) field ends here */}
 
                   <div className='pt-5'>
                     <div className='flex justify-end'>

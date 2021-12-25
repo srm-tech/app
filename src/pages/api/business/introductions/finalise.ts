@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
 import getCollections from '@/models';

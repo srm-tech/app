@@ -26,8 +26,8 @@ export default handleErrors(
       }
 
       // get sender data
-      const user = await UserProfile.getOne(new ObjectId(job.from));
-      req.body.name = `${user.firstName} ${user.lastName}`;
+      const user = await UserProfile.getOne(new ObjectId(job.business));
+      req.body.name = `${user?.firstName} ${user?.lastName}`;
 
       // stripe
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -100,7 +100,7 @@ function html(data) {
   <table width="100%" border="0" cellspacing="20" cellpadding="0" style="background: ${mainBackgroundColor}; max-width: 600px; margin: auto; border-radius: 10px; margin-bottom: 20px">
     <tr>
       <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-       <p>You have $${data.amount} to collect from ${data.name} in introduce.guru!</p>
+       <p>You have ${data.amount} to collect from ${data.name} in introduce.guru!</p>
 
       </td>
     </tr>

@@ -1,5 +1,6 @@
-import { ObjectId } from '@/lib/db';
 import { Collection } from 'mongodb';
+
+import { ObjectId } from '@/lib/db';
 
 const Agreement = (collection: Collection<Document>) => ({
   create: async (data) => {
@@ -13,6 +14,17 @@ const Agreement = (collection: Collection<Document>) => ({
     return collection.findOne({
       userId: new ObjectId(userId),
     });
+  },
+  updateOne: async (data) => {
+    const uid = data.userId;
+    delete data.userId;
+    return collection.updateOne(
+      { userId: uid },
+      { $set: data },
+      {
+        upsert: true,
+      }
+    );
   },
 });
 

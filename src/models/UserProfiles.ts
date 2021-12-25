@@ -11,6 +11,10 @@ export interface UserProfile {
   successfulRate: number;
   averageCommission: number;
   isActive: boolean;
+  address1: string;
+  address2: string;
+  address3: string;
+  country: string;
 }
 
 const UserProfile = (collection: Collection<UserProfile>) => ({
@@ -24,7 +28,26 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
     const query = new RegExp(q, 'i');
     return collection
       .aggregate([
-        //pipeline array
+        {
+          $lookup: {
+            from: 'reviews',
+            localField: '_id',
+            foreignField: 'business',
+            as: 'reviews',
+            pipeline: [
+              {
+                $project: {
+                  _id: 0,
+                  business: 0,
+                  guru: 0,
+                  jobId: 0,
+                  comment: 0,
+                  date: 0,
+                },
+              },
+            ],
+          },
+        },
         {
           $addFields: {
             search: {
@@ -40,14 +63,32 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
               ],
             },
             name: { $concat: ['$firstName', ' ', '$lastName'] },
+            avgCommissionCustomer: {
+              $avg: '$commissionCustomer',
+            },
+            avgCommissionBusiness: {
+              $avg: '$commissionBusiness',
+            },
+            avgRate: {
+              $avg: '$reviews.rate',
+            },
           },
-        }, //stage1
+        },
+        {
+          $unset: [
+            'rating',
+            'succesfulRate',
+            'averageCommission',
+            'isActive',
+            'isGuru',
+            'isBusiness',
+          ],
+        },
         {
           $match: {
             search: { $regex: query },
-            isBusiness: true,
           },
-        }, //stage2
+        },
       ])
       .toArray();
   },
@@ -130,6 +171,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
   },
   updateOne: async (data) => {
     const _id = data.userId;
+    delete data.userId;
     delete data._id;
     return collection.updateOne({ _id: _id }, { $set: data });
   },
@@ -144,6 +186,64 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       }
     );
   },
+  addCommission: async (
+    business: ObjectId,
+    customer: ObjectId,
+    amount: number
+  ) => {
+    const resultBusiness = await collection.updateOne(
+      { _id: business },
+      {
+        $push: {
+          commissionBusiness: amount,
+        },
+      }
+    );
+    const resultCustomer = await collection.updateOne(
+      { _id: customer },
+      {
+        $push: {
+          commissionCustomer: amount,
+        },
+      }
+    );
+    return {
+      resultBusiness: resultBusiness,
+      resultCustomer: resultCustomer,
+    };
+  },
+  stripeCheck: async (userId: ObjectId) => {
+    await collection.find({
+      _id: userId,
+      stripeId: { $exists: true },
+    });
+  },
+  /*
+  addReview: async (data) => {
+    data.date = new Date();
+    const businessId = new ObjectId(data.business);
+    const jobId = new ObjectId(data.jobId);
+    const business = await collection.findOne({
+      _id: businessId
+    });
+    const result = await collection.updateOne(
+      {
+        _id: businessId
+      },
+      {
+        $push: {
+          reviews: {
+            guru: data.guru,
+            date: new Date(),
+            rate: data.rate,
+            comment: data.comment,
+            job: jobId
+          }
+        }
+      }
+      )
+      return business;
+  }*/
 });
 
 export default UserProfile;
