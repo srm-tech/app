@@ -1,12 +1,76 @@
 import { Collection } from 'mongodb';
 
 import { ObjectId } from '@/lib/db';
+import { Agreement } from '@/components/introductions/QuickForm';
 
-const MyContacts = (collection: Collection<Document>) => ({
-  create: async (data) => {
-    data.date = new Date();
-    return collection.insertOne(data);
+interface MyContact {
+  userId: ObjectId;
+  contactId: ObjectId;
+  createdAt: Date;
+  status: 'accepted' | 'pending' | 'declined';
+  agreement: Agreement;
+}
+
+const MyContacts = (collection: Collection<MyContact>) => ({
+  create: async ({
+    userId,
+    contactId,
+    createdAt,
+    status,
+    agreement,
+  }: MyContact) => {
+    return collection.updateOne(
+      {
+        userId: new ObjectId(userId),
+        contactId: new ObjectId(contactId),
+      },
+      {
+        $set: {
+          userId: new ObjectId(userId),
+          contactId: new ObjectId(contactId),
+          agreement,
+          createdAt,
+          status,
+        },
+      },
+      {
+        upsert: true,
+      }
+    );
   },
+
+  readOne: async (userId, { contactId }) => {
+    const string = `(${userId.toString()} ${contactId}|${contactId} ${userId.toString()})`;
+    const query = new RegExp(string, 'i');
+    const result = await collection
+      .aggregate([
+        {
+          $addFields: {
+            userRef: { $toString: '$userId' },
+            contactRef: { $toString: '$contactId' },
+          },
+        },
+        {
+          $addFields: {
+            search: {
+              $concat: ['$userRef', ' ', '$contactRef'],
+            },
+          },
+        },
+        {
+          $match: {
+            search: { $regex: query },
+            status: 'accepted',
+          },
+        },
+        {
+          $unset: ['userRef', 'contactRef', 'search'],
+        },
+      ])
+      .toArray();
+    return result[0];
+  },
+
   readMany: async ({ userId }) => {
     const contacts = await collection
       .aggregate([

@@ -1,6 +1,6 @@
 import { AppProps } from 'next/app';
 import { SessionProvider } from 'next-auth/react';
-import { Provider } from 'use-http';
+import { Provider, CachePolicies } from 'use-http';
 import { env } from '../config';
 
 import '@/styles/globals.css';
@@ -8,6 +8,7 @@ import '@/styles/roadmap.scss';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const options = {
+    cachePolicy: CachePolicies.NO_CACHE,
     interceptors: {
       // every time we make an http request, this will run 1st before the request is made
       // url, path and route are supplied to the interceptor

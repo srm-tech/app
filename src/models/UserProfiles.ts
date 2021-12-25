@@ -24,6 +24,37 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
   readMany: async ({ userId }) => {
     return collection?.find({ userId }).toArray();
   },
+  searchForBusinessQuick: async (q: string) => {
+    const query = new RegExp(q, 'i');
+    return collection
+      .aggregate([
+        //pipeline array
+        {
+          $addFields: {
+            search: {
+              $concat: [
+                '$firstName',
+                ' ',
+                '$lastName',
+                ' - ',
+                '$businessName',
+                ' (',
+                '$businessCategory',
+                ')',
+              ],
+            },
+            name: { $concat: ['$firstName', ' ', '$lastName'] },
+          },
+        }, //stage1
+        {
+          $match: {
+            search: { $regex: query },
+            isBusiness: true,
+          },
+        }, //stage2
+      ])
+      .toArray();
+  },
   searchForBusiness: async (q: string) => {
     const query = new RegExp(q, 'i');
     return collection
@@ -77,7 +108,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
         {
           $unset: [
             'rating',
-            'succesfulRate',
+            'successfulRate',
             'averageCommission',
             'isActive',
             'isGuru',
@@ -169,11 +200,10 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       email,
     });
   },
-  updateOne: async (data) => {
-    const _id = data.userId;
+  updateOne: async (id, data) => {
     delete data.userId;
     delete data._id;
-    return collection.updateOne({ _id: _id }, { $set: data });
+    return collection.updateOne({ _id: id }, { $set: data });
   },
   addStripe: async (data) => {
     return collection.updateOne(
@@ -188,7 +218,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
   },
   addCommission: async (
     business: ObjectId,
-    customer: ObjectId,
+    customerId: ObjectId,
     amount: number
   ) => {
     const resultBusiness = await collection.updateOne(
@@ -200,7 +230,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       }
     );
     const resultCustomer = await collection.updateOne(
-      { _id: customer },
+      { _id: customerId },
       {
         $push: {
           commissionCustomer: amount,

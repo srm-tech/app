@@ -15,3 +15,12 @@ export function debounce<T extends unknown[], U>(
     });
   };
 }
+
+export const getValidationMessage = (data) =>
+  data.message ? data.message : `${data.errors[0].msg} ${data.errors[0].param}`;
+
+export const handleError = (response, callback) => {
+  if (response.status !== 200) {
+    callback(getValidationMessage(response.data));
+  }
+};

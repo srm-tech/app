@@ -3,14 +3,14 @@ import en from 'javascript-time-ago/locale/en.json';
 import React, { useEffect, useState, version } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 import StarRatingComponent from 'react-star-rating-component';
-import useFetch from 'use-http';
+import useFetch, { CachePolicies } from 'use-http';
 
 import useModal from '@/lib/useModal';
 import { formatCommissionDescriptions } from '@/lib/utils';
 
 import Button from '@/components/buttons/Button';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
-import Modal from '@/components/modals';
+import Modal from '@/components/modals/ConfirmModal';
 import Rating from '@/components/rating';
 import Table from '@/components/table/Table';
 
@@ -39,7 +39,7 @@ export default function introductions() {
 
   const { get, post, response, loading, error } = useFetch(
     `${process.env.BASE_URL}`,
-    { cachePolicy: 'no-cache' },
+    { cachePolicy: CachePolicies.NO_CACHE },
     []
   );
 

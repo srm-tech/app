@@ -60,9 +60,9 @@ const Introduction = (collection: Collection<Document>) => ({
 
     const unset = {
       $unset: [
-        'introducedBy',
+        'guruId',
         'agreementId',
-        'customer',
+        'customerId',
         'user.isGuru',
         'user.isActive',
         'user.accountLink',
@@ -82,7 +82,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'customer',
+            localField: 'customerId',
             foreignField: '_id',
             as: 'user',
           },
@@ -111,7 +111,7 @@ const Introduction = (collection: Collection<Document>) => ({
               {
                 $match: {
                   action: 'sent',
-                  customer: userId,
+                  customerId: userId,
                 },
               },
               {
@@ -205,7 +205,16 @@ const Introduction = (collection: Collection<Document>) => ({
   create: async (data) => {
     return collection.insertOne(data);
   },
-  update: async ({ _id, ...data }) => {
+  update: async (_id, { _id: skipId, ...data }: any) => {
+    if (data.customerId) {
+      data.customerId = new ObjectId(data.customerId);
+    }
+    if (data.business) {
+      data.business = new ObjectId(data.business);
+    }
+    if (data.guruId) {
+      data.guruId = new ObjectId(data.guruId);
+    }
     return collection.updateOne({ _id: new ObjectId(_id) }, { $set: data });
   },
   now: async (data) => {
@@ -233,7 +242,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'customer',
+            localField: 'customerId',
             foreignField: '_id',
             as: 'user',
           },
@@ -362,7 +371,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'customer',
+            localField: 'customerId',
             foreignField: '_id',
             as: 'user',
           },
@@ -395,7 +404,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'introducedBy',
+            localField: 'guruId',
             foreignField: '_id',
             as: 'introduced',
           },
@@ -418,7 +427,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'customer',
+            localField: 'customerId',
             foreignField: '_id',
             as: 'user',
           },
@@ -451,7 +460,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'introducedBy',
+            localField: 'guruId',
             foreignField: '_id',
             as: 'introduced',
           },

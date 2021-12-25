@@ -37,7 +37,7 @@ export default async () => {
     Introduction: Introduction(db.collection('introductions')),
     Invitation: Invitation(db.collection('invitations')),
     Message: Message(db.collection('messages')),
-    MyContacts: MyContacts(db.collection('userProfiles')),
+    MyContacts: MyContacts(db.collection('myContacts')),
     Review: Review(db.collection('reviews')),
     UserProfile: UserProfile(db.collection('userProfiles')),
   };

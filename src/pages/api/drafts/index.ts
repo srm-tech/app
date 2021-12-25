@@ -17,11 +17,11 @@ export default handleErrors(
         check('contactName').isLength({ min: 1, max: 55 }),
         check('businessName').isLength({ min: 1, max: 55 }),
       ])(req, res);
-      var today = new Date();
+      const today = new Date();
       result = await Introduction.create({
         status: 'draft',
         date: new Date(),
-        expiresAt: new Date().setDate(today.getDate() + 3),
+        expiresAt: new Date(new Date().setDate(today.getDate() + 3)),
         ...req.body,
       });
     } else {

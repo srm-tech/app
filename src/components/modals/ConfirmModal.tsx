@@ -1,17 +1,26 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
-import React, { Fragment, useState } from 'react';
+import React, { Component, Fragment, ReactElement, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-export default function Modal({
+export default function ConfirmModal({
   isShowing,
-  hide,
   caption,
   content,
   accept,
+  form,
   acceptCaption,
   cancel,
   cancelCaption,
+}: {
+  isShowing: boolean;
+  caption: string;
+  content: ReactElement;
+  accept: () => void;
+  form?: string;
+  acceptCaption: string;
+  cancel: () => void;
+  cancelCaption: string;
 }) {
   return isShowing
     ? ReactDOM.createPortal(
@@ -69,16 +78,19 @@ export default function Modal({
                           {caption}
                         </Dialog.Title>
                         <div className='mt-2'>
-                          <p className='text-sm text-gray-500'>{content}</p>
+                          <div className='text-sm text-gray-500'>{content}</div>
                         </div>
                       </div>
                     </div>
                     <div className='mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense'>
                       {acceptCaption && (
                         <button
-                          type='button'
+                          form={form}
+                          type='submit'
                           className='inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:col-start-2 sm:text-sm'
-                          onClick={accept}
+                          onClickCapture={(e) => {
+                            accept();
+                          }}
                         >
                           {acceptCaption}
                         </button>
