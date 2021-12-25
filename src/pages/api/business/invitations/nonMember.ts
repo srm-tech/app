@@ -13,7 +13,7 @@ export default handleErrors(
       const user = await getCurrentUser(req, res);
       await validate([
         check('email').isEmail(),
-        check('commisionPerReceivedLeadCash').isNumeric(),
+        check('commissionPerReceivedLeadCash').isNumeric(),
         check('commissionPerCompletedLead').isNumeric(),
         check('commissionPerReceivedLeadPercent').isNumeric(),
         check('message').isLength({ min: 1, max: 1024 }),
