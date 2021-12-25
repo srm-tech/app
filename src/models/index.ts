@@ -1,4 +1,4 @@
-import { getCollection, getDb, ObjectId } from '@/lib/db';
+// import { getCollection, getDb, ObjectId } from '@/lib/db';
 import DashBoardConnectionsWidget from './widgets/DashboardConnections';
 import DashboardIntroductionsWidget from './widgets/DashboardIntroductions';
 import DashboardInvitationsWidget from './widgets/DashboardInvitations';
@@ -13,30 +13,32 @@ import Message from './Messages';
 import MyContacts from './MyContacts';
 import Review from './Reviews';
 import UserProfile from './UserProfiles';
+import { connectToDatabase } from '@/lib/db';
 
-const db = getDb();
-const collection = getCollection(db);
-
-export default {
-  client: db.client,
-  DashBoardConnectionsWidget: DashBoardConnectionsWidget(
-    collection('connections')
-  ),
-  DashboardIntroductionsWidget: DashboardIntroductionsWidget(
-    collection('introductions')
-  ),
-  DashboardInvitationsWidget: DashboardInvitationsWidget(
-    collection('invitations')
-  ),
-  Agreement: Agreement(collection('agreements')),
-  BusinessInvitations: BusinessInvitations(collection('businessInvitations')),
-  Category: Category(collection('category')),
-  Connection: Connection(collection('connections')),
-  Favourite: Favourite(collection('favourites')),
-  Introduction: Introduction(collection('introductions')),
-  Invitation: Invitation(collection('invitations')),
-  Message: Message(collection('messages')),
-  MyContacts: MyContacts(collection('userProfiles')),
-  Review: Review(collection('reviews')),
-  UserProfile: UserProfile(collection('userProfiles')),
+export default async () => {
+  const { db } = await connectToDatabase();
+  return {
+    DashBoardConnectionsWidget: DashBoardConnectionsWidget(
+      db.collection('connections')
+    ),
+    DashboardIntroductionsWidget: DashboardIntroductionsWidget(
+      db.collection('introductions')
+    ),
+    DashboardInvitationsWidget: DashboardInvitationsWidget(
+      db.collection('invitations')
+    ),
+    Agreement: Agreement(db.collection('agreements')),
+    BusinessInvitations: BusinessInvitations(
+      db.collection('businessInvitations')
+    ),
+    Category: Category(db.collection('category')),
+    Connection: Connection(db.collection('connections')),
+    Favourite: Favourite(db.collection('favourites')),
+    Introduction: Introduction(db.collection('introductions')),
+    Invitation: Invitation(db.collection('invitations')),
+    Message: Message(db.collection('messages')),
+    MyContacts: MyContacts(db.collection('userProfiles')),
+    Review: Review(db.collection('reviews')),
+    UserProfile: UserProfile(db.collection('userProfiles')),
+  };
 };

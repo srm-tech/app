@@ -4,12 +4,12 @@ import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { UserProfile } = await getCollections();
     if (req.method === 'POST') {
       const user = await getCurrentUser(req, res);
       await validate([
@@ -21,7 +21,7 @@ export default handleErrors(
         // check('stripeId').isLength({min: 21, max: 21})
         // check('phone').isLength({ min: 1, max: 50 }),
       ])(req, res);
-      result = await models.UserProfile.updateOne({
+      result = await UserProfile.updateOne({
         userId: user._id,
         ...req.body,
       });
@@ -30,6 +30,5 @@ export default handleErrors(
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json({ result });
-    await models.client.close();
   }
 );

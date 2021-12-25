@@ -113,7 +113,7 @@ export default function DashboardLayout({
                   </div>
                 </Transition.Child>
                 <div className='flex items-center flex-shrink-0 px-4'>
-                  <Logo basePath='/dashboard' />
+                  <Logo basePath='/' />
                 </div>
                 <div className='flex-1 h-0 mt-5 overflow-y-auto'>
                   <nav className='px-2 space-y-1'>
@@ -152,7 +152,7 @@ export default function DashboardLayout({
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className='flex flex-col flex-grow pt-5 overflow-y-auto bg-dark'>
             <div className='flex items-center flex-shrink-0 px-4'>
-              <Logo basePath='/dashboard' small />
+              <Logo basePath='/' small />
             </div>
             <div className='flex flex-col flex-1 mt-5'>
               <nav className='flex-1 px-2 pb-4 space-y-1'>

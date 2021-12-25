@@ -9,11 +9,9 @@ export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
     const { Introduction, UserProfile } = await getCollections();
-
-    const guruUser = await getCurrentUser(req, res);
-    if (!guruUser) return res.status(404).send('User not found');
     if (req.method === 'GET') {
-      result = await Introduction.readMany(guruUser._id);
+      await validate([check('id').isMongoId()])(req, res);
+      result = await Introduction.getOne(req.query.id);
     } else if (req.method === 'PUT') {
       // this endopoint requires user
       const guruUser = await getCurrentUser(req, res);
@@ -27,33 +25,8 @@ export default handleErrors(
         check('businessLabel').isLength({ min: 1, max: 55 }),
         check('businessId').isMongoId(),
         check('_id').isMongoId(),
-        check('draftId').isMongoId(),
       ])(req, res);
-      const [firstName, lastName] = req.body.contactName?.split(' ');
-      const contact = req.body.contact;
-      // check if contact exists
-      let guruContact = await UserProfile.searchForCustomer(
-        contact,
-        req.body.contactType
-      );
-      // if contact doesn't exist, create one
-      if (!guruContact) {
-        guruContact = await UserProfile.create({
-          status: 'draft',
-          date: new Date(),
-          fullName: req.body.contactName,
-          firstName,
-          lastName,
-          phone: (req.body.contactType === 'phone' && req.body.contact) || '',
-          email: (req.body.contactType === 'email' && req.body.contact) || '',
-        });
-      }
-      result = await Introduction.update({
-        _id: req.body._id,
-        customer: new ObjectId(guruContact._id),
-        business: new ObjectId(req.body.businessId),
-        introducedBy: new ObjectId(guruUser._id),
-      });
+      result = await Introduction.update(req.body);
     } else {
       return res
         .status(405)

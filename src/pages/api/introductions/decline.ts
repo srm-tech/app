@@ -11,20 +11,16 @@ import models from '@/models';
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Introduction } = await getCollections();
     if (req.method === 'POST') {
       const user = await getCurrentUser(req, res);
       const introId = req.body.introId;
       await validate([check(introId).isMongoId()]);
-      result = await models.Introduction.decline(
-        user._id,
-        new ObjectId(introId)
-      );
+      result = await Introduction.decline(user._id, new ObjectId(introId));
     } else {
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );

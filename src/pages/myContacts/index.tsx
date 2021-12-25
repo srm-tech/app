@@ -87,7 +87,7 @@ export default function myContacts() {
     },
     {
       Header: 'succesful rate',
-      accessor: 'contact.succesfulRate',
+      accessor: 'contact.successfulRate',
       Cell: ({ value }) => <span>{value * 100}%</span>,
     },
     { Header: 'average commission', accessor: 'contact.averageCommission' },

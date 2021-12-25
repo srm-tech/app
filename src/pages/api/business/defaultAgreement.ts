@@ -4,13 +4,13 @@ import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 // TODO: replace userId
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Agreement } = await getCollections();
     const user = await getCurrentUser(req, res);
     if (req.method === 'POST') {
       await validate([
@@ -18,12 +18,12 @@ export default handleErrors(
         check('commissionPerCompletedLead').isNumeric(),
         check('commissionPerReceivedLeadPercent').isNumeric(),
       ])(req, res);
-      result = await models.Agreement.create({
+      result = await Agreement.create({
         userId: user._id,
         ...req.body,
       });
     } else if (req.method === 'GET') {
-      result = await models.Agreement.findOne(user._id);
+      result = await Agreement.findOne(user._id);
       if (!result) {
         result = {
           commissionPerReceivedLeadCash: 0,
@@ -36,6 +36,5 @@ export default handleErrors(
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );

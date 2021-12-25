@@ -1,16 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { check, validate } from '@/lib/validator';
-import models from '@/models';
+import getCollections from '@/models';
 import { handleErrors } from '@/lib/middleware';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Category } = await getCollections();
     if (req.method === 'GET') {
-      res
-        .status(200)
-        .json(models.Category.search({ query: req.query.q.toString() }));
+      res.status(200).json(Category.search({ query: req.query.q.toString() }));
     } else if (req.method === 'POST') {
       await validate([
         check('category').isIn(['phone', 'email']),
@@ -27,6 +25,5 @@ export default handleErrors(
         .json({ statusCode: 405, message: 'Method not allowed' });
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );

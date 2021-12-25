@@ -6,26 +6,26 @@ import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Introduction, UserProfile } = await getCollections();
     if (req.method === 'GET') {
       const _user = await getCurrentUser(req, res);
       const _id = req.query.jobId;
       const jobId = new ObjectId(_id);
 
       // get job data
-      const job = await models.Introduction.getFinalise(_user._id, jobId);
+      const job = await Introduction.getFinalise(_user._id, jobId);
       // if not job found – 404
       if (!job) {
         return res.status(404).end('not found');
       }
 
       // get sender data
-      const user = await models.UserProfile.getOne(new ObjectId(job.from));
+      const user = await UserProfile.getOne(new ObjectId(job.from));
 
       // stripe
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {

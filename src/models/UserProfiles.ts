@@ -8,12 +8,12 @@ export interface UserProfile {
   email: string;
   businessCategory: string;
   rating: number;
-  succesfulRate: number;
+  successfulRate: number;
   averageCommission: number;
   isActive: boolean;
 }
 
-const UserProfile = (collection: Collection<Document>) => ({
+const UserProfile = (collection: Collection<UserProfile>) => ({
   create: async (data) => {
     return collection?.insertOne(data);
   },

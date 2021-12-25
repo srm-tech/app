@@ -1,5 +1,4 @@
-import { ObjectId } from '@/lib/db';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 
 const Introduction = (collection: Collection<Document>) => ({
   readMany: async (userId: ObjectId) => {
@@ -57,7 +56,7 @@ const Introduction = (collection: Collection<Document>) => ({
             businessName: '$user.businessName',
             businessCategory: '$user.businessCategory',
             rating: '$user.rating',
-            succesfulRate: '$user.succesfulRate',
+            successfulRate: '$user.successfulRate',
             averageCommission: '$user.averageCommission',
             commissionEarned: '$user.commissionEarned',
           },
@@ -70,6 +69,9 @@ const Introduction = (collection: Collection<Document>) => ({
   create: async (data) => {
     return collection.insertOne(data);
   },
+  update: async ({ _id, ...data }) => {
+    return collection.updateOne({ _id: new ObjectId(_id) }, { $set: data });
+  },
   now: async (data) => {
     data.contactId = new ObjectId(data.contactId);
     return collection.insertOne(data);
@@ -81,7 +83,7 @@ const Introduction = (collection: Collection<Document>) => ({
     });
   },
   getOne: async (id) => {
-    return await collection.findOne({ _id: id });
+    return await collection.findOne({ _id: new ObjectId(id) });
   },
   getFinalise: async (fromId, objId) => {
     const result = await collection
@@ -196,7 +198,7 @@ const Introduction = (collection: Collection<Document>) => ({
       }
     );
 
-    const update = await collection.updateOne({});
+    // const update = await collection.updateOne({});
 
     // return obj;
   },

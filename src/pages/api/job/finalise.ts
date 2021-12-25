@@ -4,19 +4,19 @@ import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Introduction } = await getCollections();
     if (req.method === 'GET') {
       const user = await getCurrentUser(req, res);
       const jobId = req.query.jobId;
 
-      result = await models.Introduction.getFinalise(
+      result = await Introduction.getFinalise(
         user._id,
-        new ObjectId(jobId)
+        new ObjectId(jobId.toString())
       );
 
       if (!result) {
@@ -28,6 +28,5 @@ export default handleErrors(
         .json({ statusCode: 405, message: 'Method not allowed' });
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );

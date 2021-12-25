@@ -1,13 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
-import models from '@/models';
+import getCollections from '@/models';
 import { handleErrors } from '@/lib/middleware';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Review } = await getCollections();
     if (req.method === 'POST') {
       const user = await getCurrentUser(req, res);
       await validate([
@@ -15,7 +15,7 @@ export default handleErrors(
         check('comment').isLength({ min: 0, max: 1023 }),
         check('reviewedId').isMongoId(),
       ])(req, res);
-      result = await models.Review.create({
+      result = await Review.create({
         userId: user._id,
         ...req.query,
       });
@@ -24,6 +24,5 @@ export default handleErrors(
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');
     }
-    await models.client.close();
   }
 );

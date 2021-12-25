@@ -33,7 +33,7 @@ export default function initiationsReceived() {
     },
     {
       Header: 'succesful rate',
-      accessor: 'succesfulRate',
+      accessor: 'successfulRate',
       Cell: ({ value }) => <span>{value * 100}%</span>,
     },
     { Header: 'average commission', accessor: 'averageCommission' },

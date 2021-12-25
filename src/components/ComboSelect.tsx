@@ -5,19 +5,14 @@ import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import useFetch from 'use-http';
 import InlineError from './errors/InlineError';
-const items = [
-  { label: 'Mortgage Brooker & Co', query: '1234' },
-  { label: 'Beuaty & Spa', query: '3456' },
-  { label: 'ABN group Developments', query: '467' },
-];
 import { debounce } from '@/lib/helper';
-import { Item } from './introductions/QuickForm';
+import { Query } from './introductions/QuickForm';
 
-export default function ComboSelect({ query, value, onChange, onSelect }) {
+export default function ComboSelect({ query, onChange, onSelect }) {
   const debounceSetCurrentValue = useRef<any>(null);
   const { get, data, response, loading, error } = useFetch('/search/business');
 
-  let inputItems: Item[] = [];
+  let inputItems: Query[] = [];
   if (response.ok) {
     inputItems = data?.map((item) => ({
       _id: item._id,
@@ -27,22 +22,22 @@ export default function ComboSelect({ query, value, onChange, onSelect }) {
     }));
   }
 
-  const loadData = () => {
-    if (query?.length > 0) {
-      get(`?q=${query}`);
+  const loadData = (value?: string) => {
+    const q = value || query || '';
+    if (q.length > 0) {
+      get(`?q=${q}`);
     }
   };
+
   useEffect(() => {
     loadData();
   }, [query]);
 
+  // debounce function should only be created once
   if (!debounceSetCurrentValue.current) {
-    debounceSetCurrentValue.current = debounce(
-      ({ inputValue }: { inputValue?: string }) => {
-        onChange && onChange(inputValue || '');
-      },
-      300
-    );
+    debounceSetCurrentValue.current = debounce((value: string) => {
+      loadData(value);
+    }, 300);
   }
 
   const {
@@ -59,11 +54,14 @@ export default function ComboSelect({ query, value, onChange, onSelect }) {
     items: inputItems,
     id: 'ComboSelect',
     inputId: 'ComboSelectInput',
-    itemToString: (item: Item | null) => (item ? item.label : ''),
-    onInputValueChange: debounceSetCurrentValue.current,
+    itemToString: (item: Query | null) => (item ? item.label : ''),
+    onInputValueChange: ({ inputValue }: { inputValue?: string }) => {
+      onChange && onChange(inputValue || '');
+      debounceSetCurrentValue.current(inputValue);
+    },
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-        const item: Item = selectedItem;
+        const item: Query = selectedItem;
         onSelect && onSelect(item);
         onChange && onChange(item.label || '');
       }
@@ -95,7 +93,7 @@ export default function ComboSelect({ query, value, onChange, onSelect }) {
     <>
       <div {...getComboboxProps()} className='relative'>
         <input
-          {...getInputProps()}
+          {...getInputProps({ value: query })}
           type='text'
           className='block w-full border-gray-300 border-2 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
         />

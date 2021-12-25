@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
-import models from '@/models';
+import getCollections from '@/models';
 import { handleErrors } from '@/lib/middleware';
 
 // TODO: replace userId
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { BusinessInvitations } = await getCollections();
     if (req.method === 'POST') {
       const user = await getCurrentUser(req, res);
       await validate([
@@ -19,7 +19,7 @@ export default handleErrors(
         check('message').isLength({ min: 1, max: 1024 }),
       ])(req, res);
 
-      result = await models.BusinessInvitations.inviteGuruNonMember({
+      result = await BusinessInvitations.inviteGuruNonMember({
         userId: user._id,
         date: new Date(),
         status: 'not sent yet',
@@ -31,6 +31,5 @@ export default handleErrors(
     }
 
     res.status(200).json(result);
-    await models.client.close();
   }
 );

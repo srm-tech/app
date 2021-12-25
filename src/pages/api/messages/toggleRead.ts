@@ -1,16 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import getCurrentUser from '@/lib/get-current-user';
-import models from '@/models';
+import getCollections from '@/models';
 import { handleErrors } from '@/lib/middleware';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Message } = await getCollections();
     const user = await getCurrentUser(req, res);
 
     if (req.method !== 'POST') {
-      result = await models.Message.toggleRead(
+      result = await Message.toggleRead(
         user._id,
         req.query.messageId.toString()
       );
@@ -26,6 +26,5 @@ export default handleErrors(
     }
 
     res.status(200).json(result);
-    await models.client.close();
   }
 );

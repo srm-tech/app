@@ -1,19 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
-import models from '@/models';
+import getCollections from '@/models';
 import { handleErrors } from '@/lib/middleware';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    const userId = await getCurrentUser(req, res)._id;
-    await models.client.connect();
+    const user = await getCurrentUser(req, res);
+
+    const { Introduction } = await getCollections();
     if (req.method === 'POST') {
       validate([check('introductionId').isMongoId()]);
-      result = await models.Introduction.finalise({
+      result = await Introduction.finalise({
         _id: req.query.introductionId,
-        userId,
+        userId: user._id,
         ...req.body,
       });
     } else {
@@ -22,6 +23,5 @@ export default handleErrors(
         .json({ statusCode: 405, message: 'Method not allowed' });
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );

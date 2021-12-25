@@ -6,22 +6,19 @@ import getCurrentUser from '@/lib/get-current-user';
 import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Introduction, UserProfile } = await getCollections();
     if (req.method === 'POST') {
       const _user = await getCurrentUser(req, res);
       const jobId = req.body.jobId;
       const amount = req.body.amount;
 
       // get job data
-      let job = await models.Introduction.getFinalise(
-        _user._id,
-        new ObjectId(jobId)
-      );
+      let job = await Introduction.getFinalise(_user._id, new ObjectId(jobId));
 
       // if not job found – 404
       if (!job) {
@@ -29,7 +26,7 @@ export default handleErrors(
       }
 
       // get sender data
-      const user = await models.UserProfile.getOne(new ObjectId(job.from));
+      const user = await UserProfile.getOne(new ObjectId(job.from));
       req.body.name = `${user.firstName} ${user.lastName}`;
 
       // stripe
@@ -54,8 +51,8 @@ export default handleErrors(
         accountLink: accountLink.url,
       };
 
-      const addDataToProfile = await models.UserProfile.addStripe(guru);
-      await models.Introduction.updateStatus(job._id, 'waiting for Guru');
+      const addDataToProfile = await UserProfile.addStripe(guru);
+      await Introduction.updateStatus(job._id, 'waiting for Guru');
       if (
         addDataToProfile.acknowledged &&
         addDataToProfile.modifiedCount === 1
@@ -89,7 +86,6 @@ export default handleErrors(
         .json({ statusCode: 405, message: 'Method not allowed' });
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );
 

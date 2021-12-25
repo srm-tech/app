@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import getCurrentUser from '@/lib/get-current-user';
 import { check, validate } from '@/lib/validator';
-import models from '@/models';
+import getCollections from '@/models';
 import { handleErrors } from '@/lib/middleware';
 
 export default handleErrors(
@@ -9,18 +9,18 @@ export default handleErrors(
     let result;
 
     const user = await getCurrentUser(req, res);
-    await models.client.connect();
+    const { Message } = await getCollections();
     if (req.method === 'GET') {
       const user = await getCurrentUser(req, res);
-      result = await models.Message.readMany(user._id);
+      result = await Message.readMany(user._id);
     } else if (req.method === 'POST') {
       await validate([
         check('subject').isLength({ min: 1, max: 255 }),
         check('content').isLength({ min: 1, max: 1023 }),
       ])(req, res);
-      result = await models.Message.create({ userId: user._id, ...req.body });
+      result = await Message.create({ userId: user._id, ...req.body });
     } else if (req.method === 'DELETE') {
-      result = await models.Message.deleteOne(
+      result = await Message.deleteOne(
         user._id,
         req.query.messageId.toString()
       );
@@ -34,7 +34,5 @@ export default handleErrors(
         .json({ statusCode: 405, message: 'Method not allowed' });
     }
     res.status(200).json(result);
-
-    await models.client.close();
   }
 );
