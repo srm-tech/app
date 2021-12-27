@@ -14,10 +14,5 @@ const modal = (
 );
 
 export default function tryout() {
-  return (
-    <>
-      {modal}
-      <button onClick={() => openModal()}>Open modal</button>
-    </>
-  );
+  return <>{modal}</>;
 }
