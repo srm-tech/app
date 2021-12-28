@@ -4,7 +4,7 @@ import useModal from '@/lib/useModal';
 
 import Modal from '@/components/modals/modal';
 
-const App = () => {
+export default function App() {
   const { isShowing, toggle } = useModal();
 
   function yes() {
@@ -26,14 +26,12 @@ const App = () => {
         isShowing={isShowing}
         hide={toggle}
         cancel={no}
-        cancelCaption={'No'}
+        cancelCaption='No'
         accept={yes}
-        acceptCaption={'Yes'}
-        caption={'Click yes or no'}
+        acceptCaption='Yes'
+        caption='Click yes or no'
         content="Isn't it awesome?"
       />
     </div>
   );
-};
-
-export default App;
+}
