@@ -1,18 +1,39 @@
+import React from 'react';
+
+import useModal from '@/lib/useModal';
+
 import Modal from '@/components/modals/modal';
 
-const modal = (
-  <>
-    <Modal
-      openOnStart={true}
-      caption='Do ya feel lucky?'
-      acceptButtonCaption="I'm feeling lucky"
-      cancelButtonCaption='Thanks for now, officer'
-    >
-      Well, do ya, punk?!
-    </Modal>
-  </>
-);
+const App = () => {
+  const { isShowing, toggle } = useModal();
 
-export default function tryout() {
-  return <>{modal}</>;
-}
+  function yes() {
+    toggle();
+    console.log('yes');
+  }
+
+  function no() {
+    toggle();
+    console.log('no');
+  }
+
+  return (
+    <div className='App'>
+      <button className='button-default' onClick={toggle}>
+        Show Modal
+      </button>
+      <Modal
+        isShowing={isShowing}
+        hide={toggle}
+        cancel={no}
+        cancelCaption={'No'}
+        accept={yes}
+        acceptCaption={'Yes'}
+        caption={'Click yes or no'}
+        content="Isn't it awesome?"
+      />
+    </div>
+  );
+};
+
+export default App;
