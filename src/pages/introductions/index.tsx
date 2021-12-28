@@ -38,6 +38,10 @@ export default function introductions() {
     []
   );
 
+  function cancelModal() {
+    toggle();
+  }
+
   async function handleAccept(e, introId) {
     const accept = await post('/api/introductions/accept', {
       introId: introId,
@@ -46,18 +50,11 @@ export default function introductions() {
   }
 
   async function handleDecline(e, introId) {
-    // const decline = await post('/api/introductions/decline', {
-    //   introId: introId,
-    // });
-    function cancelF() {
-      console.log('cancelled');
-      toggle();
-    }
     async function acceptF() {
+      toggle();
       const decline = await post('/api/introductions/decline', {
         introId: introId,
       });
-      toggle();
     }
 
     toggle();
@@ -65,7 +62,7 @@ export default function introductions() {
     setContent('You are about to decline the introduction');
     setAcceptCaption("Yes, I'm sure");
     setCancelCaption('No, cancel');
-    setCancel(() => cancelF);
+    setCancel(() => cancelModal);
     setAccept(() => acceptF);
     setReload(true);
   }

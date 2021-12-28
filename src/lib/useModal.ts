@@ -10,6 +10,7 @@ const useModal = () => {
   const [cancel, setCancel] = useState();
 
   function toggle() {
+    console.log('toggle');
     setIsShowing(!isShowing);
   }
 
