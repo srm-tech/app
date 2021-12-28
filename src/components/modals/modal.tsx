@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 export default function Modal({
@@ -20,7 +20,6 @@ export default function Modal({
             <Dialog
               as='div'
               className='fixed inset-0 z-10 overflow-y-auto'
-              // initialFocus={cancelButtonRef}
               onClose={() => {
                 return false;
               }}
@@ -79,7 +78,6 @@ export default function Modal({
                         type='button'
                         className='inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:col-start-2 sm:text-sm'
                         onClick={accept}
-                        //ref={acceptButtonRef}
                       >
                         {acceptCaption}
                       </button>
@@ -87,7 +85,6 @@ export default function Modal({
                         type='button'
                         className='inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:col-start-1 sm:text-sm'
                         onClick={cancel}
-                        //ref={cancelButtonRef}
                       >
                         {cancelCaption}
                       </button>

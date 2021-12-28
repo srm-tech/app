@@ -3,14 +3,34 @@ import React, { useEffect, useState } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 import useFetch from 'use-http';
 
+import useModal from '@/lib/useModal';
+
 import Button from '@/components/buttons/Button';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
+import Modal from '@/components/modals/modal';
 import Table from '@/components/table/Table';
 
 export default function introductions() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(true);
+
+  const {
+    isShowing,
+    toggle,
+    caption,
+    setCaption,
+    content,
+    setContent,
+    acceptCaption,
+    setAcceptCaption,
+    cancelCaption,
+    setCancelCaption,
+    accept,
+    setAccept,
+    cancel,
+    setCancel,
+  } = useModal();
 
   const { get, post, response, loading, error } = useFetch(
     `${process.env.BASE_URL}`,
@@ -26,10 +46,27 @@ export default function introductions() {
   }
 
   async function handleDecline(e, introId) {
-    console.log('decline');
-    const decline = await post('/api/introductions/decline', {
-      introId: introId,
-    });
+    // const decline = await post('/api/introductions/decline', {
+    //   introId: introId,
+    // });
+    function cancelF() {
+      console.log('cancelled');
+      toggle();
+    }
+    async function acceptF() {
+      const decline = await post('/api/introductions/decline', {
+        introId: introId,
+      });
+      toggle();
+    }
+
+    toggle();
+    setCaption('Are you sure?');
+    setContent('You are about to decline the introduction');
+    setAcceptCaption("Yes, I'm sure");
+    setCancelCaption('No, cancel');
+    setCancel(() => cancelF);
+    setAccept(() => acceptF);
     setReload(true);
   }
 
@@ -121,6 +158,18 @@ export default function introductions() {
     <DashboardLayout title='Introductions'>
       <LoadingOverlay active={loaderVisible} spinner>
         <Table columns={columns} data={list} loading={loading} />
+        <div>
+          <Modal
+            isShowing={isShowing}
+            acceptCaption={acceptCaption}
+            cancelCaption={cancelCaption}
+            hide={toggle}
+            content={content}
+            caption={caption}
+            accept={accept}
+            cancel={cancel}
+          />
+        </div>
       </LoadingOverlay>
     </DashboardLayout>
   );
