@@ -15,6 +15,17 @@ const Agreement = (collection: Collection<Document>) => ({
       userId: new ObjectId(userId),
     });
   },
+  updateOne: async (data) => {
+    const uid = data.userId;
+    delete data.userId;
+    return collection.updateOne(
+      { userId: uid },
+      { $set: data },
+      {
+        upsert: true,
+      }
+    );
+  },
 });
 
 export default Agreement;

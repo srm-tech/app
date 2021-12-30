@@ -52,10 +52,23 @@ export default handleErrors(
 
       await validate(validators)(req, res);
 
-      result = await models.UserProfile.updateOne({
+      const result1 = await models.UserProfile.updateOne({
         userId: user._id,
         ...req.body,
       });
+      const result2 = await models.Agreement.updateOne({
+        userId: user._id,
+        commissionType: req.body.commissionType,
+        commissionPerReceivedLeadCash: req.body.commissionPerReceivedLeadCash,
+        commissionPerCompletedLead: req.body.commissionPerCompletedLead,
+        commissionPerReceivedLeadPercent:
+          req.body.commissionPerReceivedLeadPercent,
+      });
+
+      result = {
+        result1: result1,
+        result2: result2,
+      };
     } else {
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');
