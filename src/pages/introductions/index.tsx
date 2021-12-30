@@ -1,15 +1,16 @@
-import Link from 'next/link';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en.json';
 import React, { useEffect, useState } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 import useFetch from 'use-http';
 
 import useModal from '@/lib/useModal';
+import { formatCommissionDescriptions } from '@/lib/utils';
 
 import Button from '@/components/buttons/Button';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import Modal from '@/components/modals/modal';
 import Table from '@/components/table/Table';
-import { formatCommissionDescriptions } from '@/lib/utils';
 
 export default function introductions() {
   const [loaderVisible, setLoaderVisible] = useState(false);
@@ -98,6 +99,10 @@ export default function introductions() {
     setLoaderVisible(loading);
   }, [loading]);
 
+  // prepare TimeAgo
+  TimeAgo.addDefaultLocale(en);
+  const timeAgo = new TimeAgo('en-US');
+
   const columns = [
     {
       Header: 'name',
@@ -114,6 +119,13 @@ export default function introductions() {
       ),
     },
     { Header: 'businessCategory', accessor: 'user.businessCategory' },
+    {
+      Header: 'date',
+      accessor: 'date',
+      Cell: ({ row: { original } }) => (
+        <>{timeAgo.format(new Date(original.date))}</>
+      ),
+    },
     { Header: 'status', accessor: 'status' },
     { Header: 'commission', accessor: 'commissionEarned' },
     {

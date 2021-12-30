@@ -11,8 +11,6 @@ interface IFormInput {
   email: string;
   businessName: string;
   businessCategory: string;
-  isGuru: boolean;
-  isBusiness: boolean;
   stripeId: string;
 }
 
@@ -24,8 +22,6 @@ export default function profile() {
     email: '',
     businessName: '',
     businessCategory: '',
-    isGuru: false,
-    isBusiness: false,
     stripeId: '',
   });
 
