@@ -17,6 +17,10 @@ interface IFormInput {
   address2: string;
   address3: string;
   country: string;
+  commissionType: string;
+  commissionPerReceivedLeadCash: string;
+  commissionPerCompletedLead: string;
+  commissionPerReceivedLeadPercent: string;
 }
 
 export default function profile() {
@@ -32,6 +36,10 @@ export default function profile() {
     address2: '',
     address3: '',
     country: '',
+    commissionType: '',
+    commissionPerReceivedLeadCash: '',
+    commissionPerCompletedLead: '',
+    commissionPerReceivedLeadPercent: '',
   });
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
@@ -55,11 +63,7 @@ export default function profile() {
     process.env.BASE_URL
   );
 
-  function handleDropdown(e) {
-    const dropdown = e.target.value;
-    setReceivedCash(false);
-    setReceivedPercent(false);
-    setCompletedCash(false);
+  function switchDropdown(dropdown) {
     switch (dropdown) {
       case 'commissionPerReceivedLeadCash':
         setReceivedCash(true);
@@ -73,10 +77,19 @@ export default function profile() {
     }
   }
 
+  function handleDropdown(e) {
+    const dropdown = e.target.value;
+    setReceivedCash(false);
+    setReceivedPercent(false);
+    setCompletedCash(false);
+    switchDropdown(dropdown);
+  }
+
   useEffect(() => {
     async function loadData() {
       const loaded = await get('/api/me');
       setFormValues(loaded);
+      switchDropdown(loaded.commisionType);
       reset(loaded);
     }
     loadData();
@@ -452,7 +465,7 @@ export default function profile() {
                         htmlFor='commissionType'
                         className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                       >
-                        Choose your commission::
+                        Choose your commission:
                       </label>
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
                         <select
@@ -496,7 +509,8 @@ export default function profile() {
                         <div className='mt-1 sm:mt-0 sm:col-span-2'>
                           <div className='flex max-w-lg rounded-md shadow-sm'>
                             <input
-                              type='text'
+                              type='number'
+                              step='0.01'
                               defaultValue={
                                 formValues.commissionPerReceivedLeadCash
                               }
@@ -531,7 +545,8 @@ export default function profile() {
                         <div className='mt-1 sm:mt-0 sm:col-span-2'>
                           <div className='flex max-w-lg rounded-md shadow-sm'>
                             <input
-                              type='text'
+                              type='number'
+                              step='0.01'
                               defaultValue={
                                 formValues.commissionPerCompletedLead
                               }
@@ -566,7 +581,8 @@ export default function profile() {
                         <div className='mt-1 sm:mt-0 sm:col-span-2'>
                           <div className='flex max-w-lg rounded-md shadow-sm'>
                             <input
-                              type='text'
+                              type='number'
+                              step='0.01'
                               defaultValue={
                                 formValues.commissionPerReceivedLeadPercent
                               }
