@@ -11,6 +11,10 @@ export interface UserProfile {
   succesfulRate: number;
   averageCommission: number;
   isActive: boolean;
+  address1: string;
+  address2: string;
+  address3: string;
+  country: string;
 }
 
 const UserProfile = (collection: Collection<Document>) => ({
@@ -130,6 +134,7 @@ const UserProfile = (collection: Collection<Document>) => ({
   },
   updateOne: async (data) => {
     const _id = data.userId;
+    delete data.userId;
     delete data._id;
     return collection.updateOne({ _id: _id }, { $set: data });
   },

@@ -18,6 +18,7 @@ export default handleErrors(
         check('businessName').isLength({ min: 1, max: 255 }),
         check('businessCategory').isLength({ min: 1, max: 255 }),
         check('email').isEmail(),
+        check('address1').isLength({ min: 1, max: 255 }),
         // check('stripeId').isLength({min: 21, max: 21})
         // check('phone').isLength({ min: 1, max: 50 }),
       ])(req, res);

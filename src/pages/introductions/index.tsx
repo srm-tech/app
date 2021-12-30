@@ -49,6 +49,7 @@ export default function introductions() {
       const accept = await post('/api/introductions/accept', {
         introId: original._id,
       });
+      window.location.href = `${process.env.BASE_URL}/introductions`;
     }
     const job = await get(`/api/job/details?id=${original._id}`);
     if (!job) {
@@ -71,6 +72,7 @@ export default function introductions() {
       const decline = await post('/api/introductions/decline', {
         introId: original._id,
       });
+      window.location.href = `${process.env.BASE_URL}/introductions`;
     }
 
     toggle();

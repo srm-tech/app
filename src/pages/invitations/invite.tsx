@@ -203,7 +203,6 @@ export default function profile() {
                         {/* Message field ends here */}
 
                         {/* commission dropdown*/}
-                        {/* Message field starts here */}
                         <div className='sm:col-span-4'>
                           <label
                             htmlFor='commisionType'
@@ -221,13 +220,13 @@ export default function profile() {
                             >
                               <option value=''></option>
                               <option value='commissionPerReceivedLeadCash'>
-                                Commission per received lead (cash)
+                                Commission per received lead ($)
                               </option>
                               <option value='commissionPerCompletedLeadCash'>
-                                Commission per completed lead (cash)
+                                Commission per completed lead ($)
                               </option>
                               <option value='commissionPerReceivedLeadPercent'>
-                                Commission per received lead (percent)
+                                Commission per received lead (%)
                               </option>
                             </select>
                           </div>
