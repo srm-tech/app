@@ -64,6 +64,7 @@ export default function profile() {
   );
 
   function switchDropdown(dropdown) {
+    console.log('dripdown:', dropdown);
     switch (dropdown) {
       case 'commissionPerReceivedLeadCash':
         setReceivedCash(true);
@@ -79,6 +80,7 @@ export default function profile() {
 
   function handleDropdown(e) {
     const dropdown = e.target.value;
+    console.log('change:', dropdown);
     setReceivedCash(false);
     setReceivedPercent(false);
     setCompletedCash(false);
@@ -89,7 +91,19 @@ export default function profile() {
     async function loadData() {
       const loaded = await get('/api/me');
       setFormValues(loaded);
-      switchDropdown(loaded.commisionType);
+
+      // todo: dont repeat with switchDropdown function! Plz, make it better!
+      switch (loaded.commissionType) {
+        case 'commissionPerReceivedLeadCash':
+          setReceivedCash(true);
+          break;
+        case 'commissionPerCompletedLeadCash':
+          setCompletedCash(true);
+          break;
+        case 'commissionPerReceivedLeadPercent':
+          setReceivedPercent(true);
+          break;
+      }
       reset(loaded);
     }
     loadData();
