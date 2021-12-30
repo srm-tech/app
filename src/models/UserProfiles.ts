@@ -149,6 +149,32 @@ const UserProfile = (collection: Collection<Document>) => ({
       }
     );
   },
+  addCommission: async (
+    business: ObjectId,
+    customer: ObjectId,
+    amount: number
+  ) => {
+    const resultBusiness = await collection.updateOne(
+      { _id: business },
+      {
+        $push: {
+          commissionBusiness: amount,
+        },
+      }
+    );
+    const resultCustomer = await collection.updateOne(
+      { _id: customer },
+      {
+        $push: {
+          commissionCustomer: amount,
+        },
+      }
+    );
+    return {
+      resultBusiness: resultBusiness,
+      resultCustomer: resultCustomer,
+    };
+  },
 });
 
 export default UserProfile;

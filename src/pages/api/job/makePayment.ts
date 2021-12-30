@@ -77,7 +77,12 @@ export default handleErrors(
             application_fee_amount: formatAmountForStripe(fee, env.CURRENCY),
           },
           mode: 'payment',
-          success_url: `${process.env.BASE_URL}/job/paymentFinished?jobId=${jobId}`,
+          success_url: `${
+            process.env.BASE_URL
+          }/job/paymentFinished?jobId=${jobId}&amount=${formatAmountForStripe(
+            amount,
+            env.CURRENCY
+          )}`,
           cancel_url: `${process.env.BASE_URL}/job/finalise?jobId=${jobId}`,
         },
         {

@@ -129,7 +129,31 @@ export default function introductions() {
       ),
     },
     { Header: 'status', accessor: 'status' },
-    { Header: 'commission', accessor: 'commissionEarned' },
+    {
+      Header: 'commission',
+      accessor: 'commissionEarned',
+      Cell: ({ row: { original } }) => (
+        <>
+          <div>
+            <span className='text-green-500'>
+              received:{' '}
+              {original.avgCommissionBusiness
+                ? original.avgCommissionBusiness.toFixed(2)
+                : 0}{' '}
+              A$
+            </span>
+            &nbsp;&nbsp;
+            <span className='text-red-500'>
+              sent:{' '}
+              {original.avgCommissionCustomer
+                ? original.avgCommissionCustomer.toFixed(2)
+                : 0}{' '}
+              A$
+            </span>
+          </div>
+        </>
+      ),
+    },
     {
       Header: '',
       accessor: '_id',

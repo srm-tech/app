@@ -76,6 +76,12 @@ const Introduction = (collection: Collection<Document>) => ({
             },
           },
         },
+        {
+          $addFields: {
+            avgCommissionCustomer: { $avg: '$user.commissionCustomer' },
+            avgCommissionBusiness: { $avg: '$user.commissionBusiness' },
+          },
+        },
       ])
       .toArray();
   },
@@ -136,7 +142,13 @@ const Introduction = (collection: Collection<Document>) => ({
   getOne: async (id) => {
     return await collection.findOne({ _id: id });
   },
-  getFinalise: async (businessId, objId) => {
+  getFinalise: async (businessId, objId, status = null) => {
+    let statuses;
+    if (!status) {
+      statuses = ['waiting for guru', 'accepted'];
+    } else {
+      statuses = [status];
+    }
     const result = await collection
       .aggregate([
         {
@@ -165,7 +177,7 @@ const Introduction = (collection: Collection<Document>) => ({
           $match: {
             action: 'sent',
             status: {
-              $in: ['accepted', 'waiting for Guru'],
+              $in: statuses,
             },
             business: businessId,
             _id: objId,
