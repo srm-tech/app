@@ -264,6 +264,40 @@ const Introduction = (collection: Collection<Document>) => ({
     );
     return obj;
   },
+  details: async (objId: ObjectId) => {
+    const result = collection
+      .aggregate([
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'customer',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: '$user',
+        },
+        {
+          $lookup: {
+            from: 'agreements',
+            localField: 'agreementId',
+            foreignField: '_id',
+            as: 'agreement',
+          },
+        },
+        {
+          $unwind: '$agreement',
+        },
+        {
+          $match: {
+            _id: objId,
+          },
+        },
+      ])
+      .toArray();
+    return result;
+  },
 });
 
 export default Introduction;

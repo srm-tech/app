@@ -9,6 +9,7 @@ import Button from '@/components/buttons/Button';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import Modal from '@/components/modals/modal';
 import Table from '@/components/table/Table';
+import { formatCommissionDescriptions } from '@/lib/utils';
 
 export default function introductions() {
   const [loaderVisible, setLoaderVisible] = useState(false);
@@ -38,22 +39,36 @@ export default function introductions() {
     []
   );
 
-  function cancelModal() {
+  function handleCancelButton() {
     toggle();
   }
 
-  async function handleAccept(e, introId) {
-    const accept = await post('/api/introductions/accept', {
-      introId: introId,
-    });
+  async function handleAccept(e, original) {
+    async function handleAcceptButton() {
+      const accept = await post('/api/introductions/accept', {
+        introId: original._id,
+      });
+    }
+    const job = await get(`/api/job/details?id=${original._id}`);
+    if (!job) {
+      return null;
+    }
+    const reviewContent = formatCommissionDescriptions(job[0].agreement);
+    setCaption('Review the agreement');
+    setContent(`${reviewContent.key}: ${reviewContent.value}`);
+    setAcceptCaption('Proceed');
+    setCancelCaption('Cancel');
+    setCancel(() => handleCancelButton);
+    setAccept(() => handleAcceptButton);
+    toggle();
     setReload(true);
   }
 
-  async function handleDecline(e, introId) {
-    async function acceptF() {
+  async function handleDecline(e, original) {
+    async function handleAcceptButton() {
       toggle();
       const decline = await post('/api/introductions/decline', {
-        introId: introId,
+        introId: original._id,
       });
     }
 
@@ -61,9 +76,9 @@ export default function introductions() {
     setCaption('Are you sure?');
     setContent('You are about to decline the introduction');
     setAcceptCaption("Yes, I'm sure");
-    setCancelCaption('No, cancel');
-    setCancel(() => cancelModal);
-    setAccept(() => acceptF);
+    setCancelCaption('Cancel');
+    setCancel(() => handleCancelButton);
+    setAccept(() => handleAcceptButton);
     setReload(true);
   }
 
@@ -118,21 +133,20 @@ export default function introductions() {
           </>
         );
 
-        const id = original._id;
         const acceptDeclineButtons = (
           <>
             <div>
               <Button
                 variants='primary'
                 className='text-xs'
-                onClick={(e) => handleAccept(e, id)}
+                onClick={(e) => handleAccept(e, original)}
               >
                 Accept
               </Button>
               <Button
                 variants='secondary'
                 className='text-xs'
-                onClick={(e) => handleDecline(e, id)}
+                onClick={(e) => handleDecline(e, original)}
               >
                 Decline
               </Button>
@@ -164,7 +178,7 @@ export default function introductions() {
             content={content}
             caption={caption}
             accept={accept}
-            cancel={cancel}
+            cancel={toggle}
           />
         </div>
       </LoadingOverlay>

@@ -8,6 +8,7 @@ import Link from '@/components/buttons/Link';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 import { env } from '@/config';
+import { formatCommissionDescriptions } from '@/lib/utils';
 
 interface IFormInput {
   revenue: number;
@@ -94,6 +95,7 @@ export default function finalise(props) {
   const [errorMessageText, setErrorMessageText] = useState('');
   const [jobData, setJobData] = useState({});
   const [mailSent, setMailSent] = useState(false);
+  const [agreement, setAgreement] = useState({});
 
   const {
     register,
@@ -132,8 +134,8 @@ export default function finalise(props) {
       data.commissionValue = loaded.agreement[loaded.agreement.commissionType];
     }
     data = calculate(data);
-    // setFormValues(data);
     setJobData(loaded);
+    setAgreement(formatCommissionDescriptions(loaded.agreement));
     reset(data);
   }
 
@@ -214,7 +216,12 @@ export default function finalise(props) {
               <div className='p-4 text-white bg-green-800 md:col-span-1'>
                 <div className='px-4 sm:px-0'>
                   <h1 className='text-lg font-medium leading-6'>Review job</h1>
-                  <p className='mt-1 text-sm'></p>
+                  <p className='pt-4 mt-1 text-sm'>
+                    <strong>Your agreement:</strong>
+                  </p>
+                  <p className='mt-1 text-sm'>
+                    {agreement.key}: {agreement.value}
+                  </p>
                 </div>
               </div>
 

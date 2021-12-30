@@ -1,11 +1,12 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 import useModal from '@/lib/useModal';
 
 import Modal from '@/components/modals/modal';
 
 export default function App() {
-  const { isShowing, toggle } = useModal();
+  const { isShowing, toggle, accept, setAccept, cancel, setCancel } =
+    useModal();
 
   function yes() {
     toggle();
