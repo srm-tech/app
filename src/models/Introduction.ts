@@ -332,6 +332,62 @@ const Introduction = (collection: Collection<Document>) => ({
       .toArray();
     return result;
   },
+  waitingForGuru: async () => {
+    const result = collection
+      .aggregate([
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'customer',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: '$user',
+        },
+        {
+          $lookup: {
+            from: 'agreements',
+            localField: 'agreementId',
+            foreignField: '_id',
+            as: 'agreement',
+          },
+        },
+        {
+          $unwind: '$agreement',
+        },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'business',
+            foreignField: '_id',
+            as: 'business',
+          },
+        },
+        {
+          $unwind: '$business',
+        },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'introducedBy',
+            foreignField: '_id',
+            as: 'introduced',
+          },
+        },
+        {
+          $unwind: '$introduced',
+        },
+        {
+          $match: {
+            status: 'waiting for Guru',
+          },
+        },
+      ])
+      .toArray();
+    return result;
+  },
 });
 
 export default Introduction;
