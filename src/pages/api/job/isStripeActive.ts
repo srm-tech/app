@@ -4,6 +4,7 @@ import Stripe from 'stripe';
 import { ObjectId } from '@/lib/db';
 import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
+import { htmlStripeReminder } from '@/lib/utils';
 
 import models from '@/models';
 
@@ -44,7 +45,7 @@ export default handleErrors(
           to: job.user.email,
           subject: `A payment from ${req.body.name} is waiting for you in introduce.guru!`,
           // text: text(req.body),
-          html: html(data),
+          html: htmlStripeReminder(data),
         };
         sendMail(mailData);
       }
@@ -56,43 +57,3 @@ export default handleErrors(
     await models.client.close();
   }
 );
-
-function html(data) {
-  const backgroundColor = '#f9f9f9';
-  const textColor = '#444444';
-  const mainBackgroundColor = '#ffffff';
-
-  return `
-  <body style="background: ${backgroundColor}; padding-bottom: 20px; padding-top: 20px;">
-
-  <table width="100%" border="0" cellspacing="20" cellpadding="0" style="background: ${mainBackgroundColor}; max-width: 600px; margin: auto; border-radius: 10px; margin-bottom: 20px">
-    <tr>
-      <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-       <p>You have a payment to collect from ${data.name} in introduce.guru!</p>
-
-      </td>
-    </tr>
-    <tr>
-      <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        <p>
-        But first you have to provide details and payment data to make the payment possible.
-        </p>
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        <p>Best Regards</p>
-        <p>${data.name}</p>
-      </td>
-    </tr>
-    
-    <tr>
-      <td align="center" style="padding: 0px 0px 10px 0px; font-size: 10px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        If you did not request this email you can safely ignore it.
-      </td>
-    </tr>
-  </table>
-</body>
-`;
-}

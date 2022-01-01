@@ -4,6 +4,7 @@ import Stripe from 'stripe';
 import { ObjectId } from '@/lib/db';
 import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
+import { htmlNewStripeAccount } from '@/lib/utils';
 
 import models from '@/models';
 
@@ -72,7 +73,7 @@ export default handleErrors(
           to: job.user.email,
           subject: `A payment from ${req.body.name} is waiting for you in introduce.guru!`,
           // text: text(req.body),
-          html: html(data),
+          html: htmlNewStripeAccount(data),
         };
         sendMail(mailData);
       }
