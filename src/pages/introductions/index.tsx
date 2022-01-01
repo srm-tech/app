@@ -142,8 +142,8 @@ export default function introductions() {
                 : 0}{' '}
               A$
             </span>
-            &nbsp;&nbsp;
-            <span className='text-red-500'>
+            <br />
+            <span className='text-yellow-500'>
               sent:{' '}
               {original.avgCommissionCustomer
                 ? original.avgCommissionCustomer.toFixed(2)
