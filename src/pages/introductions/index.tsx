@@ -40,6 +40,10 @@ export default function introductions() {
     []
   );
 
+  // prepare TimeAgo
+  TimeAgo.addDefaultLocale(en);
+  const timeAgo = new TimeAgo('en-US');
+
   function handleCancelButton() {
     toggle();
   }
@@ -91,20 +95,36 @@ export default function introductions() {
 
   async function handleFinaliseSubmit(e, jobId) {
     e.preventDefault();
-    // 1. check if Guru has an account
+
     const stripePresent = await get(`/api/job/stripeCheck?id=${jobId}`);
-    console.log('stripe', stripePresent);
+
     if (!stripePresent.stripeCheck && stripePresent.mailSent) {
+      console.log('not stripe yet');
       toggle();
-      setCaption('The Guru has not set up his Stripe account yet');
+      setCaption('The Guru has not connected his account with Stripe yet');
       setContent(
-        'We sent the mail to the Guru, please come back and try againg in a few days'
+        'We sent the mail to the Guru, please come back and try again in a few days'
       );
       setAccept(() => handleAcceptDoNothing);
       setCancel(null);
       setAcceptCaption('OK');
+      return;
     }
-    // 2. check if Guru's account active
+    const isStripeActive = await get(`/api/job/isStripeActive?id=${jobId}`);
+    if (!isStripeActive.charges) {
+      console.log('stripe exists, but no details provided');
+      toggle();
+      setCaption('The Guru has not set up his Stripe account yet');
+      setContent(
+        'We sent the mail to the Guru, please come back and try again in a few days'
+      );
+      setAccept(() => handleAcceptDoNothing);
+      setCancel(null);
+      setAcceptCaption('OK');
+      return;
+    }
+
+    window.location.href = `${process.env.BASE_URL}/job/finalise?jobId=${jobId}`;
   }
 
   async function loadData() {
@@ -122,10 +142,6 @@ export default function introductions() {
   useEffect(() => {
     setLoaderVisible(loading);
   }, [loading]);
-
-  // prepare TimeAgo
-  TimeAgo.addDefaultLocale(en);
-  const timeAgo = new TimeAgo('en-US');
 
   const columns = [
     {
