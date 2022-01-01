@@ -44,6 +44,10 @@ export default function introductions() {
     toggle();
   }
 
+  function handleAcceptDoNothing() {
+    window.location.href = `${process.env.BASE_URL}/introductions`;
+  }
+
   async function handleAccept(e, original) {
     async function handleAcceptButton() {
       const accept = await post('/api/introductions/accept', {
@@ -83,6 +87,24 @@ export default function introductions() {
     setCancel(() => handleCancelButton);
     setAccept(() => handleAcceptButton);
     setReload(true);
+  }
+
+  async function handleFinaliseSubmit(e, jobId) {
+    e.preventDefault();
+    // 1. check if Guru has an account
+    const stripePresent = await get(`/api/job/stripeCheck?id=${jobId}`);
+    console.log('stripe', stripePresent);
+    if (!stripePresent.stripeCheck && stripePresent.mailSent) {
+      toggle();
+      setCaption('The Guru has not set up his Stripe account yet');
+      setContent(
+        'We sent the mail to the Guru, please come back and try againg in a few days'
+      );
+      setAccept(() => handleAcceptDoNothing);
+      setCancel(null);
+      setAcceptCaption('OK');
+    }
+    // 2. check if Guru's account active
   }
 
   async function loadData() {
@@ -161,7 +183,11 @@ export default function introductions() {
         const finishJob = (
           <>
             <div>
-              <form action='/job/finalise' method='get'>
+              <form
+                action='/job/finalise'
+                method='get'
+                onSubmit={(e) => handleFinaliseSubmit(e, original._id)}
+              >
                 <input type='hidden' name='jobId' value={original._id} />
                 <Button type='submit' variants='primary' className='text-xs'>
                   Finish job

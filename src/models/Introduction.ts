@@ -302,6 +302,28 @@ const Introduction = (collection: Collection<Document>) => ({
           $unwind: '$agreement',
         },
         {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'business',
+            foreignField: '_id',
+            as: 'business',
+          },
+        },
+        {
+          $unwind: '$business',
+        },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'introducedBy',
+            foreignField: '_id',
+            as: 'introduced',
+          },
+        },
+        {
+          $unwind: '$introduced',
+        },
+        {
           $match: {
             _id: objId,
           },

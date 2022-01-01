@@ -175,6 +175,12 @@ const UserProfile = (collection: Collection<Document>) => ({
       resultCustomer: resultCustomer,
     };
   },
+  stripeCheck: async (userId: ObjectId) => {
+    await db.userProfiles.find({
+      _id: userId,
+      stripeId: { $exists: true },
+    });
+  },
 });
 
 export default UserProfile;
