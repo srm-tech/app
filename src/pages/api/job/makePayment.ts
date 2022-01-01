@@ -75,8 +75,10 @@ export default handleErrors(
           ],
           payment_intent_data: {
             application_fee_amount: formatAmountForStripe(fee, env.CURRENCY),
+            receipt_email: business.email,
           },
           mode: 'payment',
+
           success_url: `${
             process.env.BASE_URL
           }/job/paymentFinished?jobId=${jobId}&amount=${formatAmountForStripe(

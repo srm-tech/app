@@ -33,7 +33,11 @@ export default handleErrors(
           apiVersion: '2020-08-27',
         });
 
-        const account = await stripe.accounts.create({ type: 'standard' });
+        const account = await stripe.accounts.create({
+          type: 'standard',
+          country: job.user.country,
+          email: job.user.email,
+        });
         const accountLink = await stripe.accountLinks.create({
           account: account.id,
           refresh_url: `${process.env.BASE_URL}/api/job/refreshToken?jobId=${id}`,
