@@ -1,4 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import Stripe from 'stripe';
+
+import sendMail from '@/lib/mail';
+import { htmlNewStripeAccount } from '@/lib/utils';
 
 import models from '@/models';
 
@@ -13,11 +17,60 @@ export default async function handler(
       const { authorization } = req.headers;
 
       if (authorization === `Bearer ${process.env.SECRET}`) {
-        const intros = await models.Introduction.waitingForGuru();
-        for (const intro of intros) {
-          console.log(intro);
+        const jobs = await models.Introduction.waitingForGuru();
+
+        for (const job of jobs) {
+          let result;
+
+          const name = `${job.user.firstName} ${job.user.lastName}`;
+          const id = job._id;
+          console.log('job id:', job._id, ' Guru name: ', name);
+
+          if (!job.stripeId) {
+            const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+              apiVersion: '2020-08-27',
+            });
+
+            const account = await stripe.accounts.create({
+              type: 'standard',
+              country: job.user.country,
+              email: job.user.email,
+            });
+            const accountLink = await stripe.accountLinks.create({
+              account: account.id,
+              refresh_url: `${process.env.BASE_URL}/api/job/refreshToken?jobId=${id}`,
+              return_url: `${process.env.BASE_URL}/introductions`,
+              type: 'account_onboarding',
+            });
+
+            job.user.stripeId = account.id;
+            job.user.accountLink = accountLink.url;
+
+            const guru = {
+              _id: job.user._id,
+              stripeId: account.id,
+              accountLink: accountLink.url,
+            };
+
+            const addDataToProfile = await models.UserProfile.addStripe(guru);
+            await models.Introduction.updateStatus(job._id, 'waiting for Guru');
+
+            const data = {
+              name: `${job.user.firstName} ${job.user.lastName}`,
+              accountLink: accountLink.url,
+            };
+
+            const mailData = {
+              from: process.env.EMAIL_FROM,
+              to: job.user.email,
+              subject: `A payment from ${data.name} is waiting for you in introduce.guru!`,
+              // text: text(req.body),
+              html: htmlNewStripeAccount(data),
+            };
+            sendMail(mailData);
+          }
         }
-        res.status(200).json({ success: true, result: intros });
+        res.status(200).json({ success: true, result: jobs });
       } else {
         res.status(401).json({ success: false });
       }

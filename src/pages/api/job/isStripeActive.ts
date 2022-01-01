@@ -15,10 +15,10 @@ export default handleErrors(
       const id = new ObjectId(req.query.id);
       const _job = await models.Introduction.details(id);
       let job;
-      console.log('job:', job);
+
       if (_job.length > 0) {
         job = _job[0]; // todo: make it better
-        console.log('job:', job);
+
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
           apiVersion: '2020-08-27',
         });
