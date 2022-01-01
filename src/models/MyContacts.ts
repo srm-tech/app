@@ -1,5 +1,6 @@
-import { ObjectId } from '@/lib/db';
 import { Collection } from 'mongodb';
+
+import { ObjectId } from '@/lib/db';
 
 const MyContacts = (collection: Collection<Document>) => ({
   create: async (data) => {
@@ -8,7 +9,7 @@ const MyContacts = (collection: Collection<Document>) => ({
   },
   readMany: async ({ userId }) => {
     const contacts = await collection
-      ?.aggregate([
+      .aggregate([
         {
           $match: {
             userId: userId,
@@ -26,40 +27,40 @@ const MyContacts = (collection: Collection<Document>) => ({
         {
           $unwind: '$contact',
         },
-        {
-          $unionWith: {
-            coll: 'myContacts',
-            pipeline: [
-              {
-                $match: {
-                  contactId: userId,
-                },
-              },
-              {
-                $lookup: {
-                  from: 'userProfiles',
-                  localField: 'userId',
-                  foreignField: '_id',
-                  as: 'contact',
-                },
-              },
-              {
-                $unwind: '$contact',
-              },
-              {
-                $set: {
-                  status: {
-                    $cond: [
-                      { $eq: ['$status', 'pending'] },
-                      'waiting for approval',
-                      '$status',
-                    ],
-                  },
-                },
-              },
-            ],
-          },
-        },
+        // {
+        //   $unionWith: {
+        //     coll: 'myContacts',
+        //     pipeline: [
+        //       {
+        //         $match: {
+        //           contactId: userId,
+        //         },
+        //       },
+        //       {
+        //         $lookup: {
+        //           from: 'userProfiles',
+        //           localField: 'userId',
+        //           foreignField: '_id',
+        //           as: 'contact',
+        //         },
+        //       },
+        //       {
+        //         $unwind: '$contact',
+        //       },
+        //       {
+        //         $set: {
+        //           status: {
+        //             $cond: [
+        //               { $eq: ['$status', 'pending'] },
+        //               'waiting for approval',
+        //               '$status',
+        //             ],
+        //           },
+        //         },
+        //       },
+        //     ],
+        //   },
+        // },
       ])
       .toArray();
     return contacts;
@@ -86,43 +87,44 @@ const MyContacts = (collection: Collection<Document>) => ({
         {
           $unwind: '$contact',
         },
-        {
-          $unionWith: {
-            coll: 'myContacts',
-            pipeline: [
-              {
-                $match: {
-                  contactId: userId,
-                },
-              },
-              {
-                $lookup: {
-                  from: 'userProfiles',
-                  localField: 'userId',
-                  foreignField: '_id',
-                  as: 'contact',
-                },
-              },
-              {
-                $unwind: '$contact',
-              },
-              {
-                $set: {
-                  status: {
-                    $cond: [
-                      { $eq: ['$status', 'pending'] },
-                      'waiting for approval',
-                      '$status',
-                    ],
-                  },
-                },
-              },
-            ],
-          },
-        },
+        // {
+        //   $unionWith: {
+        //     coll: 'myContacts',
+        //     pipeline: [
+        //       {
+        //         $match: {
+        //           contactId: userId,
+        //         },
+        //       },
+        //       {
+        //         $lookup: {
+        //           from: 'userProfiles',
+        //           localField: 'userId',
+        //           foreignField: '_id',
+        //           as: 'contact',
+        //         },
+        //       },
+        //       {
+        //         $unwind: '$contact',
+        //       },
+        //       {
+        //         $set: {
+        //           status: {
+        //             $cond: [
+        //               { $eq: ['$status', 'pending'] },
+        //               'waiting for approval',
+        //               '$status',
+        //             ],
+        //           },
+        //         },
+        //       },
+        //     ],
+        //   },
+        // },
       ])
       .toArray();
   },
+
   accept: async (invitationId: ObjectId, userId: ObjectId) => {
     const update = collection.updateOne(
       {
@@ -166,6 +168,49 @@ const MyContacts = (collection: Collection<Document>) => ({
       }
     );
     return update;
+  },
+  addNew: async (contactId: ObjectId, userId: ObjectId) => {
+    const update1 = await collection.updateOne(
+      {
+        contactId: contactId,
+        userId: userId,
+      },
+      {
+        $set: {
+          contactId: contactId,
+          userId: userId,
+          status: 'accepted',
+          date: new Date(),
+          isFavourite: 0,
+        },
+      },
+      {
+        upsert: true,
+      }
+    );
+
+    const update2 = await collection.updateOne(
+      {
+        contactId: userId,
+        userId: contactId,
+      },
+      {
+        $set: {
+          contactId: userId,
+          userId: contactId,
+          status: 'accepted',
+          date: new Date(),
+          isFavourite: 0,
+        },
+      },
+      {
+        upsert: true,
+      }
+    );
+    return {
+      obj1: update1,
+      obj2: update2,
+    };
   },
 });
 

@@ -1,7 +1,5 @@
 import { getCollection, getDb, ObjectId } from '@/lib/db';
-import DashBoardConnectionsWidget from './widgets/DashboardConnections';
-import DashboardIntroductionsWidget from './widgets/DashboardIntroductions';
-import DashboardInvitationsWidget from './widgets/DashboardInvitations';
+
 import Agreement from './Agreement';
 import BusinessInvitations from './BusinessInvitations';
 import Category from './Category';
@@ -13,6 +11,9 @@ import Message from './Messages';
 import MyContacts from './MyContacts';
 import Review from './Reviews';
 import UserProfile from './UserProfiles';
+import DashBoardConnectionsWidget from './widgets/DashboardConnections';
+import DashboardIntroductionsWidget from './widgets/DashboardIntroductions';
+import DashboardInvitationsWidget from './widgets/DashboardInvitations';
 
 const db = getDb();
 const collection = getCollection(db);
@@ -36,7 +37,7 @@ export default {
   Introduction: Introduction(collection('introductions')),
   Invitation: Invitation(collection('invitations')),
   Message: Message(collection('messages')),
-  MyContacts: MyContacts(collection('userProfiles')),
+  MyContacts: MyContacts(collection('myContacts')),
   Review: Review(collection('reviews')),
   UserProfile: UserProfile(collection('userProfiles')),
 };
