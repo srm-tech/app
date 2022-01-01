@@ -78,8 +78,8 @@ const Introduction = (collection: Collection<Document>) => ({
         },
         {
           $addFields: {
-            avgCommissionCustomer: { $sum: '$user.commissionCustomer' },
-            avgCommissionBusiness: { $sum: '$user.commissionBusiness' },
+            sumCommissionCustomer: { $sum: '$user.commissionCustomer' },
+            sumCommissionBusiness: { $sum: '$user.commissionBusiness' },
           },
         },
       ])

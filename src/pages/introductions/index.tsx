@@ -173,18 +173,18 @@ export default function introductions() {
       Cell: ({ row: { original } }) => (
         <>
           <div>
-            <span className='text-green-500'>
-              received:{' '}
-              {original.avgCommissionBusiness
-                ? original.avgCommissionBusiness.toFixed(2)
+            <span className='text-yellow-500'>
+              sent:{' '}
+              {original.sumCommissionBusiness
+                ? original.sumCommissionBusiness.toFixed(2)
                 : 0}{' '}
               A$
             </span>
             <br />
-            <span className='text-yellow-500'>
-              sent:{' '}
-              {original.avgCommissionCustomer
-                ? original.avgCommissionCustomer.toFixed(2)
+            <span className='text-green-500'>
+              received:{' '}
+              {original.sumCommissionCustomer
+                ? original.sumCommissionCustomer.toFixed(2)
                 : 0}{' '}
               A$
             </span>
