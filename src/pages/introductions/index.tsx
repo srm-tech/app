@@ -71,7 +71,7 @@ export default function introductions() {
 
     let defaultRate = 1;
     let defaultComment = '';
-    if (original.review) {
+    if (original.review.length > 0) {
       defaultComment = original.review[0].comment;
       defaultRate = original.review[0].rate;
     }
@@ -320,9 +320,9 @@ export default function introductions() {
           </>
         );
 
-        const rateStars = (
+        const rateStars = original.position === 'guru' && (
           <StarRatingComponent
-            value={original.review ? original.review[0].rate : 0}
+            value={original.review.length > 0 ? original.review[0].rate : 1}
             // editing={false}
             starCount={5}
             emptyStarColor='#ccc'
