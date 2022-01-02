@@ -67,6 +67,25 @@ const Introduction = (collection: Collection<Document>) => ({
       },
     };
 
+    const unset = {
+      $unset: [
+        'introducedBy',
+        'agreementId',
+        'customer',
+        'user.isGuru',
+        'user.isActive',
+        'user.accountLink',
+        'user.stripeId',
+      ],
+    };
+
+    const addFields = {
+      $addFields: {
+        sumCommissionCustomer: { $sum: '$user.commissionCustomer' },
+        sumCommissionBusiness: { $sum: '$user.commissionBusiness' },
+      },
+    };
+
     return collection
       .aggregate([
         lookup,
@@ -74,12 +93,8 @@ const Introduction = (collection: Collection<Document>) => ({
           $unwind: '$user',
         },
         ...query,
-        {
-          $addFields: {
-            sumCommissionCustomer: { $sum: '$user.commissionCustomer' },
-            sumCommissionBusiness: { $sum: '$user.commissionBusiness' },
-          },
-        },
+        addFields,
+        unset,
         {
           $match: {
             action: 'sent',
@@ -89,6 +104,7 @@ const Introduction = (collection: Collection<Document>) => ({
       ])
       .toArray();
   },
+
   drafts: async (userId: ObjectId) => {
     return collection
       .aggregate([

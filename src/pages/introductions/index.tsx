@@ -150,9 +150,15 @@ export default function introductions() {
           <div className='cell-name'>
             {original.firstName} {original.lastName}
           </div>
-          <div className='cell-company'>{original.user.businessName}</div>
-          <div className='cell-email'>{original.email}</div>
-          <div className='cell-phone'>{original.user.phone}</div>
+          <div className='cell-company'>
+            <small>{original.user.businessName}</small>
+          </div>
+          <div className='cell-email'>
+            <small>{original.email}</small>
+          </div>
+          <div className='cell-phone'>
+            <small>{original.user.phone}</small>
+          </div>
         </>
       ),
     },
