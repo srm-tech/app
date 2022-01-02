@@ -58,33 +58,22 @@ const Introduction = (collection: Collection<Document>) => ({
       },
     ]);
 
+    const lookup = {
+      $lookup: {
+        from: 'userProfiles',
+        localField: 'customer',
+        foreignField: '_id',
+        as: 'user',
+      },
+    };
+
     return collection
       .aggregate([
-        {
-          $lookup: {
-            from: 'userProfiles',
-            localField: 'customer',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
+        lookup,
         {
           $unwind: '$user',
         },
         ...query,
-        {
-          $set: {
-            'user.email': {
-              $cond: [
-                {
-                  $in: ['$status', ['pending', 'declined']],
-                },
-                '',
-                '$user.email',
-              ],
-            },
-          },
-        },
         {
           $addFields: {
             sumCommissionCustomer: { $sum: '$user.commissionCustomer' },
