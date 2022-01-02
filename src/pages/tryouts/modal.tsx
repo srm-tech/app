@@ -2,7 +2,7 @@ import React from 'react';
 
 import useModal from '@/lib/useModal';
 
-import Modal from '@/components/modals/modal';
+import Modal from '@/components/modals';
 
 export default function App() {
   const { isShowing, toggle, accept, setAccept, cancel, setCancel } =

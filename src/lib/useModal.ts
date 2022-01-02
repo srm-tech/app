@@ -4,8 +4,8 @@ const useModal = () => {
   const [isShowing, setIsShowing] = useState(false);
   const [caption, setCaption] = useState('');
   const [content, setContent] = useState('');
-  const [acceptCaption, setAcceptCaption] = useState('');
-  const [cancelCaption, setCancelCaption] = useState('');
+  const [acceptCaption, setAcceptCaption] = useState('OK');
+  const [cancelCaption, setCancelCaption] = useState('Cancel');
   const [accept, setAccept] = useState();
   const [cancel, setCancel] = useState();
 

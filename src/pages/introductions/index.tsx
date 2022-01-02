@@ -2,6 +2,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import React, { useEffect, useState, version } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
+import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
 import useModal from '@/lib/useModal';
@@ -9,7 +10,7 @@ import { formatCommissionDescriptions } from '@/lib/utils';
 
 import Button from '@/components/buttons/Button';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
-import Modal from '@/components/modals/modal';
+import Modal from '@/components/modals';
 import Rating from '@/components/rating';
 import Table from '@/components/table/Table';
 
@@ -55,18 +56,34 @@ export default function introductions() {
   }
 
   async function handleRate(e, original) {
+    async function handleAcceptButton() {
+      const form = document.getElementById('rateForm');
+      const rate = form.elements[5].value;
+      const comment = form.elements[6].value;
+
+      const rating = await post('/api/job/rate', {
+        rate: rate,
+        comment: comment,
+        jobId: original._id,
+      });
+      window.location.href = `${process.env.BASE_URL}/introductions`;
+    }
+
+    let defaultRate = 1;
+    let defaultComment = '';
+    if (original.review) {
+      defaultComment = original.review[0].comment;
+      defaultRate = original.review[0].rate;
+    }
+
     toggle();
     setCaption(`Rate ${original.firstName} ${original.lastName}`);
-    setAcceptCaption(null);
-    setCancelCaption(null);
+    setAcceptCaption('Rate');
+    setAccept(() => handleAcceptButton);
     const ratingContent = (
       <>
-        <form
-          onSubmit={(e) => {
-            return null;
-          }}
-        >
-          <div className='sm:col-span-4'>
+        <form id='rateForm'>
+          <div className='pt-4 sm:col-span-4'>
             <label
               htmlFor='rate'
               className='block text-sm font-medium text-gray-700'
@@ -74,7 +91,7 @@ export default function introductions() {
               Your rating:
             </label>
             <div className='mt-1 rounded-md shadow-sm'>
-              <Rating initialValue={1} />
+              <Rating initialValue={defaultRate} />
             </div>
           </div>
 
@@ -86,24 +103,7 @@ export default function introductions() {
               Comment:
             </label>
             <div className='mt-1 rounded-md shadow-sm'>
-              <textarea></textarea>
-            </div>
-          </div>
-
-          <div className='pt-5'>
-            <div className='flex justify-end'>
-              <button
-                type='button'
-                className='px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
-              >
-                Cancel
-              </button>
-              <button
-                type='submit'
-                className='inline-flex justify-center px-4 py-2 ml-3 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
-              >
-                Save
-              </button>
+              <textarea name='comment'>{defaultComment}</textarea>
             </div>
           </div>
         </form>
@@ -293,6 +293,8 @@ export default function introductions() {
               >
                 Accept
               </Button>
+            </div>
+            <div>
               <Button
                 variants='secondary'
                 className='text-xs'
@@ -318,11 +320,27 @@ export default function introductions() {
           </>
         );
 
+        const rateStars = (
+          <StarRatingComponent
+            value={original.review ? original.review[0].rate : 0}
+            // editing={false}
+            starCount={5}
+            emptyStarColor='#ccc'
+            starColor='#fa0'
+            onStarClick={(e) => handleRate(e, original)}
+          />
+        );
+
         return (
           <>
             {original.status === 'pending' ? acceptDeclineButtons : null}
             {original.status === 'accepted' ? finishJobButton : null}
-            {original.position === 'guru' ? rateButton : null}
+            {original.position === 'guru' && original.review.length === 0
+              ? rateButton
+              : null}
+            {original.position === 'guru' && original.review.length > 0
+              ? rateStars
+              : null}
           </>
         );
       },

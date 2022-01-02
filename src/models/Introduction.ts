@@ -128,18 +128,22 @@ const Introduction = (collection: Collection<Document>) => ({
                 $unwind: '$user',
               },
               {
+                $lookup: {
+                  from: 'reviews',
+                  localField: '_id',
+                  foreignField: 'jobId',
+                  as: 'review',
+                },
+              },
+              {
                 $addFields: {
                   firstName: '$user.firstName',
                   lastName: '$user.lastName',
                   email: '$user.email',
-                },
-              },
-              addFields,
-              {
-                $addFields: {
                   position: 'guru',
                 },
               },
+              addFields,
               unset,
               {
                 $set: {

@@ -176,11 +176,37 @@ const UserProfile = (collection: Collection<Document>) => ({
     };
   },
   stripeCheck: async (userId: ObjectId) => {
-    await db.userProfiles.find({
+    await collection.find({
       _id: userId,
       stripeId: { $exists: true },
     });
   },
+  /*
+  addReview: async (data) => {
+    data.date = new Date();
+    const businessId = new ObjectId(data.business);
+    const jobId = new ObjectId(data.jobId);
+    const business = await collection.findOne({
+      _id: businessId
+    });
+    const result = await collection.updateOne(
+      {
+        _id: businessId
+      },
+      {
+        $push: {
+          reviews: {
+            guru: data.guru,
+            date: new Date(),
+            rate: data.rate,
+            comment: data.comment,
+            job: jobId
+          }
+        }
+      }
+      )
+      return business;
+  }*/
 });
 
 export default UserProfile;
