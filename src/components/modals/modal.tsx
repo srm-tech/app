@@ -55,12 +55,12 @@ export default function Modal({
                 >
                   <div className='inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6'>
                     <div>
-                      <div className='flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full'>
+                      {/* <div className='flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full'>
                         <QuestionMarkCircleIcon
                           className='w-6 h-6 text-green-600'
                           aria-hidden='true'
                         />
-                      </div>
+                      </div> */}
                       <div className='mt-3 text-center sm:mt-5'>
                         <Dialog.Title
                           as='h3'

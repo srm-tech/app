@@ -1,8 +1,7 @@
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, version } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
-import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
 import useModal from '@/lib/useModal';
@@ -11,12 +10,14 @@ import { formatCommissionDescriptions } from '@/lib/utils';
 import Button from '@/components/buttons/Button';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import Modal from '@/components/modals/modal';
+import Rating from '@/components/rating';
 import Table from '@/components/table/Table';
 
 export default function introductions() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(true);
+  const [rating, setRating] = useState(1);
 
   const {
     isShowing,
@@ -54,7 +55,61 @@ export default function introductions() {
   }
 
   async function handleRate(e, original) {
-    return null;
+    toggle();
+    setCaption(`Rate ${original.firstName} ${original.lastName}`);
+    setAcceptCaption(null);
+    setCancelCaption(null);
+    const ratingContent = (
+      <>
+        <form
+          onSubmit={(e) => {
+            return null;
+          }}
+        >
+          <div className='sm:col-span-4'>
+            <label
+              htmlFor='rate'
+              className='block text-sm font-medium text-gray-700'
+            >
+              Your rating:
+            </label>
+            <div className='mt-1 rounded-md shadow-sm'>
+              <Rating initialValue={1} />
+            </div>
+          </div>
+
+          <div className='sm:col-span-4'>
+            <label
+              htmlFor='comment'
+              className='block text-sm font-medium text-gray-700'
+            >
+              Comment:
+            </label>
+            <div className='mt-1 rounded-md shadow-sm'>
+              <textarea></textarea>
+            </div>
+          </div>
+
+          <div className='pt-5'>
+            <div className='flex justify-end'>
+              <button
+                type='button'
+                className='px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+              >
+                Cancel
+              </button>
+              <button
+                type='submit'
+                className='inline-flex justify-center px-4 py-2 ml-3 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </>
+    );
+    setContent(ratingContent);
   }
 
   async function handleAccept(e, original) {
@@ -62,8 +117,10 @@ export default function introductions() {
       const accept = await post('/api/introductions/accept', {
         introId: original._id,
       });
+
       window.location.href = `${process.env.BASE_URL}/introductions`;
     }
+
     const job = await get(`/api/job/details?id=${original._id}`);
     if (!job) {
       return null;
@@ -150,8 +207,6 @@ export default function introductions() {
     {
       Header: 'name',
       accessor: 'name',
-      minWidth: 140,
-      maxWidth: 150,
       Cell: ({ row: { original } }) => (
         <>
           <div className='cell-name'>
@@ -172,17 +227,8 @@ export default function introductions() {
     {
       Header: 'business category',
       accessor: 'user.businessCategory',
-      maxWidth: 50,
-      width: 50,
     },
     { Header: 'position', accessor: 'position' },
-    {
-      Header: 'rate',
-      accessor: 'user.rating',
-      Cell: ({ value }) => (
-        <StarRatingComponent value={value} starCount={5} editing={false} />
-      ),
-    },
     {
       Header: 'date',
       accessor: 'date',
