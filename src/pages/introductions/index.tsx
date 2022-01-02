@@ -2,6 +2,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import React, { useEffect, useState } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
+import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
 import useModal from '@/lib/useModal';
@@ -50,6 +51,10 @@ export default function introductions() {
 
   function handleAcceptDoNothing() {
     window.location.href = `${process.env.BASE_URL}/introductions`;
+  }
+
+  async function handleRate(e, original) {
+    return null;
   }
 
   async function handleAccept(e, original) {
@@ -145,6 +150,8 @@ export default function introductions() {
     {
       Header: 'name',
       accessor: 'name',
+      minWidth: 140,
+      maxWidth: 150,
       Cell: ({ row: { original } }) => (
         <>
           <div className='cell-name'>
@@ -162,8 +169,20 @@ export default function introductions() {
         </>
       ),
     },
-    { Header: 'businessCategory', accessor: 'user.businessCategory' },
+    {
+      Header: 'business category',
+      accessor: 'user.businessCategory',
+      maxWidth: 50,
+      width: 50,
+    },
     { Header: 'position', accessor: 'position' },
+    {
+      Header: 'rate',
+      accessor: 'user.rating',
+      Cell: ({ value }) => (
+        <StarRatingComponent value={value} starCount={5} editing={false} />
+      ),
+    },
     {
       Header: 'date',
       accessor: 'date',
@@ -201,7 +220,7 @@ export default function introductions() {
       Header: '',
       accessor: '_id',
       Cell: ({ row: { original } }) => {
-        const finishJob = (
+        const finishJobButton = (
           <>
             <div>
               <form
@@ -239,10 +258,25 @@ export default function introductions() {
           </>
         );
 
+        const rateButton = (
+          <>
+            <div>
+              <Button
+                variants='primary'
+                className='text-xs'
+                onClick={(e) => handleRate(e, original)}
+              >
+                Rate
+              </Button>
+            </div>
+          </>
+        );
+
         return (
           <>
             {original.status === 'pending' ? acceptDeclineButtons : null}
-            {original.status === 'accepted' ? finishJob : null}
+            {original.status === 'accepted' ? finishJobButton : null}
+            {original.position === 'guru' ? rateButton : null}
           </>
         );
       },

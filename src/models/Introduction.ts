@@ -60,15 +60,6 @@ const Introduction = (collection: Collection<Document>) => ({
       },
     ]);
 
-    const lookup = {
-      $lookup: {
-        from: 'userProfiles',
-        localField: 'customer',
-        foreignField: '_id',
-        as: 'user',
-      },
-    };
-
     const unset = {
       $unset: [
         'introducedBy',
@@ -90,7 +81,14 @@ const Introduction = (collection: Collection<Document>) => ({
 
     return collection
       .aggregate([
-        lookup,
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'customer',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
         {
           $unwind: '$user',
         },
