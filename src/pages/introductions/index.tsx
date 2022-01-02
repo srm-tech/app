@@ -99,7 +99,6 @@ export default function introductions() {
     const stripePresent = await get(`/api/job/stripeCheck?id=${jobId}`);
 
     if (!stripePresent.stripeCheck && stripePresent.mailSent) {
-      console.log('not stripe yet');
       toggle();
       setCaption('The Guru has not connected his account with Stripe yet');
       setContent(
@@ -112,7 +111,6 @@ export default function introductions() {
     }
     const isStripeActive = await get(`/api/job/isStripeActive?id=${jobId}`);
     if (!isStripeActive.charges) {
-      console.log('stripe exists, but no details provided');
       toggle();
       setCaption('The Guru has not set up his Stripe account yet');
       setContent(
@@ -150,10 +148,10 @@ export default function introductions() {
       Cell: ({ row: { original } }) => (
         <>
           <div className='cell-name'>
-            {original.user.firstName} {original.user.lastName}
+            {original.firstName} {original.lastName}
           </div>
           <div className='cell-company'>{original.user.businessName}</div>
-          <div className='cell-email'>{original.user.email}</div>
+          <div className='cell-email'>{original.email}</div>
           <div className='cell-phone'>{original.user.phone}</div>
         </>
       ),

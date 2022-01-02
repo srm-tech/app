@@ -2,16 +2,64 @@ import { Collection } from 'mongodb';
 
 import { ObjectId } from '@/lib/db';
 
-const Introduction = (collection: Collection<Document>) => ({
-  readMany: async (userId: ObjectId) => {
-    return collection
-      .aggregate([
-        {
-          $match: {
-            action: 'sent',
-            business: userId,
+function prepareFieldObfuscator(fields) {
+  const query = [];
+
+  fields.forEach(function (field) {
+    query.push({
+      $replaceWith: {
+        $setField: {
+          field: field.newField,
+          input: '$$ROOT',
+          value: {
+            $cond: [
+              {
+                $in: ['$status', ['pending', 'declined']],
+              },
+              {
+                $concat: [
+                  {
+                    $substr: [field.field, 0, 1],
+                  },
+                  field.replacement,
+                ],
+              },
+              field.field,
+            ],
           },
         },
+      },
+    });
+
+    query.push({
+      $unset: field.field.slice(1),
+    });
+  });
+  return query;
+}
+
+const Introduction = (collection: Collection<Document>) => ({
+  readMany: async (userId: ObjectId) => {
+    const query = prepareFieldObfuscator([
+      {
+        field: '$user.firstName',
+        newField: 'firstName',
+        replacement: '*****',
+      },
+      {
+        field: '$user.lastName',
+        newField: 'lastName',
+        replacement: '*****',
+      },
+      {
+        field: '$user.email',
+        newField: 'email',
+        replacement: '****@****.***',
+      },
+    ]);
+
+    return collection
+      .aggregate([
         {
           $lookup: {
             from: 'userProfiles',
@@ -23,46 +71,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $unwind: '$user',
         },
-        {
-          $set: {
-            'user.firstName': {
-              $cond: [
-                {
-                  $in: ['$status', ['pending', 'declined']],
-                },
-                {
-                  $concat: [
-                    {
-                      $substr: ['$user.firstName', 0, 1],
-                    },
-                    '*****',
-                  ],
-                },
-                '$user.firstName',
-              ],
-            },
-          },
-        },
-        {
-          $set: {
-            'user.lastName': {
-              $cond: [
-                {
-                  $in: ['$status', ['pending', 'declined']],
-                },
-                {
-                  $concat: [
-                    {
-                      $substr: ['$user.lastName', 0, 1],
-                    },
-                    '*****',
-                  ],
-                },
-                '$user.lastName',
-              ],
-            },
-          },
-        },
+        ...query,
         {
           $set: {
             'user.email': {
@@ -80,6 +89,12 @@ const Introduction = (collection: Collection<Document>) => ({
           $addFields: {
             sumCommissionCustomer: { $sum: '$user.commissionCustomer' },
             sumCommissionBusiness: { $sum: '$user.commissionBusiness' },
+          },
+        },
+        {
+          $match: {
+            action: 'sent',
+            business: userId,
           },
         },
       ])
@@ -246,6 +261,7 @@ const Introduction = (collection: Collection<Document>) => ({
     );
     return obj;
   },
+  // todo: is this method necessary?
   finalise: async (data) => {
     const obj = await collection.updateOne(
       {
@@ -259,9 +275,9 @@ const Introduction = (collection: Collection<Document>) => ({
       }
     );
 
-    const update = await collection.updateOne({});
+    // const update = await collection.updateOne({});
 
-    // return obj;
+    return obj;
   },
   updateStatus: async (jobId, status) => {
     const obj = await collection.updateOne(
