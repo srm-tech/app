@@ -28,7 +28,14 @@ const UserProfile = (collection: Collection<Document>) => ({
     const query = new RegExp(q, 'i');
     return collection
       .aggregate([
-        //pipeline array
+        {
+          $lookup: {
+            from: 'reviews',
+            localField: '_id',
+            foreignField: 'business',
+            as: 'review',
+          },
+        },
         {
           $addFields: {
             search: {
@@ -44,14 +51,23 @@ const UserProfile = (collection: Collection<Document>) => ({
               ],
             },
             name: { $concat: ['$firstName', ' ', '$lastName'] },
+
+            avgCommissionCustomer: {
+              $avg: '$commissionCustomer',
+            },
+            avgCommissionBusiness: {
+              $avg: '$commissionBusiness',
+            },
+            avgRating: {
+              $avg: '$business.rate',
+            },
           },
-        }, //stage1
+        },
         {
           $match: {
             search: { $regex: query },
-            isBusiness: true,
           },
-        }, //stage2
+        },
       ])
       .toArray();
   },

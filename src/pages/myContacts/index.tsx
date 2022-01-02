@@ -85,11 +85,6 @@ export default function myContacts() {
         <StarRatingComponent value={value} starCount={5} editing={false} />
       ),
     },
-    {
-      Header: 'succesful rate',
-      accessor: 'contact.succesfulRate',
-      Cell: ({ value }) => <span>{value * 100}%</span>,
-    },
     { Header: 'average commission', accessor: 'contact.averageCommission' },
     {
       Header: 'favourites',
