@@ -2,34 +2,36 @@ import { Collection } from 'mongodb';
 
 import { ObjectId } from '@/lib/db';
 
-function prepareFieldObfuscator(fields) {
+function prepareFieldObfuscator(fields, obfuscate = true) {
   const query = [];
 
   fields.forEach(function (field) {
-    query.push({
-      $replaceWith: {
-        $setField: {
-          field: field.newField,
-          input: '$$ROOT',
-          value: {
-            $cond: [
-              {
-                $in: ['$status', ['pending', 'declined']],
-              },
-              {
-                $concat: [
-                  {
-                    $substr: [field.field, 0, 1],
-                  },
-                  field.replacement,
-                ],
-              },
-              field.field,
-            ],
+    if (obfuscate) {
+      query.push({
+        $replaceWith: {
+          $setField: {
+            field: field.newField,
+            input: '$$ROOT',
+            value: {
+              $cond: [
+                {
+                  $in: ['$status', ['pending', 'declined']],
+                },
+                {
+                  $concat: [
+                    {
+                      $substr: [field.field, 0, 1],
+                    },
+                    field.replacement,
+                  ],
+                },
+                field.field,
+              ],
+            },
           },
         },
-      },
-    });
+      });
+    }
 
     query.push({
       $unset: field.field.slice(1),
@@ -94,11 +96,65 @@ const Introduction = (collection: Collection<Document>) => ({
         },
         ...query,
         addFields,
+        {
+          $addFields: {
+            position: 'business',
+          },
+        },
         unset,
         {
           $match: {
             action: 'sent',
             business: userId,
+          },
+        },
+        {
+          $unionWith: {
+            coll: 'introductions',
+            pipeline: [
+              {
+                $match: {
+                  action: 'sent',
+                  customer: userId,
+                },
+              },
+              {
+                $lookup: {
+                  from: 'userProfiles',
+                  localField: 'business',
+                  foreignField: '_id',
+                  as: 'user',
+                },
+              },
+              {
+                $unwind: '$user',
+              },
+              {
+                $addFields: {
+                  firstName: '$user.firstName',
+                  lastName: '$user.lastName',
+                  email: '$user.email',
+                },
+              },
+              addFields,
+              {
+                $addFields: {
+                  position: 'guru',
+                },
+              },
+              unset,
+              {
+                $set: {
+                  status: {
+                    $cond: [
+                      { $eq: ['$status', 'pending'] },
+                      'waiting for approval',
+                      '$status',
+                    ],
+                  },
+                },
+              },
+            ],
           },
         },
       ])

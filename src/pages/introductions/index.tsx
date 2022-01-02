@@ -163,6 +163,7 @@ export default function introductions() {
       ),
     },
     { Header: 'businessCategory', accessor: 'user.businessCategory' },
+    { Header: 'position', accessor: 'position' },
     {
       Header: 'date',
       accessor: 'date',
