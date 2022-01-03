@@ -33,7 +33,19 @@ const UserProfile = (collection: Collection<Document>) => ({
             from: 'reviews',
             localField: '_id',
             foreignField: 'business',
-            as: 'review',
+            as: 'reviews',
+            pipeline: [
+              {
+                $project: {
+                  _id: 0,
+                  business: 0,
+                  guru: 0,
+                  jobId: 0,
+                  comment: 0,
+                  date: 0,
+                },
+              },
+            ],
           },
         },
         {
@@ -51,17 +63,26 @@ const UserProfile = (collection: Collection<Document>) => ({
               ],
             },
             name: { $concat: ['$firstName', ' ', '$lastName'] },
-
             avgCommissionCustomer: {
               $avg: '$commissionCustomer',
             },
             avgCommissionBusiness: {
               $avg: '$commissionBusiness',
             },
-            avgRating: {
-              $avg: '$business.rate',
+            avgRate: {
+              $avg: '$reviews.rate',
             },
           },
+        },
+        {
+          $unset: [
+            'rating',
+            'succesfulRate',
+            'averageCommission',
+            'isActive',
+            'isGuru',
+            'isBusiness',
+          ],
         },
         {
           $match: {
