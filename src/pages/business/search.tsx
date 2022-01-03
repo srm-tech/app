@@ -31,16 +31,21 @@ export default function searchForBusiness(query) {
           <div className='cell-name'>
             {original.firstName} {original.lastName}
           </div>
-          <small>original.businessName</small>
         </>
       ),
     },
     { Header: 'business category', accessor: 'businessCategory' },
     {
       Header: 'average rating',
-      accessor: 'avgRating',
+      accessor: 'avgRate',
       Cell: ({ value }) => (
-        <StarRatingComponent value={value} starCount={5} editing={false} />
+        <StarRatingComponent
+          value={value}
+          starCount={5}
+          editing={false}
+          emptyStarColor='#ccc'
+          starColor='#fa0'
+        />
       ),
     },
 
