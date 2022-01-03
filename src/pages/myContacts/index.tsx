@@ -70,22 +70,52 @@ export default function myContacts() {
             {original.contact.firstName} {original.contact.lastName}
           </div>
           <small>
+            <div>{original.contact.businessName}</div>
             <div className='cell-email'>{original.contact.email}</div>
             <div className='cell-phone'>{original.contact.phone}</div>
           </small>
         </>
       ),
     },
-    { Header: 'business name', accessor: 'contact.businessName' },
     { Header: 'business category', accessor: 'contact.businessCategory' },
     {
       Header: 'rating',
-      accessor: 'contact.rating',
+      accessor: 'contact.avgRate',
       Cell: ({ value }) => (
-        <StarRatingComponent value={value} starCount={5} editing={false} />
+        <StarRatingComponent
+          emptyStarColor='#ccc'
+          starColor='#fa0'
+          value={value}
+          starCount={5}
+          editing={false}
+        />
       ),
     },
-    { Header: 'average commission', accessor: 'contact.averageCommission' },
+    {
+      Header: 'average commission',
+      accessor: 'contact.avgCommissionCustomer',
+      Cell: ({ row: { original } }) => (
+        <>
+          <div>
+            <span className='text-yellow-500'>
+              sent:{' '}
+              {original.contact.avgCommissionBusiness
+                ? original.contact.avgCommissionBusiness.toFixed(2)
+                : 0}{' '}
+              A$
+            </span>
+            <br />
+            <span className='text-green-500'>
+              received:{' '}
+              {original.contact.avgCommissionCustomer
+                ? original.contact.avgCommissionCustomer.toFixed(2)
+                : 0}{' '}
+              A$
+            </span>
+          </div>
+        </>
+      ),
+    },
     {
       Header: 'favourites',
       accessor: 'isFavourite',
@@ -103,7 +133,7 @@ export default function myContacts() {
         </Link>
       ),
     },
-    { Header: 'status', accessor: 'status' },
+    // { Header: 'status', accessor: 'status' },
     {
       Header: 'actions',
       accessor: '_id',

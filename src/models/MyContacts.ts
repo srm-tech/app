@@ -27,40 +27,47 @@ const MyContacts = (collection: Collection<Document>) => ({
         {
           $unwind: '$contact',
         },
-        // {
-        //   $unionWith: {
-        //     coll: 'myContacts',
-        //     pipeline: [
-        //       {
-        //         $match: {
-        //           contactId: userId,
-        //         },
-        //       },
-        //       {
-        //         $lookup: {
-        //           from: 'userProfiles',
-        //           localField: 'userId',
-        //           foreignField: '_id',
-        //           as: 'contact',
-        //         },
-        //       },
-        //       {
-        //         $unwind: '$contact',
-        //       },
-        //       {
-        //         $set: {
-        //           status: {
-        //             $cond: [
-        //               { $eq: ['$status', 'pending'] },
-        //               'waiting for approval',
-        //               '$status',
-        //             ],
-        //           },
-        //         },
-        //       },
-        //     ],
-        //   },
-        // },
+        {
+          $lookup: {
+            from: 'reviews',
+            localField: 'contactId',
+            foreignField: 'business',
+            as: 'reviews',
+            pipeline: [
+              {
+                $project: {
+                  _id: 0,
+                  business: 0,
+                  guru: 0,
+                  jobId: 0,
+                  comment: 0,
+                  date: 0,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            'contact.avgRate': { $avg: '$reviews.rate' },
+            'contact.avgCommissionCustomer': {
+              $avg: '$contact.commissionCustomer',
+            },
+            'contact.avgCommissionBusiness': {
+              $avg: '$contact.commissionBusiness',
+            },
+          },
+        },
+        {
+          $unset: [
+            'contact.rating',
+            'contact.succesfulRate',
+            'contact.averageCommission',
+            'contact.isActive',
+            'contact.isGuru',
+            'contact.isBusiness',
+          ],
+        },
       ])
       .toArray();
     return contacts;
