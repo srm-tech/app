@@ -3245,6 +3245,11 @@ is-typed-array@^1.1.3, is-typed-array@^1.1.7:
     foreach "^2.0.5"
     has-tostringtag "^1.0.0"
 
+is-valid-abn@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/is-valid-abn/-/is-valid-abn-1.1.0.tgz#feae17b31430367b3bf9e71b09cdf2abbed840b3"
+  integrity sha512-y/8cWv2SNhlt5wc6LLXzjlYoCAw5VR+w/sGOVMRYLAtva7ZgHItw1qbRaLJTzHl4mTuaz2Lzavl2VihaNefcJw==
+
 is-weakref@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-weakref/-/is-weakref-1.0.2.tgz#9529f383a9338205e89765e0392efc2f100f06f2"

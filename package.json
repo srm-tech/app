@@ -33,6 +33,7 @@
     "global": "^4.4.0",
     "http-proxy-middleware": "^2.0.1",
     "install": "^0.13.0",
+    "is-valid-abn": "^1.1.0",
     "iso3166-2-db": "^2.3.10",
     "javascript-time-ago": "^2.3.10",
     "match-sorter": "^6.3.1",

@@ -16,6 +16,7 @@ interface IFormInput {
   address1: string;
   address2: string;
   address3: string;
+  abn: string;
   country: string;
   commissionType: string;
   commissionPerReceivedLeadCash: string;
@@ -35,6 +36,7 @@ export default function profile() {
     address1: '',
     address2: '',
     address3: '',
+    abn: '',
     country: '',
     commissionType: '',
     commissionPerReceivedLeadCash: '',
@@ -64,7 +66,6 @@ export default function profile() {
   );
 
   function switchDropdown(dropdown) {
-    console.log('dripdown:', dropdown);
     switch (dropdown) {
       case 'commissionPerReceivedLeadCash':
         setReceivedCash(true);
@@ -80,7 +81,6 @@ export default function profile() {
 
   function handleDropdown(e) {
     const dropdown = e.target.value;
-    console.log('change:', dropdown);
     setReceivedCash(false);
     setReceivedPercent(false);
     setCompletedCash(false);
@@ -358,7 +358,7 @@ export default function profile() {
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                     <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                       <label
-                        htmlFor='businessCategory'
+                        htmlFor='address1'
                         className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                       >
                         Address:
@@ -389,7 +389,7 @@ export default function profile() {
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                     <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                       <label
-                        htmlFor='businessCategory'
+                        htmlFor='address2'
                         className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                       >
                         Address (line 2):
@@ -414,7 +414,7 @@ export default function profile() {
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                     <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                       <label
-                        htmlFor='businessCategory'
+                        htmlFor='address3'
                         className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                       >
                         Address (line 3):
@@ -434,6 +434,50 @@ export default function profile() {
                     </div>
                   </div>
                   {/* address line 3 ends here */}
+
+                  {/* ABN tax starts */}
+                  <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                    <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                      <label
+                        htmlFor='abn'
+                        className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                      >
+                        ABN:
+                      </label>
+                      <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                        <div className='flex max-w-lg rounded-md shadow-sm'>
+                          <input
+                            type='text'
+                            maxLength={11}
+                            minLength={11}
+                            defaultValue={formValues.abn}
+                            {...register('abn', {
+                              minLength: 11,
+                              maxLength: 11,
+                              required: true,
+                            })}
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {errors.abn?.type === 'required' && (
+                      <small className='text-red-900'>
+                        This field is required
+                      </small>
+                    )}
+                    {errors.abn?.type === 'minLength' && (
+                      <small className='text-red-900'>
+                        This field should contain exaclty 11 chars
+                      </small>
+                    )}
+                    {errors.abn?.type === 'maxLength' && (
+                      <small className='text-red-900'>
+                        This field should contain exaclty 11 chars
+                      </small>
+                    )}
+                  </div>
+                  {/* ABN tax ends here */}
 
                   {/* country starts */}
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
