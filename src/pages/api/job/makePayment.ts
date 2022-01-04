@@ -8,13 +8,13 @@ import { formatAmountForStripe } from '@/lib/stripe-helpers';
 import { check, validate } from '@/lib/validator';
 
 import { env } from '@/config';
-import models from '@/models';
+import getCollections from '@/models';
 
 // todo: replace userId
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Introduction, UserProfile } = await getCollections();
     if (req.method === 'POST') {
       const user = await getCurrentUser(req, res);
 
@@ -30,10 +30,7 @@ export default handleErrors(
       let fee = req.body.fee;
       fee = parseFloat(fee);
 
-      const job = await models.Introduction.getFinalise(
-        user._id,
-        new ObjectId(jobId)
-      );
+      const job = await Introduction.getFinalise(user._id, new ObjectId(jobId));
 
       // if not job found – 404
       if (!job) {
@@ -41,9 +38,10 @@ export default handleErrors(
       }
 
       // just for the convenience
+      const to = job.user;
       // const to = await models.UserProfile.getOne(job.business);
       // const from = job.user;
-      const business = await models.UserProfile.getOne(job.business);
+      const business = await UserProfile.getOne(job.business);
       const customer = job.user;
 
       // stripe
@@ -58,7 +56,7 @@ export default handleErrors(
           _id: business._id,
           stripeId: account.id,
         };
-        await models.UserProfile.addStripe(stripeConnection);
+        await UserProfile.addStripe(stripeConnection);
         business.stripeId = account.id; // add "stripeId" to the object in memory
       }
 
@@ -101,6 +99,5 @@ export default handleErrors(
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );

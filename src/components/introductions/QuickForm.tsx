@@ -6,49 +6,105 @@ import { useSession, signIn } from 'next-auth/react';
 import InlineError from '../errors/InlineError';
 import { handleErrors } from '@/lib/middleware';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
-export interface Item {
+export interface Query {
   _id: string;
   label: string;
   businessName: string;
   category: string;
+}
+export interface Draft {
+  _id?: string;
+  contact: string;
+  contactName: string;
+  contactType: string;
+  businessId: string;
+  businessName: string;
+  businessLabel: string;
 }
 
 const getValidationMessage = (data) =>
   `${data.errors[0].msg} ${data.errors[0].param}`;
 
 export const QuickForm = () => {
-  const [name, setName] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
-  const [contact, setContact] = React.useState('');
-  const [query, setQuery] = React.useState<null | Item>(null);
-  const [business, setBusiness] = React.useState<null | Item>(null);
-  const [contactType, setContactType] = React.useState('phone');
+  const [businessError, setBusinessError] = React.useState('');
+  const [query, setQuery] = React.useState<string>('');
+  const [draft, setDraft] = React.useState<Draft>({
+    contact: '',
+    contactName: '',
+    contactType: 'phone',
+    businessId: '',
+    businessName: '',
+    businessLabel: query || '',
+  });
+
   const router = useRouter();
+  const [step, setStep] = React.useState(router.query.step || 1);
   const { data: session } = useSession();
   const formRef = React.useRef<any>();
-  const { post, response, loading, error } = useFetch('/introductions');
-  const _handleSubmit = async (e) => {
-    e.preventDefault();
+  const { post, get, put, response, loading, error } = useFetch('/drafts');
 
-    await post('/quick', {
-      name,
-      contact,
-      businessId: business?._id,
-      contactType,
-    });
-    if (response.ok) {
-      // alert('You have successfully submitted.');
-      setName('');
-      setContact('');
-      setBusiness(null);
-      setContactType('phone');
-      router.push('/introductions');
-    }
-    if (response.status === 422) {
-      setErrorMessage(getValidationMessage(response.data));
-    }
+  const loadData = async () => {
+    const result = await get(`/${router.query.draftId}`);
+    setQuery(result.businessLabel);
+    setDraft(result);
   };
+
+  useEffect(() => {
+    if (router.query.draftId) {
+      loadData();
+    }
+  }, [router.query.draftId]);
+
+  const _handleSubmit = React.useCallback(
+    async (e) => {
+      e.preventDefault();
+
+      if (!session) {
+        // return setStep(2);
+      }
+
+      if (!draft.businessId) {
+        return setErrorMessage(
+          'Business not found. Please select it from the dropdown.'
+        );
+      }
+
+      if (draft._id) {
+        await put(`/${draft._id}`, draft);
+      } else {
+        await post('', draft);
+      }
+
+      if (response.ok && response.data?.insertedId) {
+        router.query.draftId = response.data?.insertedId;
+        router.push(router);
+        // alert('You have successfully submitted.');
+        // setName('');
+        // setContact('');
+        // setDraft(draftData);
+        // setBusiness(null);
+        // setContactType('phone');
+        // router.push('/introductions');
+      }
+      if (response.status === 422) {
+        setErrorMessage(getValidationMessage(response.data));
+      }
+    },
+    [draft]
+  );
+
+  const changeBusiness = React.useCallback(
+    (inputValue) => {
+      setQuery(inputValue);
+      if (draft.businessId && inputValue !== draft.businessLabel) {
+        setDraft({ ...draft, businessId: '' });
+      }
+    },
+    [draft]
+  );
 
   return (
     <div className='bg-white rounded-lg sm:max-w-md sm:w-full m-auto'>
@@ -74,9 +130,15 @@ export const QuickForm = () => {
               </label>
               <ComboSelect
                 query={query}
-                onChange={setQuery}
-                value={business}
-                onSelect={setBusiness}
+                onChange={changeBusiness}
+                onSelect={(result: Query) => {
+                  setDraft({
+                    ...draft,
+                    businessId: result._id,
+                    businessLabel: result.label,
+                    businessName: result.businessName,
+                  });
+                }}
               />
             </div>
           </div>
@@ -96,24 +158,35 @@ export const QuickForm = () => {
                   placeholder='Joe Doe'
                   required
                   className='block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
+                  value={draft.contactName}
+                  onChange={(event) =>
+                    setDraft({ ...draft, contactName: event.target.value })
+                  }
                 />
               </div>
               <div className='flex'>
-                <ContactType onChange={setContactType} value={contactType} />
+                <ContactType
+                  onChange={(contactType) =>
+                    setDraft({ ...draft, contactType })
+                  }
+                  value={draft.contactType}
+                />
                 <input
-                  type={contactType === 'email' ? 'email' : 'text'}
+                  type={draft.contactType === 'email' ? 'email' : 'text'}
                   name='contact'
                   id='contact'
                   autoComplete='contact'
                   placeholder={
-                    contactType === 'email' ? 'contact email' : 'contact phone'
+                    draft.contactType === 'email'
+                      ? 'contact email'
+                      : 'contact phone'
                   }
                   required
                   className='ml-3  block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                  value={contact}
-                  onChange={(event) => setContact(event.target.value)}
+                  value={draft.contact}
+                  onChange={(event) =>
+                    setDraft({ ...draft, contact: event.target.value })
+                  }
                 />
               </div>
             </div>
@@ -123,11 +196,12 @@ export const QuickForm = () => {
               className='w-20 h-20 mt-4'
             />
           </div>
-          {error && (
-            <div className='px-8 py-4'>
-              <InlineError message={errorMessage} />
-            </div>
-          )}
+          {error ||
+            (errorMessage && (
+              <div className='px-8 py-4'>
+                <InlineError message={error || errorMessage} />
+              </div>
+            ))}
           <div className='px-8 py-4'>
             <button
               type='submit'
@@ -144,7 +218,7 @@ export const QuickForm = () => {
                   onClick={() => signIn()}
                   className='font-medium text-blue-500 hover:underline'
                 >
-                  Login
+                  Sign In
                 </button>{' '}
                 to save and track introductions.
               </p>

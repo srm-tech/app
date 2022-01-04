@@ -48,10 +48,10 @@ export default function HomePage() {
             </svg>
           </div>
           <div className='relative'>
-            <div className='w-full bg-dark pt-6'>
+            <div className='w-full bg-dark pt-6 px-2'>
               <Nav />
             </div>
-            <div className='w-full bg-dark pt-16 pb-16'>
+            <div className='w-full bg-dark pt-16 pb-16 px-2'>
               <Hero />
             </div>
             <div className='w-full bg-white'>

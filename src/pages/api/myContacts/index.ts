@@ -5,12 +5,12 @@ import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 // TODO: replace userId
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
-    await models.client.connect();
+    const { MyContacts } = await getCollections();
     let result;
 
     const user = await getCurrentUser(req, res);
@@ -18,12 +18,12 @@ export default handleErrors(
     if (req.method === 'GET') {
       if (req.query.q !== undefined) {
         await validate([check('q').isLength({ min: 0, max: 255 })])(req, res);
-        result = await models.MyContacts.search({
+        result = await MyContacts.search({
           userId: user._id,
           query: req.query.q.toString(),
         });
       } else {
-        result = await models.MyContacts.readMany({ userId: user._id });
+        result = await MyContacts.readMany({ userId: user._id });
       }
     } else if (req.method === 'POST') {
       await validate([
@@ -39,7 +39,7 @@ export default handleErrors(
       ])(req, res);
       req.body.contactId = new ObjectId(req.body.contactId);
       req.body.dateInvited = new Date();
-      result = await models.MyContacts.create({
+      result = await MyContacts.create({
         userId: user._id,
         ...req.body,
       });
@@ -49,6 +49,5 @@ export default handleErrors(
     }
 
     res.status(200).json(result);
-    await models.client.close();
   }
 );

@@ -1,13 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import getCurrentUser from '@/lib/get-current-user';
-import models from '@/models';
+import getCollections from '@/models';
 import { handleErrors } from '@/lib/middleware';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    const user = await getCurrentUser(req, res)._id;
-    await models.client.connect();
+    const user = await getCurrentUser(req, res);
+    const {} = await getCollections();
 
     if (req.method === 'POST') {
       const contacts = req.query.contacts;
@@ -25,6 +25,5 @@ export default handleErrors(
         .status(405)
         .json({ statusCode: 405, message: 'Method not allowed' });
     }
-    await models.client.close();
   }
 );

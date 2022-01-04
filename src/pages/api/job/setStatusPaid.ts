@@ -4,12 +4,12 @@ import { ObjectId } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Introduction, UserProfile } = await getCollections();
     if (req.method === 'POST') {
       const user = await getCurrentUser(req, res);
       const jobId = req.body.jobId;
@@ -19,24 +19,22 @@ export default handleErrors(
         amountPaid = parseInt(amountPaid) / 100.0;
       }
 
-      const job = await models.Introduction.getFinalise(
+      const job = await Introduction.getFinalise(
         new ObjectId(user._id),
         new ObjectId(jobId)
       );
 
       if (job) {
-        result = await models.Introduction.updateStatus(
-          new ObjectId(jobId),
-          'paid'
-        );
-        const bus = await models.UserProfile.getOne(job.business);
+        result = await Introduction.updateStatus(new ObjectId(jobId), 'paid');
+        const bus = await UserProfile.getOne(job.business);
         const cust = job.user;
-
-        const result2 = await models.UserProfile.addCommission(
-          bus._id,
-          cust._id,
-          amountPaid
-        );
+        if (bus) {
+          const result2 = await UserProfile.addCommission(
+            bus._id,
+            cust._id,
+            amountPaid
+          );
+        }
       }
 
       if (!result) {
@@ -48,6 +46,5 @@ export default handleErrors(
         .json({ statusCode: 405, message: 'Method not allowed' });
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );

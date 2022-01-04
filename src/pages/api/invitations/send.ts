@@ -6,13 +6,13 @@ import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
-    await models.client.connect();
+    const { UserProfile, Agreement, Introduction } = await getCollections();
     const _userId = await getCurrentUser(req, res);
-    const user = await models.UserProfile.getOne(_userId._id);
+    const user = await UserProfile.getOne(_userId._id);
     let result;
     if (req.method === 'POST') {
       await validate([
@@ -20,7 +20,7 @@ export default handleErrors(
         check('message').isLength({ min: 1, max: 1023 }),
       ])(req, res);
 
-      req.body.name = `${user.firstName} ${user.lastName}`;
+      req.body.name = `${user?.firstName} ${user?.lastName}`;
       const mailData = {
         from: process.env.EMAIL_FROM,
         to: `${req.body.email}`,
@@ -36,10 +36,10 @@ export default handleErrors(
       };
       idData[req.body.commissionType] = commission.value;
 
-      const id = await models.Agreement.createJob(idData);
+      const id = await Agreement.createJob(idData);
 
-      result = await models.Introduction.create({
-        from: new ObjectId(user._id),
+      result = await Introduction.create({
+        from: new ObjectId(user?._id),
         to: null,
         status: 'pending',
         date: new Date(),
@@ -53,7 +53,6 @@ export default handleErrors(
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );
 

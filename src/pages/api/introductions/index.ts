@@ -4,15 +4,15 @@ import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Introduction } = await getCollections();
     const user = await getCurrentUser(req, res);
     if (req.method === 'GET') {
-      result = await models.Introduction.readMany(user._id);
+      result = await Introduction.readMany(user._id);
     } else if (req.method === 'POST') {
       await validate([
         check('firstName').isLength({ min: 1, max: 255 }),
@@ -22,21 +22,21 @@ export default handleErrors(
         check('aboutTheJob').isLength({ min: 1, max: 1023 }),
       ])(req, res);
       if (req.query.action == 'continue') {
-        result = await models.Introduction.create({
+        result = await Introduction.create({
           userId: user._id,
           date: new Date(),
           type: 'introduction',
           ...req.query,
         });
       } else if (req.query.action === 'continue') {
-        result = await models.Introduction.create({
+        result = await Introduction.create({
           userId: user._id,
           date: new Date(),
           status: 'not sent yet',
           ...req.query,
         });
       } else if (req.query.action === 'draft') {
-        result = await models.Introduction.create({
+        result = await Introduction.create({
           userId: user._id,
           status: 'draft',
           date: new Date(),
@@ -56,6 +56,5 @@ export default handleErrors(
     }
 
     res.status(200).json(result);
-    await models.client.close();
   }
 );

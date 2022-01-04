@@ -1,11 +1,9 @@
-import { Collection } from 'mongodb';
-
-import { ObjectId } from '@/lib/db';
+import { Collection, ObjectId } from 'mongodb';
 
 function prepareFieldObfuscator(fields, obfuscate = true) {
   const query = [];
 
-  fields.forEach(function (field) {
+  fields.forEach(function (field: any) {
     if (obfuscate) {
       query.push({
         $replaceWith: {
@@ -194,7 +192,7 @@ const Introduction = (collection: Collection<Document>) => ({
             businessName: '$user.businessName',
             businessCategory: '$user.businessCategory',
             rating: '$user.rating',
-            succesfulRate: '$user.succesfulRate',
+            successfulRate: '$user.successfulRate',
             averageCommission: '$user.averageCommission',
             commissionEarned: '$user.commissionEarned',
           },
@@ -207,6 +205,9 @@ const Introduction = (collection: Collection<Document>) => ({
   create: async (data) => {
     return collection.insertOne(data);
   },
+  update: async ({ _id, ...data }) => {
+    return collection.updateOne({ _id: new ObjectId(_id) }, { $set: data });
+  },
   now: async (data) => {
     data.contactId = new ObjectId(data.contactId);
     return collection.insertOne(data);
@@ -218,7 +219,7 @@ const Introduction = (collection: Collection<Document>) => ({
     });
   },
   getOne: async (id) => {
-    return await collection.findOne({ _id: id });
+    return await collection.findOne({ _id: new ObjectId(id) });
   },
   getFinalise: async (businessId, objId, status = null) => {
     let statuses;

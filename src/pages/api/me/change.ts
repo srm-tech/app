@@ -4,12 +4,12 @@ import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { UserProfile, Agreement } = await getCollections();
     if (req.method === 'POST') {
       const user = await getCurrentUser(req, res);
 
@@ -53,11 +53,11 @@ export default handleErrors(
 
       await validate(validators)(req, res);
 
-      const result1 = await models.UserProfile.updateOne({
+      const result1 = await UserProfile.updateOne({
         userId: user._id,
         ...req.body,
       });
-      const result2 = await models.Agreement.updateOne({
+      const result2 = await Agreement.updateOne({
         userId: user._id,
         commissionType: req.body.commissionType,
         commissionPerReceivedLeadCash: req.body.commissionPerReceivedLeadCash,
@@ -75,6 +75,5 @@ export default handleErrors(
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json({ result });
-    await models.client.close();
   }
 );

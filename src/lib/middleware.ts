@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { HttpError } from './error';
 
 // And to throw an error when an error happens in a middleware
 export function initMiddleware(middleware) {
@@ -31,10 +32,14 @@ export const handleErrors =
     try {
       await callback(req, res);
     } catch (e) {
-      console.error('handleErrors:', e);
-
-      return res
-        .status(500)
-        .json({ statusCode: 500, message: (e as Error).message });
+      console.error('IG Error:', e);
+      const statusCode = (e as HttpError).statusCode || 500;
+      return res.status(statusCode).json({
+        statusCode,
+        message:
+          statusCode === 500
+            ? 'Oops, something went wrong.'
+            : (e as HttpError).message,
+      });
     }
   };
