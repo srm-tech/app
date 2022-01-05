@@ -3,7 +3,7 @@ import { useState } from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 
 export default function Rating(initialValue = 1, name = 'rating', size = '10') {
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState(initialValue.initialValue);
   return (
     <>
       <StarRatingComponent

@@ -18,7 +18,7 @@ export default function introductions() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(true);
-  const [rating, setRating] = useState(1);
+  // const [rating, setRating] = useState(1);
 
   const {
     isShowing,
@@ -75,7 +75,6 @@ export default function introductions() {
       defaultComment = original.review[0].comment;
       defaultRate = original.review[0].rate;
     }
-
     toggle();
     setCaption(`Rate ${original.firstName} ${original.lastName}`);
     setAcceptCaption('Rate');

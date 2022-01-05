@@ -2,24 +2,22 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 
 import sendMail from '@/lib/mail';
-import { htmlNewStripeAccount, htmlStripeReminder } from '@/lib/utils';
+import { htmlStripeReminder } from '@/lib/utils';
 
 import getCollections from '@/models';
-import models from '@/models';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
-    await models.client.connect();
     const { Introduction } = await getCollections();
 
     try {
       const { authorization } = req.headers;
 
       if (authorization === `Bearer ${process.env.SECRET}`) {
-        const jobs = await models.Introduction.waitingForGuru();
+        const jobs = await Introduction.waitingForGuru();
 
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
           apiVersion: '2020-08-27',
@@ -112,5 +110,4 @@ export default async function handler(
     res.setHeader('Allow', 'POST');
     res.status(405).end('Method Not Allowed');
   }
-  await models.client.close();
 }

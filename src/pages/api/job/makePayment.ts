@@ -60,9 +60,11 @@ export default handleErrors(
         business.stripeId = account.id; // add "stripeId" to the object in memory
       }
 
+      // --- payment ---
       const session = await stripe.checkout.sessions.create(
         {
           payment_method_types: ['card'],
+
           line_items: [
             {
               name: `Payment for ${customer.firstName} ${customer.lastName} via introduce.guru`,
@@ -71,11 +73,20 @@ export default handleErrors(
               quantity: 1,
             },
           ],
+
           payment_intent_data: {
             application_fee_amount: formatAmountForStripe(fee, env.CURRENCY),
             receipt_email: business.email,
           },
+
           mode: 'payment',
+
+          tax_id_collection: { enabled: true },
+
+          customer_update: {
+            name: 'auto',
+            address: 'auto',
+          },
 
           success_url: `${
             process.env.BASE_URL
@@ -89,6 +100,8 @@ export default handleErrors(
           stripeAccount: customer.stripeId,
         }
       );
+      // --- payment ends ---
+
       result = {
         statusCode: 200,
         message: 'OK',

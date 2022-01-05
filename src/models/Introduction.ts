@@ -61,7 +61,7 @@ const Introduction = (collection: Collection<Document>) => ({
     const unset = {
       $unset: [
         'introducedBy',
-        'agreementId',
+        // 'agreementId',
         'customer',
         'user.isGuru',
         'user.isActive',
