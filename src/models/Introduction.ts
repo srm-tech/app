@@ -460,12 +460,31 @@ const Introduction = (collection: Collection<Document>) => ({
           $unwind: '$introduced',
         },
         {
+          $addFields: {
+            remindersCount: {
+              $size: '$reminders',
+            },
+          },
+        },
+        {
           $match: {
             status: 'waiting for Guru',
+            remindersCount: { $lt: 3 },
           },
         },
       ])
       .toArray();
+    return result;
+  },
+  saveReminderDate: async (objId: ObjectId) => {
+    const result = collection.updateOne(
+      { _id: objId },
+      {
+        $push: {
+          reminders: new Date(),
+        },
+      }
+    );
     return result;
   },
 });
