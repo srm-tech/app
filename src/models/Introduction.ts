@@ -82,13 +82,24 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'customerId',
+            localField: 'businessId',
             foreignField: '_id',
             as: 'user',
           },
         },
         {
           $unwind: '$user',
+        },
+        {
+          $lookup: {
+            from: 'agreements',
+            localField: 'agreementId',
+            foreignField: '_id',
+            as: 'agreement',
+          },
+        },
+        {
+          $unwind: '$agreement',
         },
         ...query,
         addFields,
@@ -101,7 +112,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $match: {
             action: 'sent',
-            business: userId,
+            businessId: userId,
           },
         },
         {
@@ -117,7 +128,7 @@ const Introduction = (collection: Collection<Document>) => ({
               {
                 $lookup: {
                   from: 'userProfiles',
-                  localField: 'business',
+                  localField: 'businessId',
                   foreignField: '_id',
                   as: 'user',
                 },

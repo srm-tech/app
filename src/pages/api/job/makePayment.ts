@@ -76,7 +76,7 @@ export default handleErrors(
 
           payment_intent_data: {
             application_fee_amount: formatAmountForStripe(fee, env.CURRENCY),
-            receipt_email: business.email,
+            receipt_email: business.contactEmail,
           },
 
           mode: 'payment',
