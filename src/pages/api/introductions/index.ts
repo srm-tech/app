@@ -1,54 +1,56 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
 import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
-
 import getCollections from '@/models';
+import { ObjectId } from 'mongodb';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    const { Introduction } = await getCollections();
+    const { Introduction, UserProfile } = await getCollections();
     const user = await getCurrentUser(req, res);
     if (req.method === 'GET') {
       result = await Introduction.readMany(user._id);
     } else if (req.method === 'POST') {
+      // this endopoint requires user
+      const guruUser = await getCurrentUser(req, res);
       await validate([
-        check('firstName').isLength({ min: 1, max: 255 }),
-        check('lastName').isLength({ min: 1, max: 255 }),
-        check('email').isEmail(),
-        check('mobile').isMobilePhone('any'),
-        check('aboutTheJob').isLength({ min: 1, max: 1023 }),
+        check('contactType').isIn(['phone', 'email']),
+        req.body.contactType === 'email'
+          ? check('contact').isEmail()
+          : check('contact').isLength({ min: 1, max: 55 }),
+        check('contactName').isLength({ min: 1, max: 55 }),
+        check('businessName').isLength({ min: 1, max: 55 }),
+        check('businessLabel').isLength({ min: 1, max: 55 }),
+        check('businessId').isMongoId(),
+        check('_id').isMongoId(),
       ])(req, res);
-      if (req.query.action == 'continue') {
-        result = await Introduction.create({
-          userId: user._id,
+      const [firstName, lastName] = req.body.contactName?.split(' ');
+      const contact = req.body.contact;
+      // check if contact exists
+      let customer: any = await UserProfile.searchForCustomer(
+        contact,
+        req.body.contactType
+      );
+      // if contact doesn't exist, create one
+      if (!customer) {
+        const newUserProfile = await UserProfile.create({
+          isActive: false,
           date: new Date(),
-          type: 'introduction',
-          ...req.query,
+          fullName: req.body.contactName,
+          firstName,
+          lastName,
+          phone: (req.body.contactType === 'phone' && req.body.contact) || '',
+          email: (req.body.contactType === 'email' && req.body.contact) || '',
         });
-      } else if (req.query.action === 'continue') {
-        result = await Introduction.create({
-          userId: user._id,
-          date: new Date(),
-          status: 'not sent yet',
-          ...req.query,
-        });
-      } else if (req.query.action === 'draft') {
-        result = await Introduction.create({
-          userId: user._id,
-          status: 'draft',
-          date: new Date(),
-          type: 'draft',
-          ...req.query,
-        });
-      } else {
-        return res.status(404).json({
-          statusCode: 404,
-          message: 'Not found. Maybe you should specify an "action" parameter?',
-        });
+        customer = await UserProfile.getOne(newUserProfile.insertedId);
       }
+      result = await Introduction.update(req.body._id, {
+        status: 'active',
+        customerId: customer._id,
+        guruId: guruUser._id,
+      });
     } else {
       return res
         .status(405)

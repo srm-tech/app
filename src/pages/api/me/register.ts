@@ -12,6 +12,19 @@ export default handleErrors(
     if (req.method === 'GET') {
       const user = await getCurrentUser(req, res);
       result = await UserProfile.getOne(user?._id);
+    } else if (req.method === 'PUT') {
+      await validate([
+        check('contactEmail').isEmail(),
+        check('contactPhone').isLength({ min: 1, max: 55 }),
+        check('firstName').isLength({ min: 1, max: 55 }),
+        check('lastName').isLength({ min: 1, max: 55 }),
+        check('businessName').isLength({ min: 1, max: 55 }),
+      ])(req, res);
+      const user = await getCurrentUser(req, res);
+      result = await UserProfile.updateOne(user._id, {
+        isActive: true,
+        ...req.body,
+      });
     } else {
       res.setHeader('Allow', 'GET');
       return res.status(405).end('Method Not Allowed');

@@ -53,8 +53,7 @@ export default handleErrors(
 
       await validate(validators)(req, res);
 
-      const result1 = await UserProfile.updateOne({
-        userId: user._id,
+      const result1 = await UserProfile.updateOne(user._id, {
         ...req.body,
       });
       const result2 = await Agreement.updateOne({

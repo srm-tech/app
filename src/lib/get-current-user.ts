@@ -21,5 +21,5 @@ export default async function getCurrentUser(
   if (!user) {
     throw new HttpError(401);
   }
-  return user;
+  return { ...user, email: session.user.email };
 }

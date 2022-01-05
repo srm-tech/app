@@ -12,9 +12,7 @@ export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const { MyContacts } = await getCollections();
     let result;
-
     const user = await getCurrentUser(req, res);
-
     if (req.method === 'GET') {
       if (req.query.q !== undefined) {
         await validate([check('q').isLength({ min: 0, max: 255 })])(req, res);
@@ -26,22 +24,14 @@ export default handleErrors(
         result = await MyContacts.readMany({ userId: user._id });
       }
     } else if (req.method === 'POST') {
-      await validate([
-        check('contactId').isMongoId(),
-        check('status').isLength({ min: 1, max: 255 }),
-        // check('firstName').isLength({ min: 1, max: 255 }),
-        // check('lastName').isLength({ min: 1, max: 255 }),
-        // check('businessName').isLength({ min: 1, max: 255 }),
-        // check('businessCategory').isLength({ min: 1, max: 255 }),
-        // check('businessCategorySecondary').isLength({ min: 1, max: 255 }),
-        // check('email').isEmail(),
-        // check('phone').isLength({ min: 1, max: 50 }),
-      ])(req, res);
-      req.body.contactId = new ObjectId(req.body.contactId);
-      req.body.dateInvited = new Date();
+      await validate([check('contactId').isMongoId()])(req, res);
+      await validate([check('agreement').isObject()])(req, res);
       result = await MyContacts.create({
         userId: user._id,
-        ...req.body,
+        contactId: req.body.contactId,
+        status: 'accepted',
+        createdAt: new Date(),
+        agreement: { ...req.body.agreement, agreedAt: new Date() },
       });
     } else {
       res.setHeader('Allow', 'POST');

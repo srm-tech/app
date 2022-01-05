@@ -12,7 +12,20 @@ export default handleErrors(
     let result;
     const { Agreement } = await getCollections();
     const user = await getCurrentUser(req, res);
-    if (req.method === 'POST') {
+    if (req.method === 'GET') {
+      let filter = user._id.toString();
+      if (req.query.businessId) {
+        filter = req.query.businessId.toString();
+      }
+      result = await Agreement.findOne(filter);
+      if (!result) {
+        result = {
+          commissionPerReceivedLeadCash: 0,
+          commissionPerCompletedLead: 0,
+          commissionPerReceivedLeadPercent: 0,
+        };
+      }
+    } else if (req.method === 'POST') {
       await validate([
         check('commissionPerReceivedLeadCash').isNumeric(),
         check('commissionPerCompletedLead').isNumeric(),
@@ -22,15 +35,6 @@ export default handleErrors(
         userId: user._id,
         ...req.body,
       });
-    } else if (req.method === 'GET') {
-      result = await Agreement.findOne(user._id);
-      if (!result) {
-        result = {
-          commissionPerReceivedLeadCash: 0,
-          commissionPerCompletedLead: 0,
-          commissionPerReceivedLeadPercent: 0,
-        };
-      }
     } else {
       res.setHeader('Allow', 'GET, POST');
       return res.status(405).end('Method Not Allowed');

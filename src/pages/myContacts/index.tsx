@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 import StarRatingComponent from 'react-star-rating-component';
-import useFetch from 'use-http';
+import useFetch, { CachePolicies } from 'use-http';
 
 import Button from '@/components/buttons/Button';
 import Link from '@/components/buttons/Link';
@@ -15,7 +15,7 @@ export default function myContacts() {
 
   const { get, post, response, loading, error } = useFetch(
     `${process.env.BASE_URL}`,
-    { cachePolicy: 'no-cache' },
+    { cachePolicy: CachePolicies.NO_CACHE },
     []
   );
 
