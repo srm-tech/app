@@ -2,7 +2,7 @@ import Table from '@/components/table/Table';
 import React from 'react';
 import useFetch from 'use-http';
 
-export default function introductions() {
+export default function Introductions() {
   const options = [];
   const {
     loading,

@@ -8,7 +8,7 @@ import Link from '@/components/buttons/Link';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import Table from '@/components/table/Table';
 
-export default function myContacts() {
+export default function MyContacts() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(true);

@@ -12,7 +12,8 @@ export default handleErrors(
     let result;
 
     if (req.method === 'GET') {
-      const id = new ObjectId(req.query.id);
+      const _id = req.query.id.toString();
+      const id = new ObjectId(_id);
       result = await Introduction.details(id);
     } else {
       res.setHeader('Allow', 'GET');

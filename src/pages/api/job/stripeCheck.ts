@@ -14,11 +14,11 @@ export default handleErrors(
     const { Introduction, UserProfile } = await getCollections();
 
     if (req.method === 'GET') {
-      const id = new ObjectId(req.query.id);
-      const _job = await Introduction.details(id);
+      const id = new ObjectId(req.query.id.toString());
+      const jobs = await Introduction.details(id);
       let job;
-      if (_job.length > 0) {
-        job = _job[0]; // todo: make it better
+      if (jobs.length > 0) {
+        job = jobs[0]; // todo: make it better
         result = {
           stripeCheck: job.user.stripeId ? true : false,
         };
@@ -29,7 +29,7 @@ export default handleErrors(
       }
 
       // send email to user if not stripe
-      if (!result.stripeCheck && _job.length > 0) {
+      if (!result.stripeCheck && jobs.length > 0) {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
           apiVersion: '2020-08-27',
         });

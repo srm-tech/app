@@ -6,12 +6,12 @@ import useFetch from 'use-http';
 import Table from '@/components/table/Table';
 import Link from '@/components/buttons/Link';
 
-searchForBusiness.getInitialProps = async ({ query }) => {
+SearchForBusiness.getInitialProps = async ({ query }) => {
   const { data } = query;
   return { query };
 };
 
-export default function searchForBusiness(query) {
+export default function SearchForBusiness(query) {
   const url = process.env.BASE_URL + '/api/business/search';
   const search = query.query.search;
   const options = [];
@@ -20,6 +20,10 @@ export default function searchForBusiness(query) {
     error,
     data = [],
   } = useFetch(url + '?q=' + search, options, []);
+
+  function handleToggleFav(e, id) {
+    return null;
+  }
 
   const list = data || [];
   const columns = [

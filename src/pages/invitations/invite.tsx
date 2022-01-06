@@ -16,7 +16,7 @@ interface IFormInput {
 const defaultMessage =
   'I would like to invite you to my network and I am happy to share my revenue based on the below commission structure:';
 
-export default function profile() {
+export default function Profile() {
   // states
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -170,6 +170,7 @@ export default function profile() {
                                 pattern: {
                                   value:
                                     /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                  message: 'This field is required',
                                 },
                               })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'

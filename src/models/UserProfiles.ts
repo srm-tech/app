@@ -206,7 +206,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       ])
       .toArray();
   },
-  getOne: async (userId) => {
+  getOne: async (userId: ObjectId | string) => {
     return collection.findOne({
       _id: new ObjectId(userId),
     });

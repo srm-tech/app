@@ -25,7 +25,7 @@ interface IFormInput {
   commissionPerReceivedLeadPercent: string;
 }
 
-export default function profile() {
+export default function Profile() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [formValues, setFormValues] = useState({
     firstName: '',
@@ -94,7 +94,8 @@ export default function profile() {
       const loaded = await get('/api/me');
       setFormValues(loaded);
 
-      // todo: dont repeat with switchDropdown function! Plz, make it better!
+      // todo: dont repeat with switchDropdown function!
+      // Plz, make it better & don't judge me: it's a fast-and-dirty job.
       switch (loaded.commissionType) {
         case 'commissionPerReceivedLead':
           setReceivedCash(true);
@@ -532,7 +533,12 @@ export default function profile() {
                         >
                           <option value=''>Select a country...</option>
                           {countryOptions.map((option) => (
-                            <option value={option.value}>{option.label}</option>
+                            <option
+                              key={'commission-' + option.value}
+                              value={option.value}
+                            >
+                              {option.label}
+                            </option>
                           ))}
                         </select>
                       </div>

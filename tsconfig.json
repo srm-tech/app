@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     "src/pages/api/auth/[...nextauth].js"
-  ],
+, "src/models/Messages", "src/models/Messages", "src/pages/api/messages/toggleRead", "src/pages/api/messages/index"  ],
   "exclude": [
     "node_modules"
   ],

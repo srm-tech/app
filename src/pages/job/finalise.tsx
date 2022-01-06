@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   };
 };
 
-export default function finalise(props) {
+export default function Finalise(props) {
   // todo: do it better, please. I have done this quickly and dirty, and feel bad about it :'(
   function calculate(values: IFormInput) {
     if (values.commissionType === 'commissionPerReceivedLeadPercent') {
@@ -85,14 +85,20 @@ export default function finalise(props) {
     processForm(data);
   }
 
+  const initialJobData: any = null;
+  const initialAgreement = {
+    key: null as any,
+    value: null as any,
+  };
+
   const [loaderVisible, setLoaderVisible] = useState(false);
 
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [errorMessageText, setErrorMessageText] = useState('');
-  const [jobData, setJobData] = useState({});
+  const [jobData, setJobData] = useState(initialJobData);
   const [mailSent, setMailSent] = useState(false);
-  const [agreement, setAgreement] = useState({});
+  const [agreement, setAgreement] = useState(initialAgreement);
 
   const {
     register,
@@ -100,10 +106,6 @@ export default function finalise(props) {
     handleSubmit,
     reset,
   } = useForm();
-
-  // const onSubmit: SubmitHandler<IFormInput> = (data) => {
-  //   saveData(data);
-  // };
 
   const { get, post, response, loading, error } = useFetch(
     process.env.BASE_URL
@@ -164,7 +166,7 @@ export default function finalise(props) {
       amount: amount,
       fee: data.guruFee,
       jobId: props.jobId,
-      stripeId: jobData.user.stripeId,
+      stripeId: jobData.user?.stripeId,
     };
 
     console.log('paymentData:', paymentData);

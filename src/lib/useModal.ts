@@ -1,13 +1,20 @@
 import { useState } from 'react';
 
+const initialContent: any = '';
+const initialAcceptCaption: any = 'OK';
+const initialCancelCaption: any = 'Cancel';
+const initialAccept: any = null;
+const initialCancel: any = null;
+
 const useModal = () => {
   const [isShowing, setIsShowing] = useState(false);
   const [caption, setCaption] = useState('');
-  const [content, setContent] = useState('');
-  const [acceptCaption, setAcceptCaption] = useState('OK');
-  const [cancelCaption, setCancelCaption] = useState('Cancel');
-  const [accept, setAccept] = useState();
-  const [cancel, setCancel] = useState();
+  const [content, setContent] = useState(initialContent);
+  const [acceptCaption, setAcceptCaption] = useState(initialAcceptCaption);
+  const [cancelCaption, setCancelCaption] = useState(initialCancelCaption);
+  const [accept, setAccept] = useState(initialAccept);
+  const [cancel, setCancel] = useState(initialCancel);
+  const [hide, useHide] = useState(!isShowing);
 
   function toggle() {
     setIsShowing(!isShowing);
@@ -28,6 +35,7 @@ const useModal = () => {
     setAccept,
     cancel,
     setCancel,
+    hide,
   };
 };
 

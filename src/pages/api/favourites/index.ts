@@ -8,12 +8,11 @@ import getCollections from '@/models';
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    const {} = await getCollections();
+    const { MyContacts } = await getCollections();
     if (req.method === 'GET') {
       const user = await getCurrentUser(req, res);
-      result = await models.MyContacts.readMany({
+      result = await MyContacts.readMany({
         userId: user._id,
-        favourites: true,
       });
     } else {
       return res

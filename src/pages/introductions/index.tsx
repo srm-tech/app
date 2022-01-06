@@ -19,7 +19,7 @@ TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo('en-AU');
 
-export default function introductions() {
+export default function Introductions() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(true);
@@ -58,7 +58,7 @@ export default function introductions() {
 
   async function handleRate(e, original) {
     async function handleAcceptButton() {
-      const form = document.getElementById('rateForm');
+      const form: any = document.getElementById('rateForm');
       const rate = form?.elements[5].value;
       const comment = form?.elements[6].value;
 
@@ -80,6 +80,7 @@ export default function introductions() {
     setCaption(`Rate ${original.firstName} ${original.lastName}`);
     setAcceptCaption('Rate');
     setAccept(() => handleAcceptButton);
+
     const ratingContent = (
       <>
         <form id='rateForm'>

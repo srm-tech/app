@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React from 'react';
 import {
   useFilters,
@@ -54,7 +55,6 @@ export default function Table({ columns, data, loading }: TableProps) {
     canPreviousPage,
     canNextPage,
     pageOptions,
-    pageCount,
     gotoPage,
     nextPage,
     previousPage,
@@ -76,6 +76,8 @@ export default function Table({ columns, data, loading }: TableProps) {
     useSortBy,
     usePagination
   );
+
+  // console.log("hg:", headerGroups[0].getHeaderGroupProps());
 
   return (
     <>
@@ -100,7 +102,7 @@ export default function Table({ columns, data, loading }: TableProps) {
             headerGroups.map((headerGroup) => (
               // Apply the header row props
               <tr
-                key={`row-${headerGroup.toString()}`}
+                // key={`row-${headerGroup.toString()}`}
                 {...headerGroup.getHeaderGroupProps()}
               >
                 {
@@ -109,8 +111,8 @@ export default function Table({ columns, data, loading }: TableProps) {
                     // Apply the header cell props
                     <th
                       scope='col'
-                      className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
-                      key={`col-${column.toString()}`}
+                      className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'
+                      // key={`col-${column.toString()}`}
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                     >
                       {
@@ -153,7 +155,7 @@ export default function Table({ columns, data, loading }: TableProps) {
               return (
                 // Apply the row props
                 <tr
-                  key={`row-${row.toString()}`}
+                  // key={`row-${row.toString()}`}
                   {...row.getRowProps()}
                   className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
@@ -163,8 +165,8 @@ export default function Table({ columns, data, loading }: TableProps) {
                       // Apply the cell props
                       return (
                         <td
-                          className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'
-                          key='cell-{cell.toString()}'
+                          className='px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap'
+                          // key='cell-{cell.toString()}'
                           {...cell.getCellProps()}
                         >
                           {
@@ -182,7 +184,7 @@ export default function Table({ columns, data, loading }: TableProps) {
         </tbody>
       </table>
 
-      <div className='pagination flex justify-between items-center mt-2'>
+      <div className='flex items-center justify-between mt-2 pagination'>
         <span>
           Page{' '}
           <strong>
@@ -190,13 +192,13 @@ export default function Table({ columns, data, loading }: TableProps) {
           </strong>{' '}
         </span>
         <nav
-          className='relative z-0 inline-flex rounded-md shadow-sm -space-x-px'
+          className='relative z-0 inline-flex -space-x-px rounded-md shadow-sm'
           aria-label='Pagination'
         >
           <span>
             Page:{' '}
             <input
-              className='bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium'
+              className='relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
               type='number'
               defaultValue={pageIndex + 1}
               min={1}
@@ -208,7 +210,7 @@ export default function Table({ columns, data, loading }: TableProps) {
             />
           </span>
           <select
-            className='bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium'
+            className='relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
             value={pageSize}
             onChange={(e) => {
               setPageSize(Number(e.target.value));
@@ -222,21 +224,21 @@ export default function Table({ columns, data, loading }: TableProps) {
           </select>
         </nav>
         <nav
-          className='relative z-0 inline-flex rounded-md shadow-sm -space-x-px'
+          className='relative z-0 inline-flex -space-x-px rounded-md shadow-sm'
           aria-label='Pagination'
         >
           {/* <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
             {'<<'}
           </button>{' '} */}
           <button
-            className='bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium'
+            className='relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
             onClick={() => previousPage()}
             disabled={!canPreviousPage}
           >
             {'Back'}
           </button>{' '}
           <button
-            className='bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium'
+            className='relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
             onClick={() => nextPage()}
             disabled={!canNextPage}
           >
