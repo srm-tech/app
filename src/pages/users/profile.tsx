@@ -94,7 +94,8 @@ export default function Profile() {
       const loaded = await get('/api/me');
       setFormValues(loaded);
 
-      // todo: dont repeat with switchDropdown function! Plz, make it better!
+      // todo: dont repeat with switchDropdown function!
+      // Plz, make it better & don't judge me: it's a fast-and-dirty job.
       switch (loaded.commissionType) {
         case 'commissionPerReceivedLead':
           setReceivedCash(true);
