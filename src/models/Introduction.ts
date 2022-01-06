@@ -73,23 +73,30 @@ const Introduction = (collection: Collection<Document>) => ({
 
     const addFields = {
       $addFields: {
-        sumCommissionCustomer: { $sum: '$user.commissionCustomer' },
-        sumCommissionBusiness: { $sum: '$user.commissionBusiness' },
+        sumCommissionCustomer: { $sum: '$fresh.commissionCustomer' },
+        sumCommissionBusiness: { $sum: '$fresh.commissionBusiness' },
       },
     };
 
     return collection
       .aggregate([
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'guru._id',
+            foreignField: '_id',
+            as: 'fresh',
+          },
+        },
+        {
+          $unwind: '$fresh',
+        },
         ...query,
         addFields,
         unset,
         {
           $addFields: {
-            user: '$guru',
-            firstName: '$guru.firstName',
-            lastName: '$guru.lastName',
-            email: '$guru.contactEmail',
-            position: 'business',
+            user: '$business',
           },
         },
         {
@@ -102,23 +109,34 @@ const Introduction = (collection: Collection<Document>) => ({
           $unionWith: {
             coll: 'introductions',
             pipeline: [
-              addFields,
-              unset,
               {
-                $addFields: {
-                  user: '$business',
-                  firstName: '$business.firstName',
-                  lastName: '$business.lastName',
-                  email: '$business.contactEmail',
-                  position: 'guru',
+                $lookup: {
+                  from: 'userProfiles',
+                  localField: 'guru._id',
+                  foreignField: '_id',
+                  as: 'fresh',
                 },
               },
+              {
+                $unwind: '$fresh',
+              },
+              ...query,
+              addFields,
+              unset,
               {
                 $lookup: {
                   from: 'reviews',
                   localField: '_id',
                   foreignField: 'jobId',
                   as: 'review',
+                },
+              },
+              {
+                $addFields: {
+                  user: '$business',
+                  firstName: '$business.firstName',
+                  lastName: '$business.lastName',
+                  email: '$business.email',
                 },
               },
               {
