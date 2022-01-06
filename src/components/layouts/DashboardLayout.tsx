@@ -18,7 +18,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 
 import Logo from '../Logo';
 import Avatar from '../Avatar';
-import useFetch from 'use-http';
+import useFetch, { CachePolicies } from 'use-http';
 
 const navigation = [
   // { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
@@ -56,7 +56,11 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
-  const { loading, error, data: user = [] } = useFetch('/me', {}, []);
+  const {
+    loading,
+    error,
+    data: user = [],
+  } = useFetch('/me', { cachePolicy: CachePolicies.CACHE_ONLY }, []);
 
   const activeNavigation = navigation.map((item) => {
     item.current = false;
@@ -236,8 +240,11 @@ export default function DashboardLayout({
                       <span className='sr-only'>Open user menu</span>
                       <Avatar
                         size='small'
-                        text={`${user?.firstName?.charAt(0)}
-                        `}
+                        text={
+                          user &&
+                          `${user?.firstName?.charAt(0) || ' '}
+                        `
+                        }
                       />
                     </Menu.Button>
                   </div>

@@ -61,7 +61,8 @@ export default handleErrors(
       };
 
       result = await Introduction.update(req.body._id, {
-        status: 'active',
+        status: 'pending',
+        action: 'sent',
         customer,
         guru,
         business,
