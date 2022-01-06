@@ -14,8 +14,11 @@ import { useRouter } from 'next/router';
 import { SearchIcon } from '@heroicons/react/solid';
 import React, { FC, Fragment, useState } from 'react';
 import Link from 'next/link';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 import Logo from '../Logo';
+import Avatar from '../Avatar';
+import useFetch from 'use-http';
 
 const navigation = [
   // { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
@@ -35,7 +38,7 @@ const navigation = [
 ];
 const userNavigation = [
   { name: 'Your Profile', href: '/users/profile' },
-  { name: 'Settings', href: '#' },
+  // { name: 'Settings', href: '#' },
   { name: 'Sign out', href: '#' },
 ];
 
@@ -51,7 +54,10 @@ export default function DashboardLayout({
   title?: string;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { data: session } = useSession();
   const router = useRouter();
+  const { loading, error, data: user = [] } = useFetch('/me', {}, []);
+
   const activeNavigation = navigation.map((item) => {
     item.current = false;
     if (item.href === router.pathname) {
@@ -228,10 +234,10 @@ export default function DashboardLayout({
                   <div>
                     <Menu.Button className='flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
                       <span className='sr-only'>Open user menu</span>
-                      <img
-                        className='w-8 h-8 rounded-full'
-                        src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                        alt=''
+                      <Avatar
+                        size='small'
+                        text={`${user?.firstName?.charAt(0)}
+                        `}
                       />
                     </Menu.Button>
                   </div>
@@ -250,6 +256,14 @@ export default function DashboardLayout({
                           {({ active }) => (
                             <Link href={item.href} passHref>
                               <a
+                                onClick={(e) => {
+                                  debugger;
+                                  if (item.name === 'Sign out') {
+                                    e.preventDefault();
+                                    signOut();
+                                    router.push('/');
+                                  }
+                                }}
                                 className={classNames(
                                   active ? 'bg-gray-100' : '',
                                   'block px-4 py-2 text-sm text-gray-700'

@@ -1,23 +1,27 @@
-import clsx from 'clsx';
+import { classNames } from '@/lib/helper';
 import { FC } from 'react';
 
 const Avatar: FC<{
   className?: string;
   text: string;
-  size?: 'small' | 'large';
+  size?: 'small' | 'large' | 'medium';
 }> = ({ className = '', text, children, size = 'large' }) => {
   return (
     <div
-      className={clsx(
-        'rounded-full flex items-center justify-center ',
-        size === 'large' ? 'w-24 h-24' : 'w-10 h-10',
+      className={classNames(
+        'rounded-full bg-green-500 flex items-center justify-center',
+        size === 'large' ? 'w-24 h-24' : '',
+        size === 'small' ? 'w-10 h-10' : '',
+        size === 'medium' ? 'w-16 h-16' : '',
         className
       )}
     >
       <p
-        className={clsx(
-          'text-black',
-          size === 'large' ? 'text-5xl' : 'text-lg'
+        className={classNames(
+          'uppercase text-white',
+          size === 'large' ? 'text-5xl' : '',
+          size === 'small' ? 'text-lg' : '',
+          size === 'medium' ? 'text-2xl' : ''
         )}
       >
         {text}
