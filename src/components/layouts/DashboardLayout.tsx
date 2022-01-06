@@ -264,7 +264,7 @@ export default function DashboardLayout({
                             <Link href={item.href} passHref>
                               <a
                                 onClick={(e) => {
-                                  debugger;
+                                  // debugger;
                                   if (item.name === 'Sign out') {
                                     e.preventDefault();
                                     signOut();
@@ -299,7 +299,7 @@ export default function DashboardLayout({
               <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
                 {/* Replace with your content */}
                 <div className='py-4'>
-                  <div className='p-2 border-4 border-gray-200 rounded-lg overflow-y-auto'>
+                  <div className='p-2 overflow-y-auto border-4 border-gray-200 rounded-lg'>
                     {children}
                   </div>
                 </div>

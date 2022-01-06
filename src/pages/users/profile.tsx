@@ -581,7 +581,7 @@ export default function Profile() {
                           <option value='commissionPerCompletedLead'>
                             Commission per completed lead ($)
                           </option>
-                          <option value='commissionPerReceivedLeadPercent'>
+                          <option value='commissionPerCompletedLeadPercent'>
                             Commission per completed lead (%)
                           </option>
                         </select>

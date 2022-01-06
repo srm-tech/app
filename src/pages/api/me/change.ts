@@ -28,31 +28,6 @@ export default handleErrors(
         check('commissionValue').optional().isNumeric(),
       ];
 
-      // if (req.body.commissionPerReceivedLead) {
-      //   validators.push(
-      //     check('commissionPerReceivedLead').optional().isNumeric()
-      //   );
-      //   req.body.commissionPerReceivedLead = parseFloat(
-      //     req.body.commissionPerReceivedLead
-      //   );
-      // }
-      // if (req.body.commissionPerCompletedLead) {
-      //   validators.push(
-      //     check('commissionPerCompletedLead').optional().isNumeric()
-      //   );
-      //   req.body.commissionPerCompletedLead = parseFloat(
-      //     req.body.commissionPerCompletedLead
-      //   );
-      // }
-      // if (req.body.commissionPerReceivedLeadPercent) {
-      //   validators.push(
-      //     check('commissionPerReceivedLeadPercent').optional().isNumeric()
-      //   );
-      //   req.body.commissionPerReceivedLeadPercent = parseFloat(
-      //     req.body.commissionPerReceivedLeadPercent
-      //   );
-      // }
-
       await validate(validators)(req, res);
 
       if (req.body.commissionType) {
@@ -60,7 +35,6 @@ export default handleErrors(
       } else {
         req.body.isBusiness = false;
       }
-      // console.log("body:", req.body);
 
       req.body.agreement = {
         commissionType: req.body.commissionType,

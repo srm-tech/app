@@ -5,30 +5,24 @@ export function formatCommissionDescriptions(commission) {
     value: '',
   };
   switch (commission.commissionType) {
-    case 'commisionPerReceivedLeadCash':
-      result.key = 'Commission per received ($)';
-      // result.value = commission.commisionPerReceivedLeadCash;
-      result.value = commission.value;
+    case 'commissionPerReceivedLead':
+      result.key = 'Commission per received lead ($)';
       break;
 
     // todo: dedup this:
-    case 'commissionPerCompletedLeadCash':
-      result.key = 'Commission per completed lead ($)';
-      // result.value = commission.commissionPerCompletedLeadCash;
-      result.value = commission.commissionValue;
-      break;
     case 'commissionPerCompletedLead':
       result.key = 'Commission per completed lead ($)';
-      // result.value = commission.commissionPerCompletedLead;
-      result.value = commission.commissionValue;
       break;
 
+    case 'commissionPerCompletedLeadPercent':
+      result.key = 'Commission per completed lead (%)';
+      break;
     case 'commissionPerReceivedLeadPercent':
       result.key = 'Commission per completed lead (%)';
-      // result.value = commission.commissionPerReceivedLeadPercent;
-      result.value = commission.commissionValue;
       break;
   }
+  result.value = commission.commissionValue;
+
   return result;
 }
 

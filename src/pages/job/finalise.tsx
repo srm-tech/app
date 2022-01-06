@@ -140,6 +140,7 @@ export default function Finalise(props) {
     data = calculate(data);
     setJobData(loaded);
     setAgreement(formatCommissionDescriptions(loaded.agreement));
+    console.log(agreement);
     reset(data);
   }
 
