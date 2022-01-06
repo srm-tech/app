@@ -18,10 +18,7 @@ export default handleErrors(
       const amount = req.body.amount;
 
       // get job data
-      const job = await Introduction.getFinalise(
-        _user._id,
-        new ObjectId(jobId)
-      );
+      const job = await Introduction.getFinalise(new ObjectId(jobId));
 
       // if not job found – 404
       if (!job) {
@@ -29,7 +26,9 @@ export default handleErrors(
       }
 
       // get sender data
-      const user: any = await UserProfile.getOne(new ObjectId(job.business));
+      const user: any = await UserProfile.getOne(
+        new ObjectId(job.business._id)
+      );
       req.body.name = `${user?.firstName} ${user?.lastName}`;
 
       // stripe

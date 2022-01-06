@@ -6,6 +6,8 @@ export interface UserProfile {
   lastName: string;
   businessName: string;
   email: string;
+  contactEmail: string;
+  constactPhone: string;
   businessCategory: string;
   rating: number;
   successfulRate: number;
@@ -21,6 +23,8 @@ export interface UserProfile {
   address2: string;
   address3: string;
   country: string;
+  stripeId: string;
+  accountLink: string;
 }
 
 const UserProfile = (collection: Collection<UserProfile>) => ({

@@ -41,7 +41,7 @@ export default handleErrors(
       // const to = await models.UserProfile.getOne(job.business);
       // const from = job.user;
       const business = job.business; // await UserProfile.getOne(job.businessId);
-      const customer = job.user;
+      const customer = job.guru;
 
       // stripe
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -76,13 +76,16 @@ export default handleErrors(
           payment_intent_data: {
             application_fee_amount: formatAmountForStripe(fee, env.CURRENCY),
             receipt_email: business.contactEmail,
+            transfer_data: {
+              destination: business.stripeId,
+            },
           },
 
           mode: 'payment',
           // automatic_tax: {
           //   enabled: true
           // },
-          tax_id_collection: { enabled: true },
+          // tax_id_collection: { enabled: true },
 
           // customer_update: {
           //   name: 'auto',

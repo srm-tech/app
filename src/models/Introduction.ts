@@ -320,14 +320,17 @@ const Introduction = (collection: Collection<Document>) => ({
             _id: objId,
           },
         },
-        // {
-        //   $lookup: {
-        //     from: 'userProfiles',
-        //     localField: 'customerId',
-        //     foreignField: '_id',
-        //     as: 'user',
-        //   },
-        // },
+        {
+          $lookup: {
+            from: 'userProfiles',
+            localField: 'guru._id',
+            foreignField: '_id',
+            as: 'fresh',
+          },
+        },
+        {
+          $unwind: '$fresh',
+        },
         // {
         //   $unwind: '$user',
         // },

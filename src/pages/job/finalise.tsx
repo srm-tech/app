@@ -10,6 +10,7 @@ import Link from '@/components/buttons/Link';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 import { env } from '@/config';
+import UserProfile from '@/models/UserProfiles';
 
 interface IFormInput {
   revenue: number;
@@ -169,10 +170,8 @@ export default function Finalise(props) {
       amount: amount,
       fee: data.guruFee,
       jobId: props.jobId,
-      stripeId: jobData.user?.stripeId,
+      stripeId: jobData.fresh.stripeId,
     };
-
-    console.log('paymentData:', paymentData);
 
     if (!paymentData.stripeId) {
       // the Guru doesn't have the Stripe account connected
