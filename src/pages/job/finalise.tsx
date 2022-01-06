@@ -8,7 +8,7 @@ import { formatCommissionDescriptions } from '@/lib/utils';
 import Link from '@/components/buttons/Link';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
-import { env } from '@/config';
+import { env } from '@/lib/envConfig';
 import UserProfile from '@/models/UserProfiles';
 
 interface IFormInput {

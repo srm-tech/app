@@ -20,7 +20,7 @@ import Logo from '../Logo';
 import Avatar from '../Avatar';
 import useFetch, { CachePolicies } from 'use-http';
 import LoadingOverlay from '../LoadingOverlay';
-import { env } from '@/config';
+import { env } from '@/lib/envConfig';
 
 const navigation = [
   // { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },

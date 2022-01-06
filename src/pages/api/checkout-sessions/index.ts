@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 import { pricing } from '@/components/home/Pricing';
-import { env } from '@/config';
+import { env } from '@/lib/envConfig';
 import { handleErrors } from '@/lib/middleware';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {

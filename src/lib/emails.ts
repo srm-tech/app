@@ -1,3 +1,4 @@
+import { env } from '@/lib/envConfig';
 import { NextApiRequest } from 'next';
 
 import sendMail from './mail';
@@ -13,7 +14,7 @@ export async function sendEmailWhenNoStripe(
   };
 
   const mailData = {
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to: job.user.email,
     subject: `A payment from ${req.body.name} is waiting for you in introduce.guru!`,
     // text: text(req.body),
