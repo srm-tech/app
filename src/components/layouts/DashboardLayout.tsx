@@ -263,7 +263,6 @@ export default function DashboardLayout({
                           <Link href={item.href} passHref>
                             <a
                               onClick={(e) => {
-                                debugger;
                                 if (item.name === 'Sign out') {
                                   e.preventDefault();
                                   signOut();
