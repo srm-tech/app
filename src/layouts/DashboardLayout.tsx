@@ -7,7 +7,6 @@ import {
   XIcon,
 } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
-import { SearchIcon } from '@heroicons/react/solid';
 import React, { FC, Fragment, useState } from 'react';
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
@@ -15,8 +14,12 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import Logo from '../components/Logo';
 import Avatar from '../components/Avatar';
 import useFetch, { CachePolicies } from 'use-http';
-import LoadingOverlay from '../components/LoadingOverlay';
+import LoadingOverlay from '@/components/LoadingOverlay';
 import { env } from '@/lib/envConfig';
+import { Business, Search } from '@/components/introductions/QuickForm';
+import ComboSelectAdvanced from '@/components/ComboSelectAdvanced';
+import ConfirmModal from '@/components/modals/ConfirmModal';
+import BusinessDetails from '@/components/BusinessDetails';
 
 const navigation = [
   // { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
@@ -54,6 +57,14 @@ export default function DashboardLayout({
   loading?: boolean;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showBusiness, setShowBusiness] = useState(false);
+  const { post, response } = useFetch('');
+  const [query, setQuery] = React.useState<string>('');
+  const [business, setBusiness] = React.useState<Business>({
+    _id: '',
+    name: query || '',
+    company: '',
+  });
   const { data: session } = useSession();
   const router = useRouter();
   const { error, data: user = [] } = useFetch(
@@ -69,6 +80,19 @@ export default function DashboardLayout({
     }
     return item;
   });
+
+  const introduce = async () => {
+    router.push(`/?businessId=${business._id}`);
+    setShowBusiness(false);
+  };
+
+  const changeBusiness = (inputValue) => {
+    setQuery(inputValue);
+    if (business._id && inputValue !== business.name) {
+      setBusiness({ ...business, _id: '' });
+    }
+  };
+
   return (
     <div>
       <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -207,15 +231,18 @@ export default function DashboardLayout({
                   Search
                 </label>
                 <div className='relative w-full text-gray-400 focus-within:text-gray-600'>
-                  <div className='absolute inset-y-0 left-0 flex items-center pointer-events-none'>
-                    <SearchIcon className='w-5 h-5' aria-hidden='true' />
-                  </div>
-                  <input
-                    id='search-field'
-                    className='block w-full h-full py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 border-transparent focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm'
-                    placeholder='Search'
-                    type='search'
-                    name='search'
+                  <ComboSelectAdvanced
+                    query={query}
+                    onChange={changeBusiness}
+                    onSelect={(result: Search) => {
+                      setShowBusiness(true);
+                      setBusiness({
+                        ...business,
+                        _id: result._id,
+                        name: result.label,
+                        company: result.businessName,
+                      });
+                    }}
                   />
                 </div>
               </form>
@@ -301,6 +328,19 @@ export default function DashboardLayout({
           </div>
         </main>
       </div>
+      <ConfirmModal
+        isShowing={showBusiness}
+        form='registration'
+        acceptCaption='Introduce Now'
+        cancelCaption='Close'
+        accept={() => introduce()}
+        cancel={() => setShowBusiness(false)}
+        content={
+          <div>
+            <BusinessDetails business={business} />
+          </div>
+        }
+      />
     </div>
   );
 }

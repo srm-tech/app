@@ -10,7 +10,7 @@ import { formatCommissionDescriptions } from '@/lib/utils';
 import Button from '@/components/buttons/Button';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import Modal from '@/components/modals/ConfirmModal';
-import Rating from '@/components/rating';
+import Rating from '@/components/Rating';
 import Table from '@/components/table/Table';
 
 // prepare TimeAgo
@@ -95,7 +95,7 @@ export default function Introductions() {
               Your rating:
             </label>
             <div className='mt-1 rounded-md shadow-sm'>
-              <Rating initialValue={defaultRate} />
+              <Rating initialValue={defaultRate} editing />
             </div>
           </div>
 
