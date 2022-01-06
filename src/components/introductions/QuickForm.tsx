@@ -320,7 +320,6 @@ export const QuickForm = () => {
         cancel={() => setStep(1)}
         caption='Not logged in?'
         content={<p>To save introduction please sign in with your email.</p>}
-        hide={true}
       />
       <Modal
         isShowing={step === 3}
@@ -341,11 +340,9 @@ export const QuickForm = () => {
             />
           </div>
         }
-        hide={true}
       />
       <Modal
         isShowing={step === 4}
-        hide={true}
         form='registration'
         acceptCaption='Accept & Introduce'
         cancelCaption='Decline'
