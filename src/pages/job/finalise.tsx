@@ -4,11 +4,12 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import LoadingOverlay from 'react-loading-overlay-ts';
 import useFetch from 'use-http';
 
+import { formatCommissionDescriptions } from '@/lib/utils';
+
 import Link from '@/components/buttons/Link';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 import { env } from '@/config';
-import { formatCommissionDescriptions } from '@/lib/utils';
 
 interface IFormInput {
   revenue: number;
@@ -122,7 +123,9 @@ export default function Finalise(props) {
       tip: 0,
       total: 0,
     };
+
     console.log('loaded:', loaded);
+
     if (loaded) {
       if (
         loaded.agreement.commissionType === 'commissionPerCompletedLead' ||

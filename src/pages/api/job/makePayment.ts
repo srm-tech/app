@@ -30,7 +30,7 @@ export default handleErrors(
       let fee = req.body.fee;
       fee = parseFloat(fee);
 
-      const job = await Introduction.getFinalise(user._id, new ObjectId(jobId));
+      const job = await Introduction.getFinalise(new ObjectId(jobId));
 
       // if not job found – 404
       if (!job) {

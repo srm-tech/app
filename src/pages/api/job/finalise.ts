@@ -15,7 +15,7 @@ export default handleErrors(
       const jobId = req.query.jobId;
 
       result = await Introduction.getFinalise(
-        user._id,
+        // user._id,
         new ObjectId(jobId.toString())
       );
 

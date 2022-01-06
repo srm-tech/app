@@ -297,7 +297,7 @@ const Introduction = (collection: Collection<Document>) => ({
   getOne: async (id) => {
     return await collection.findOne({ _id: new ObjectId(id) });
   },
-  getFinalise: async (businessId, objId, status = null) => {
+  getFinalise: async (objId, status = null) => {
     let statuses;
     if (!status) {
       statuses = ['waiting for guru', 'accepted'];
@@ -307,26 +307,9 @@ const Introduction = (collection: Collection<Document>) => ({
     const result = await collection
       .aggregate([
         {
-          $lookup: {
-            from: 'userProfiles',
-            localField: 'customerId',
-            foreignField: '_id',
-            as: 'user',
+          $addFields: {
+            user: '$guru',
           },
-        },
-        {
-          $unwind: '$user',
-        },
-        {
-          $lookup: {
-            from: 'agreements',
-            localField: 'agreementId',
-            foreignField: '_id',
-            as: 'agreement',
-          },
-        },
-        {
-          $unwind: '$agreement',
         },
         {
           $match: {
@@ -334,10 +317,40 @@ const Introduction = (collection: Collection<Document>) => ({
             status: {
               $in: statuses,
             },
-            // business: businessId,
             _id: objId,
           },
         },
+        // {
+        //   $lookup: {
+        //     from: 'userProfiles',
+        //     localField: 'customerId',
+        //     foreignField: '_id',
+        //     as: 'user',
+        //   },
+        // },
+        // {
+        //   $unwind: '$user',
+        // },
+        // {
+        //   $lookup: {
+        //     from: 'agreements',
+        //     localField: 'agreementId',
+        //     foreignField: '_id',
+        //     as: 'agreement',
+        //   },
+        // },
+        // {
+        //   $unwind: '$agreement',
+        // },
+        // {
+        //   $match: {
+        //     action: 'sent',
+        //     status: {
+        //       $in: statuses,
+        //     },
+        //     _id: objId,
+        //   },
+        // },
       ])
       .toArray();
     if (result) {
@@ -419,7 +432,7 @@ const Introduction = (collection: Collection<Document>) => ({
 
     return obj;
   },
-  updateStatus: async (jobId, status) => {
+  updateStatus: async (jobId: ObjectId, status: string) => {
     const obj = await collection.updateOne(
       {
         _id: jobId,

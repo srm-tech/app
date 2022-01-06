@@ -1,4 +1,4 @@
-import { Collection, ObjectId } from 'mongodb';
+import { BSONType, Collection, ObjectId } from 'mongodb';
 
 export interface UserProfile {
   _id: ObjectId;
@@ -206,7 +206,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       ])
       .toArray();
   },
-  getOne: async (userId: ObjectId | string) => {
+  getOne: async (userId) => {
     return collection.findOne({
       _id: new ObjectId(userId),
     });

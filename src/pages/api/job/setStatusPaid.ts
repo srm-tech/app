@@ -19,16 +19,12 @@ export default handleErrors(
         amountPaid = parseInt(amountPaid) / 100.0;
       }
 
-      const job = await Introduction.getFinalise(
-        new ObjectId(user._id),
-        new ObjectId(jobId)
-      );
-
+      const job = await Introduction.getFinalise(new ObjectId(jobId));
       if (job) {
-        result = await Introduction.updateStatus(new ObjectId(jobId), 'paid');
-        const bus = await UserProfile.getOne(job.business);
-        const cust = job.user;
-        if (bus) {
+        result = await Introduction.updateStatus(job._id, 'paid');
+        const bus = await UserProfile.getOne(job.business._id);
+        const cust = await UserProfile.getOne(job.user._id);
+        if (bus && cust) {
           const result2 = await UserProfile.addCommission(
             bus._id,
             cust._id,

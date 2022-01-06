@@ -25,7 +25,7 @@ export default handleErrors(
           apiVersion: '2020-08-27',
         });
 
-        const stripeAccount = await stripe.accounts.retrieve(job.user.stripeId);
+        const stripeAccount = await stripe.accounts.retrieve(job.guru.stripeId);
 
         result = {
           details: stripeAccount.details_submitted,
