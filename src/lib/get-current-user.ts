@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { HttpError } from './error';
-import { ObjectId } from 'mongodb';
+import { ObjectId } from 'bson';
 
 export default async function getCurrentUser(
   req: NextApiRequest,
