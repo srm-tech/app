@@ -128,21 +128,10 @@ export default function profile() {
 
   return (
     <>
-      <DashboardLayout title='My Finalise job'>
+      <DashboardLayout title='My Profile'>
         <form method='post' onSubmit={handleSubmit(onSubmit)}>
           <div className='user-form'>
             <div className='md:grid md:grid-cols-3 md:gap-6'>
-              {/* left panel */}
-              <div className='p-4 text-white bg-green-800 md:col-span-1'>
-                <div className='px-4 sm:px-0'>
-                  <h3 className='text-lg font-medium leading-6'>Profile</h3>
-                  <p className='mt-1 text-sm'>
-                    This information will be displayed publicly so be careful
-                    what you share.
-                  </p>
-                </div>
-              </div>
-
               {/* right panel */}
               <div className='p-4 mt-5 md:mt-0 md:col-span-2'>
                 {/* error message */}
