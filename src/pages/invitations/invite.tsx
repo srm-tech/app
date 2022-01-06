@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import LoadingOverlay from 'react-loading-overlay';
+import LoadingOverlay from 'react-loading-overlay-ts';
 import useFetch from 'use-http';
 
 import DashboardLayout from '@/components/layouts/DashboardLayout';
@@ -138,7 +138,19 @@ export default function profile() {
                   </div>
                 )}
                 {/* end of ok message */}
-                <LoadingOverlay active={loaderVisible} spinner>
+                <LoadingOverlay
+                  active={loaderVisible}
+                  spinner
+                  styles={{
+                    overlay: (base) => ({
+                      ...base,
+                      background: 'rgba(255, 255, 255, 0.8)',
+                      '& svg circle': {
+                        stroke: 'rgba(0, 255, 0, 0.5)',
+                      },
+                    }),
+                  }}
+                >
                   <div className='space-y-8 divide-y divide-gray-200'>
                     <div>
                       <div className='grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6'>

@@ -1,7 +1,7 @@
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import React, { useEffect, useState, version } from 'react';
-import LoadingOverlay from 'react-loading-overlay';
+import LoadingOverlay from 'react-loading-overlay-ts';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch, { CachePolicies } from 'use-http';
 
@@ -13,6 +13,11 @@ import DashboardLayout from '@/components/layouts/DashboardLayout';
 import Modal from '@/components/modals/ConfirmModal';
 import Rating from '@/components/rating';
 import Table from '@/components/table/Table';
+
+// prepare TimeAgo
+TimeAgo.addDefaultLocale(en);
+TimeAgo.addLocale(en);
+const timeAgo = new TimeAgo('en-AU');
 
 export default function introductions() {
   const [loaderVisible, setLoaderVisible] = useState(false);
@@ -43,10 +48,6 @@ export default function introductions() {
     []
   );
 
-  // prepare TimeAgo
-  TimeAgo.addDefaultLocale(en);
-  const timeAgo = new TimeAgo('en-US');
-
   function handleCancelButton() {
     toggle();
   }
@@ -58,8 +59,8 @@ export default function introductions() {
   async function handleRate(e, original) {
     async function handleAcceptButton() {
       const form = document.getElementById('rateForm');
-      const rate = form.elements[5].value;
-      const comment = form.elements[6].value;
+      const rate = form?.elements[5].value;
+      const comment = form?.elements[6].value;
 
       const rating = await post('/api/job/rate', {
         rate: rate,
@@ -353,7 +354,19 @@ export default function introductions() {
   const list = data || [];
   return (
     <DashboardLayout title='Introductions'>
-      <LoadingOverlay active={loaderVisible} spinner>
+      <LoadingOverlay
+        active={loaderVisible}
+        spinner
+        styles={{
+          overlay: (base) => ({
+            ...base,
+            background: 'rgba(255, 255, 255, 0.8)',
+            '& svg circle': {
+              stroke: 'rgba(0, 255, 0, 0.5)',
+            },
+          }),
+        }}
+      >
         <Table columns={columns} data={list} loading={loading} />
         <div>
           <Modal

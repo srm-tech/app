@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import LoadingOverlay from 'react-loading-overlay';
+import LoadingOverlay from 'react-loading-overlay-ts';
 import countryList from 'react-select-country-list';
 import useFetch from 'use-http';
 
@@ -176,7 +176,19 @@ export default function profile() {
                 )}
                 {/* end of ok message */}
 
-                <LoadingOverlay active={loaderVisible} spinner>
+                <LoadingOverlay
+                  active={loaderVisible}
+                  spinner
+                  styles={{
+                    overlay: (base) => ({
+                      ...base,
+                      background: 'rgba(255, 255, 255, 0.8)',
+                      '& svg circle': {
+                        stroke: 'rgba(0, 255, 0, 0.5)',
+                      },
+                    }),
+                  }}
+                >
                   <div>
                     <h3 className='text-lg font-medium leading-6 text-gray-900'>
                       Personal Information
