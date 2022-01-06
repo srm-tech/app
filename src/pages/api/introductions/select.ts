@@ -7,7 +7,7 @@ export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
     const user = await getCurrentUser(req, res);
-    const {} = await getCollections();
+    // const {} = await getCollections();
 
     if (req.method === 'POST') {
       const contacts = req.query.contacts;

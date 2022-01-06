@@ -14,7 +14,7 @@ export default handleErrors(
     const { Introduction } = await getCollections();
 
     if (req.method === 'GET') {
-      const id = new ObjectId(req.query.id);
+      const id = new ObjectId(req.query.id.toString());
       const _job = await Introduction.details(id);
       let job;
 

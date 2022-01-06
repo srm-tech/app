@@ -38,10 +38,9 @@ export default handleErrors(
       }
 
       // just for the convenience
-      const to = job.user;
       // const to = await models.UserProfile.getOne(job.business);
       // const from = job.user;
-      const business = await UserProfile.getOne(job.businessId);
+      const business = job.business; // await UserProfile.getOne(job.businessId);
       const customer = job.user;
 
       // stripe

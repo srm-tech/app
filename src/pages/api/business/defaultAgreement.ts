@@ -6,7 +6,6 @@ import { check, validate } from '@/lib/validator';
 
 import getCollections from '@/models';
 
-// TODO: replace userId
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;

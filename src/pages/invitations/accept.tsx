@@ -1,7 +1,7 @@
 import React from 'react';
 import useFetch from 'use-http';
 
-export default function accept() {
+export default function Accept() {
   const options = [];
   const {
     loading,

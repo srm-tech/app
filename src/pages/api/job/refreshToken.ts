@@ -14,7 +14,7 @@ export default handleErrors(
     const { Introduction, UserProfile } = await getCollections();
     if (req.method === 'GET') {
       const _user = await getCurrentUser(req, res);
-      const _id = req.query.jobId;
+      const _id = req.query.jobId.toString();
       const jobId = new ObjectId(_id);
 
       // get job data

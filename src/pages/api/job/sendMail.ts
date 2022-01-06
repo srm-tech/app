@@ -18,7 +18,10 @@ export default handleErrors(
       const amount = req.body.amount;
 
       // get job data
-      let job = await Introduction.getFinalise(_user._id, new ObjectId(jobId));
+      const job = await Introduction.getFinalise(
+        _user._id,
+        new ObjectId(jobId)
+      );
 
       // if not job found – 404
       if (!job) {
@@ -26,7 +29,7 @@ export default handleErrors(
       }
 
       // get sender data
-      const user = await UserProfile.getOne(new ObjectId(job.business));
+      const user: any = await UserProfile.getOne(new ObjectId(job.business));
       req.body.name = `${user?.firstName} ${user?.lastName}`;
 
       // stripe
@@ -70,7 +73,7 @@ export default handleErrors(
 
       const mailData = {
         from: process.env.EMAIL_FROM,
-        to: user.email,
+        to: user?.contactEmail,
         subject: `A payment from ${req.body.name} is waiting for you in introduce.guru!`,
         // text: text(req.body),
         html: html(req.body),

@@ -3,7 +3,7 @@ import React from 'react';
 import useFetch from 'use-http';
 import StarRatingComponent from 'react-star-rating-component';
 
-export default function initiationsReceived() {
+export default function InitiationsReceived() {
   const options = [];
   const {
     loading,

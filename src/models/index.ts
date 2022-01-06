@@ -1,7 +1,6 @@
 // import { getCollection, getDb, ObjectId } from '@/lib/db';
-import DashBoardConnectionsWidget from './widgets/DashboardConnections';
-import DashboardIntroductionsWidget from './widgets/DashboardIntroductions';
-import DashboardInvitationsWidget from './widgets/DashboardInvitations';
+import { connectToDatabase } from '@/lib/db';
+
 import Agreement from './Agreement';
 import BusinessInvitations from './BusinessInvitations';
 import Category from './Category';
@@ -9,11 +8,12 @@ import Connection from './Connections';
 import Favourite from './Favourites';
 import Introduction from './Introduction';
 import Invitation from './Invitations';
-import Message from './Messages';
 import MyContacts from './MyContacts';
 import Review from './Reviews';
 import UserProfile from './UserProfiles';
-import { connectToDatabase } from '@/lib/db';
+import DashBoardConnectionsWidget from './widgets/DashboardConnections';
+import DashboardIntroductionsWidget from './widgets/DashboardIntroductions';
+import DashboardInvitationsWidget from './widgets/DashboardInvitations';
 
 export default async () => {
   const { db } = await connectToDatabase();
@@ -36,7 +36,6 @@ export default async () => {
     Favourite: Favourite(db.collection('favourites')),
     Introduction: Introduction(db.collection('introductions')),
     Invitation: Invitation(db.collection('invitations')),
-    Message: Message(db.collection('messages')),
     MyContacts: MyContacts(db.collection('myContacts')),
     Review: Review(db.collection('reviews')),
     UserProfile: UserProfile(db.collection('userProfiles')),

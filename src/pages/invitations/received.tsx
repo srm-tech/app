@@ -4,7 +4,7 @@ import useFetch from 'use-http';
 
 import Table from '@/components/table/Table';
 
-export default function initiationsReceived() {
+export default function InitiationsReceived() {
   const options = [];
   const {
     loading,

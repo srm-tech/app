@@ -179,7 +179,7 @@ export const QuickForm = () => {
   };
 
   return (
-    <div className='bg-white rounded-lg sm:max-w-md sm:w-full m-auto'>
+    <div className='m-auto bg-white rounded-lg sm:max-w-md sm:w-full'>
       <form ref={formRef} className='space-y-6' onSubmit={_handleSubmit}>
         <div className='flex flex-col'>
           <div className='px-8 pt-4'>
@@ -254,7 +254,7 @@ export const QuickForm = () => {
                       : 'contact phone'
                   }
                   required
-                  className='ml-3  block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                  className='block w-full ml-3 border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
                   value={customer.contact}
                   onChange={(event) =>
                     setCustomer({ ...customer, contact: event.target.value })
@@ -277,7 +277,7 @@ export const QuickForm = () => {
             <button
               type='submit'
               disabled={loading}
-              className='flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-primary-400 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+              className='flex justify-center w-full px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary-400 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
             >
               {loading ? 'sending...' : 'Introduce'}
             </button>
@@ -314,6 +314,7 @@ export const QuickForm = () => {
         cancel={() => setStep(1)}
         caption='Not logged in?'
         content={<p>To save introduction please sign in with your email.</p>}
+        hide={true}
       />
       <Modal
         isShowing={step === 3}
@@ -331,9 +332,11 @@ export const QuickForm = () => {
             <RegisterForm email={profile.email} onComplete={resubmit} />
           </div>
         }
+        hide={true}
       />
       <Modal
         isShowing={step === 4}
+        hide={true}
         form='registration'
         acceptCaption='Accept & Introduce'
         cancelCaption='Decline'

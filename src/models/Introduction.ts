@@ -1,11 +1,11 @@
 import { Collection, ObjectId } from 'mongodb';
 
 function prepareFieldObfuscator(fields, obfuscate = true) {
-  const query = [];
+  const query: Array<any> = [];
 
   fields.forEach(function (field: any) {
     if (obfuscate) {
-      query.push({
+      const replace = {
         $replaceWith: {
           $setField: {
             field: field.newField,
@@ -28,7 +28,8 @@ function prepareFieldObfuscator(fields, obfuscate = true) {
             },
           },
         },
-      });
+      };
+      query.push(replace);
     }
 
     query.push({

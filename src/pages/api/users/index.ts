@@ -1,9 +1,11 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import getCurrentUser from '@/lib/get-current-user';
-import { check, validate } from '@/lib/validator';
-import getCollections from '@/models';
-import { handleErrors } from '@/lib/middleware';
 import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+import getCurrentUser from '@/lib/get-current-user';
+import { handleErrors } from '@/lib/middleware';
+import { check, validate } from '@/lib/validator';
+
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {

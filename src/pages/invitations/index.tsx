@@ -5,7 +5,7 @@ import useFetch from 'use-http';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import Table from '@/components/table/Table';
 
-export default function invitation() {
+export default function Invitation() {
   const options = [];
   const {
     loading,
