@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import getCurrentUser from '@/lib/get-current-user';
+import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
+import { htmlIntroduction } from '@/lib/utils';
 import { check, validate } from '@/lib/validator';
 
 import getCollections from '@/models';
-import { htmlIntroduction } from '@/lib/utils';
-import sendMail from '@/lib/mail';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {

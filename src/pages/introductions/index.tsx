@@ -70,9 +70,13 @@ export default function Introductions() {
       window.location.href = `${process.env.BASE_URL}/introductions`;
     }
 
+    let ratingLength = 0;
+    if ('review' in original) {
+      ratingLength = original.review.length;
+    }
     let defaultRate = 1;
     let defaultComment = '';
-    if (original.review.length > 0) {
+    if (ratingLength > 0) {
       defaultComment = original.review[0].comment;
       defaultRate = original.review[0].rate;
     }
@@ -127,6 +131,7 @@ export default function Introductions() {
       return null;
     }
     const reviewContent = formatCommissionDescriptions(job[0].agreement);
+    console.log('reviewContent:', job[0].agreement);
     setCaption('Review the agreement');
     setContent(`${reviewContent.key}: ${reviewContent.value}`);
     setAcceptCaption('Proceed');
@@ -323,9 +328,16 @@ export default function Introductions() {
           </>
         );
 
+        let initialRating;
+        let ratingLength = 0;
+        if ('review' in original) {
+          ratingLength = original.review.length;
+          initialRating = ratingLength > 0 ? original.review[0].rate : 1;
+        }
+
         const rateStars = original.position === 'guru' && (
           <StarRatingComponent
-            value={original.review.length > 0 ? original.review[0].rate : 1}
+            value={initialRating}
             // editing={false}
             starCount={5}
             emptyStarColor='#ccc'
@@ -340,10 +352,10 @@ export default function Introductions() {
             {original.status === 'accepted' && original.position === 'business'
               ? finishJobButton
               : null}
-            {original.position === 'guru' && original.review.length === 0
+            {original.position === 'guru' && ratingLength === 0
               ? rateButton
               : null}
-            {original.position === 'guru' && original.review.length > 0
+            {original.position === 'guru' && ratingLength > 0
               ? rateStars
               : null}
           </>

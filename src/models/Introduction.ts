@@ -53,7 +53,7 @@ const Introduction = (collection: Collection<Document>) => ({
         replacement: '*****',
       },
       {
-        field: '$user.email',
+        field: '$user.contactEmail',
         newField: 'email',
         replacement: '****@****.***',
       },
@@ -80,62 +80,38 @@ const Introduction = (collection: Collection<Document>) => ({
 
     return collection
       .aggregate([
-        {
-          $lookup: {
-            from: 'userProfiles',
-            localField: 'guruId',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        {
-          $unwind: '$user',
-        },
-        {
-          $lookup: {
-            from: 'agreements',
-            localField: 'agreementId',
-            foreignField: '_id',
-            as: 'agreement',
-          },
-        },
-        {
-          $unwind: '$agreement',
-        },
         ...query,
         addFields,
+        unset,
         {
           $addFields: {
+            user: '$guru',
+            firstName: '$guru.firstName',
+            lastName: '$guru.lastName',
+            email: '$guru.contactEmail',
             position: 'business',
           },
         },
-        unset,
         {
           $match: {
             action: 'sent',
-            businessId: userId,
+            'business._id': userId,
           },
         },
         {
           $unionWith: {
             coll: 'introductions',
             pipeline: [
+              addFields,
+              unset,
               {
-                $match: {
-                  action: 'sent',
-                  guruId: userId,
+                $addFields: {
+                  user: '$business',
+                  firstName: '$business.firstName',
+                  lastName: '$business.lastName',
+                  email: '$business.contactEmail',
+                  position: 'guru',
                 },
-              },
-              {
-                $lookup: {
-                  from: 'userProfiles',
-                  localField: 'businessId',
-                  foreignField: '_id',
-                  as: 'user',
-                },
-              },
-              {
-                $unwind: '$user',
               },
               {
                 $lookup: {
@@ -145,16 +121,6 @@ const Introduction = (collection: Collection<Document>) => ({
                   as: 'review',
                 },
               },
-              {
-                $addFields: {
-                  firstName: '$user.firstName',
-                  lastName: '$user.lastName',
-                  email: '$user.email',
-                  position: 'guru',
-                },
-              },
-              addFields,
-              unset,
               {
                 $set: {
                   status: {
@@ -166,9 +132,104 @@ const Introduction = (collection: Collection<Document>) => ({
                   },
                 },
               },
+              {
+                $match: {
+                  action: 'sent',
+                  'guru._id': userId,
+                },
+              },
             ],
           },
         },
+        // {
+        //   $lookup: {
+        //     from: 'userProfiles',
+        //     localField: 'guru._id',
+        //     foreignField: '_id',
+        //     as: 'user',
+        //   },
+        // },
+        // {
+        //   $unwind: '$user',
+        // },
+        // {
+        //   $lookup: {
+        //     from: 'agreements',
+        //     localField: 'agreement._id',
+        //     foreignField: '_id',
+        //     as: 'agreement',
+        //   },
+        // },
+        // {
+        //   $unwind: '$agreement',
+        // },
+        // ...query,
+        // addFields,
+        // {
+        //   $addFields: {
+        //     position: 'business',
+        //   },
+        // },
+        // unset,
+        // {
+        //   $match: {
+        //     action: 'sent',
+        //     'business._id': userId,
+        //   },
+        // },
+        // {
+        //   $unionWith: {
+        //     coll: 'introductions',
+        //     pipeline: [
+        //       {
+        //         $match: {
+        //           action: 'sent',
+        //           'guru._id': userId,
+        //         },
+        //       },
+        //       {
+        //         $lookup: {
+        //           from: 'userProfiles',
+        //           localField: 'business._id',
+        //           foreignField: '_id',
+        //           as: 'user',
+        //         },
+        //       },
+        //       {
+        //         $unwind: '$user',
+        //       },
+        //       {
+        //         $lookup: {
+        //           from: 'reviews',
+        //           localField: '_id',
+        //           foreignField: 'jobId',
+        //           as: 'review',
+        //         },
+        //       },
+        //       {
+        //         $addFields: {
+        //           firstName: '$user.firstName',
+        //           lastName: '$user.lastName',
+        //           email: '$user.email',
+        //           position: 'guru',
+        //         },
+        //       },
+        //       addFields,
+        //       unset,
+        //       {
+        //         $set: {
+        //           status: {
+        //             $cond: [
+        //               { $eq: ['$status', 'pending'] },
+        //               'waiting for approval',
+        //               { $concat: ['$status', ' by other party'] },
+        //             ],
+        //           },
+        //         },
+        //       },
+        //     ],
+        //   },
+        // },
       ])
       .toArray();
   },
@@ -373,57 +434,60 @@ const Introduction = (collection: Collection<Document>) => ({
   },
   details: async (objId: ObjectId) => {
     const result = collection
-      .aggregate([
-        {
-          $lookup: {
-            from: 'userProfiles',
-            localField: 'guruId',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        {
-          $unwind: '$user',
-        },
-        {
-          $lookup: {
-            from: 'agreements',
-            localField: 'agreementId',
-            foreignField: '_id',
-            as: 'agreement',
-          },
-        },
-        {
-          $unwind: '$agreement',
-        },
-        {
-          $lookup: {
-            from: 'userProfiles',
-            localField: 'businessId',
-            foreignField: '_id',
-            as: 'business',
-          },
-        },
-        {
-          $unwind: '$business',
-        },
-        {
-          $lookup: {
-            from: 'userProfiles',
-            localField: 'guruId',
-            foreignField: '_id',
-            as: 'guru',
-          },
-        },
-        {
-          $unwind: '$guru',
-        },
-        {
-          $match: {
-            _id: objId,
-          },
-        },
-      ])
+      .find({
+        _id: objId,
+      })
+      // .aggregate([
+      //   {
+      //     $lookup: {
+      //       from: 'userProfiles',
+      //       localField: 'guruId',
+      //       foreignField: '_id',
+      //       as: 'user',
+      //     },
+      //   },
+      //   {
+      //     $unwind: '$user',
+      //   },
+      //   {
+      //     $lookup: {
+      //       from: 'agreements',
+      //       localField: 'agreementId',
+      //       foreignField: '_id',
+      //       as: 'agreement',
+      //     },
+      //   },
+      //   {
+      //     $unwind: '$agreement',
+      //   },
+      //   {
+      //     $lookup: {
+      //       from: 'userProfiles',
+      //       localField: 'businessId',
+      //       foreignField: '_id',
+      //       as: 'business',
+      //     },
+      //   },
+      //   {
+      //     $unwind: '$business',
+      //   },
+      //   {
+      //     $lookup: {
+      //       from: 'userProfiles',
+      //       localField: 'guruId',
+      //       foreignField: '_id',
+      //       as: 'guru',
+      //     },
+      //   },
+      //   {
+      //     $unwind: '$guru',
+      //   },
+      //   {
+      //     $match: {
+      //       _id: objId,
+      //     },
+      //   },
+      // ])
       .toArray();
     return result;
   },

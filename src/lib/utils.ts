@@ -1,4 +1,5 @@
 export function formatCommissionDescriptions(commission) {
+  console.log('commission', commission);
   const result = {
     key: '',
     value: '',
@@ -8,10 +9,17 @@ export function formatCommissionDescriptions(commission) {
       result.key = 'Commission per received ($)';
       result.value = commission.commisionPerReceivedLeadCash;
       break;
+
+    // todo: dedup this:
+    case 'commissionPerCompletedLeadCash':
+      result.key = 'Commission per completed lead ($)';
+      result.value = commission.commissionPerCompletedLeadCash;
+      break;
     case 'commissionPerCompletedLead':
       result.key = 'Commission per completed lead ($)';
       result.value = commission.commissionPerCompletedLead;
       break;
+
     case 'commissionPerReceivedLeadPercent':
       result.key = 'Commission per completed lead (%)';
       result.value = commission.commissionPerReceivedLeadPercent;
