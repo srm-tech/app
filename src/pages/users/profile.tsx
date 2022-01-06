@@ -563,9 +563,7 @@ export default function profile() {
                       </label>
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
                         <select
-                          {...register('commissionType', {
-                            required: true,
-                          })}
+                          {...register('commissionType', {})}
                           onChange={handleDropdown}
                           className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                         >
@@ -577,7 +575,7 @@ export default function profile() {
                             Commission per completed lead ($)
                           </option>
                           <option value='commissionPerReceivedLeadPercent'>
-                            Commission per received lead (%)
+                            Commission per completed lead (%)
                           </option>
                         </select>
                       </div>
@@ -670,7 +668,7 @@ export default function profile() {
                           htmlFor='commissionPerReceivedLeadPercent'
                           className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                         >
-                          Commission per received lead (%):
+                          Commission per completed lead (%):
                         </label>
                         <div className='mt-1 sm:mt-0 sm:col-span-2'>
                           <div className='flex max-w-lg rounded-md shadow-sm'>

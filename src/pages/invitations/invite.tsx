@@ -226,7 +226,7 @@ export default function profile() {
                                 Commission per completed lead ($)
                               </option>
                               <option value='commissionPerReceivedLeadPercent'>
-                                Commission per received lead (%)
+                                Commission per completed lead (%)
                               </option>
                             </select>
                           </div>
@@ -306,7 +306,7 @@ export default function profile() {
                               htmlFor='commissionPerReceivedLeadPercent'
                               className='block text-sm font-medium text-gray-700'
                             >
-                              Commission per received lead (%):
+                              Commission per completed lead (%):
                             </label>
                             <div className='flex mt-1 rounded-md shadow-sm'>
                               <input

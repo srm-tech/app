@@ -13,7 +13,7 @@ export function formatCommissionDescriptions(commission) {
       result.value = commission.commissionPerCompletedLead;
       break;
     case 'commissionPerReceivedLeadPercent':
-      result.key = 'Commission per received lead (%)';
+      result.key = 'Commission per completed lead (%)';
       result.value = commission.commissionPerReceivedLeadPercent;
       break;
   }

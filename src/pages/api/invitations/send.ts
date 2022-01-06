@@ -69,7 +69,7 @@ function commissionFormatter(data) {
       value = data.commissionPerCompletedLead;
       break;
     case 'commissionPerReceivedLeadPercent':
-      label = 'Commission per received lead (%)';
+      label = 'Commission per completed lead (%)';
       value = data.commissionPerReceivedLeadPercent;
       break;
   }
