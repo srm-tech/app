@@ -21,9 +21,6 @@ interface IFormInput {
   country: string;
   commissionType: string;
   commissionValue: number;
-  // commissionPerReceivedLead: string;
-  // commissionPerCompletedLead: string;
-  // commissionPerReceivedLeadPercent: string;
 }
 
 export default function Profile() {
@@ -43,15 +40,10 @@ export default function Profile() {
     country: '',
     commissionType: '',
     commissionValue: 0,
-    // commissionPerReceivedLead: '',
-    // commissionPerCompletedLead: '',
-    // commissionPerReceivedLeadPercent: '',
   });
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
-  const [receivedCash, setReceivedCash] = useState(false);
-  const [receivedPercent, setReceivedPercent] = useState(false);
-  const [completedCash, setCompletedCash] = useState(false);
+
   const {
     register,
     formState: { errors },
@@ -69,46 +61,12 @@ export default function Profile() {
     process.env.BASE_URL
   );
 
-  function switchDropdown(dropdown) {
-    switch (dropdown) {
-      case 'commissionPerReceivedLead':
-        setReceivedCash(true);
-        break;
-      case 'commissionPerCompletedLead':
-        setCompletedCash(true);
-        break;
-      case 'commissionPerReceivedLeadPercent':
-        setReceivedPercent(true);
-        break;
-    }
-  }
-
-  function handleDropdown(e) {
-    const dropdown = e.target.value;
-    setReceivedCash(false);
-    setReceivedPercent(false);
-    setCompletedCash(false);
-    switchDropdown(dropdown);
-  }
-
   useEffect(() => {
     async function loadData() {
       const loaded = await get('/api/me');
+      loaded.commissionType = loaded.agreement.commissionType;
+      loaded.commissionValue = loaded.agreement.commissionValue;
       setFormValues(loaded);
-
-      // todo: dont repeat with switchDropdown function!
-      // Plz, make it better & don't judge me: it's a fast-and-dirty job.
-      // switch (loaded.commissionType) {
-      //   case 'commissionPerReceivedLead':
-      //     setReceivedCash(true);
-      //     break;
-      //   case 'commissionPerCompletedLead':
-      //     setCompletedCash(true);
-      //     break;
-      //   case 'commissionPerReceivedLeadPercent':
-      //     setReceivedPercent(true);
-      //     break;
-      // }
       reset(loaded);
     }
     loadData();
@@ -571,7 +529,7 @@ export default function Profile() {
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
                         <select
                           {...register('commissionType', {})}
-                          onChange={handleDropdown}
+                          // onChange={handleDropdown}
                           className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                         >
                           <option value=''></option>

@@ -211,9 +211,10 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       .toArray();
   },
   getOne: async (userId: ObjectId) => {
-    return collection.findOne({
+    const result = await collection.findOne({
       _id: userId,
     });
+    return result;
   },
   getOneByEmail: async (email) => {
     return collection.findOne({
