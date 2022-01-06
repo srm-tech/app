@@ -45,7 +45,7 @@ export function htmlNewStripeAccount(data) {
       <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
         <p>
         <a href="${data.accountLink}">
-          But first you have to connect to introduce.guru via Stripe:
+          But first you have to connect to introduce.guru via Stripe
         </a>
         </p>
       </td>

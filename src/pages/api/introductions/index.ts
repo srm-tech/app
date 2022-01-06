@@ -7,6 +7,7 @@ import { htmlIntroduction } from '@/lib/utils';
 import { check, validate } from '@/lib/validator';
 
 import getCollections from '@/models';
+import { ObjectId } from 'mongodb';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -18,7 +19,7 @@ export default handleErrors(
       // console.log(result);
     } else if (req.method === 'POST') {
       // this endopoint requires user
-      const guru = await getCurrentUser(req, res);
+      const user = await getCurrentUser(req, res);
       await validate([
         check('customer.contactType').isIn(['phone', 'email']),
         req.body.contactType === 'email'
@@ -36,9 +37,10 @@ export default handleErrors(
       const [firstName, lastName] = req.body.customer.name?.split(' ');
       // contact is not a user in our system
       const customer = {
-        fullName: req.body.customer.name,
+        name: req.body.customer.name,
         firstName,
         lastName,
+        contact: req.body.customer.contact,
         phone:
           (req.body.customer.contactType === 'phone' &&
             req.body.customer.contact) ||
@@ -48,19 +50,26 @@ export default handleErrors(
             req.body.customer.contact) ||
           '',
       };
+      const guruProfile = await UserProfile.getOne(user._id);
       const businessProfile = await UserProfile.getOne(
-        req.body.business._id.toString()
+        new ObjectId(req.body.business._id)
       );
 
       const business = {
-        _id: req.body.business._id,
+        _id: new ObjectId(req.body.business._id),
         firstName: businessProfile?.firstName,
         lastName: businessProfile?.lastName,
         name: `${businessProfile?.firstName} ${businessProfile?.lastName}`,
         company: businessProfile?.businessName,
         email: businessProfile?.email,
+        businessCategory: businessProfile?.businessCategory,
+      };
+      const guru = {
+        ...guruProfile,
+        name: `${guruProfile?.firstName} ${guruProfile?.lastName}`,
       };
 
+      const today = new Date();
       result = await Introduction.update(req.body._id, {
         status: 'pending',
         action: 'sent',
@@ -68,6 +77,8 @@ export default handleErrors(
         guru,
         business,
         agreement: req.body.agreement,
+        createdAt: new Date(),
+        expiresAt: new Date(new Date().setDate(today.getDate() + 90)),
       });
 
       // send email

@@ -3,10 +3,13 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import { Fragment } from 'react';
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import Logo from './Logo';
+import { env } from '@/config';
 
 export default function Nav() {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const navigation = [
     { name: 'Early Bird Offer', href: '/promotion' },
@@ -50,7 +53,9 @@ export default function Nav() {
           <button
             onClick={
               session
-                ? () => signOut()
+                ? () => {
+                    signOut({ callbackUrl: env.BASE_URL });
+                  }
                 : () =>
                     signIn('', {
                       callbackUrl: location.href,

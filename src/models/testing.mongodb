@@ -18,6 +18,13 @@ db.connections.insertMany(
 ])
 
 use('guru');
+db.users.insertOne({
+  _id: ObjectId('000000000000000000000002'),
+  email:"kris+1@introduce.guru",
+  emailVerified: new Date()
+})
+
+use('guru');
 db.userProfiles.aggregateOne([
   {
     $lookup: {

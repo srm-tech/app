@@ -1,5 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
+import clsx from 'clsx';
 import React, { Component, Fragment, ReactElement, useState } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -82,7 +83,14 @@ export default function ConfirmModal({
                         </div>
                       </div>
                     </div>
-                    <div className='mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense'>
+                    <div
+                      className={clsx(
+                        `mt-5 sm:mt-6 sm:grid  sm:gap-3 sm:grid-flow-row-dense`,
+                        cancelCaption && acceptCaption
+                          ? 'sm:grid-cols-2'
+                          : 'sm:grid-cols-1'
+                      )}
+                    >
                       {acceptCaption && (
                         <button
                           form={form}

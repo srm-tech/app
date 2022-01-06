@@ -20,8 +20,10 @@ export default function MyContacts() {
 
   async function loadData() {
     const loaded = await get('/api/myContacts');
-    setReload(false);
-    setData(loaded);
+    if (response.ok) {
+      setReload(false);
+      setData(loaded);
+    }
   }
 
   useEffect(() => {

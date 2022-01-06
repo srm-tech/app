@@ -169,7 +169,7 @@ export default function Introductions() {
       toggle();
       setCaption('The Guru has not connected his account with Stripe yet');
       setContent(
-        'We sent the mail to the Guru, please come back and try again in a few days'
+        'We sent the mail to the Guru, please come back and try again in a few days.'
       );
       setAccept(() => handleAcceptDoNothing);
       setCancel(null);
@@ -182,7 +182,7 @@ export default function Introductions() {
       toggle();
       setCaption('The Guru has not set up his Stripe account yet');
       setContent(
-        'We sent the mail to the Guru, please come back and try again in a few days'
+        'We sent the mail to the Guru, please come back and try again in a few days.'
       );
       setAccept(() => handleAcceptDoNothing);
       setCancel(null);
@@ -196,8 +196,10 @@ export default function Introductions() {
 
   async function loadData() {
     const loaded = await get(`/api/introductions`);
-    setReload(false);
-    setData(loaded);
+    if (response.ok) {
+      setReload(false);
+      setData(loaded);
+    }
   }
 
   useEffect(() => {
@@ -212,59 +214,129 @@ export default function Introductions() {
 
   const columns = [
     {
-      Header: 'name',
-      accessor: 'name',
-      Cell: ({ row: { original } }) => (
+      Header: 'introduced',
+      accessor: 'introduced',
+      Cell: ({ row: { original: data } }) => (
         <>
-          <div className='cell-name'>
-            {original.firstName} {original.lastName}
-          </div>
-          <div className='cell-company'>
-            <small>{original.fresh.businessName}</small>
-          </div>
+          <div className='cell-name'>{data.customer.name}</div>
           <div className='cell-email'>
-            <small>{original.email}</small>
+            <a
+              className='text-xs text-blue-500'
+              href={`tel:${data.customer.email}`}
+            >
+              {data.customer.email}
+            </a>
           </div>
           <div className='cell-phone'>
-            <small>{original.guru.contactPhone}</small>
+            <a
+              className='text-xs text-blue-500'
+              href={`tel:${data.customer.phone}`}
+            >
+              {data.customer.phone}
+            </a>
           </div>
         </>
       ),
     },
     {
-      Header: 'business category',
-      accessor: 'user.businessCategory',
+      Header: 'to',
+      accessor: 'to',
+      Cell: ({ row: { original: data } }) => (
+        <>
+          <div className='cell-name'>
+            {data.position === 'guru' ? data.business.name : 'Me'}
+          </div>
+          {data.position === 'guru' && (
+            <div className='cell-business text-xs'>
+              <div>
+                {data.business.company}{' '}
+                {data.business.businessCategory &&
+                  `| ${data.business.businessCategory}`}
+              </div>
+              <div>
+                <a
+                  className='text-xs text-blue-500'
+                  href={`tel:${data.business.phone}`}
+                >
+                  {data.business.phone}
+                </a>
+              </div>
+              <div>
+                <a
+                  className='text-xs text-blue-500'
+                  href={`tel:${data.business.email}`}
+                >
+                  {data.business.email}
+                </a>
+              </div>
+            </div>
+          )}
+        </>
+      ),
     },
-    { Header: 'position', accessor: 'position' },
+    {
+      Header: 'by',
+      accessor: 'by',
+      Cell: ({ row: { original: data } }) => (
+        <>
+          <div className='cell-name'>
+            {data.position === 'guru' ? 'Me' : data.guru.name}
+          </div>
+          {data.position === 'business' && (
+            <div className='cell-business text-xs'>
+              <div>
+                <a
+                  className='text-xs text-blue-500'
+                  href={`tel:${data.guru.contactPhone}`}
+                >
+                  {data.guru.contactPhone}
+                </a>
+              </div>
+              <div>
+                <a
+                  className='text-xs text-blue-500'
+                  href={`tel:${data.guru.contactEmail}`}
+                >
+                  {data.guru.contactEmail}
+                </a>
+              </div>
+            </div>
+          )}
+        </>
+      ),
+    },
     {
       Header: 'date',
       accessor: 'date',
       Cell: ({ row: { original } }) => (
-        <>{timeAgo.format(new Date(original.date))}</>
+        <>{timeAgo.format(new Date(original.createdAt))}</>
       ),
     },
     { Header: 'status', accessor: 'status' },
     {
       Header: 'commission',
       accessor: 'commissionEarned',
-      Cell: ({ row: { original } }) => (
+      Cell: ({ row: { original: data } }) => (
         <>
           <div>
-            <span className='text-yellow-500'>
-              sent:{' '}
-              {original.sumCommissionBusiness
-                ? original.sumCommissionBusiness.toFixed(2)
-                : 0}{' '}
-              A$
-            </span>
+            {data.position === 'business' && (
+              <span className='text-yellow-500'>
+                {data.sumCommission.toLocaleString('en-AU', {
+                  style: 'currency',
+                  currency: data.agreement.commissionCurrency || 'AUD',
+                })}
+              </span>
+            )}
             <br />
-            <span className='text-green-500'>
-              received:{' '}
-              {original.sumCommissionCustomer
-                ? original.sumCommissionCustomer.toFixed(2)
-                : 0}{' '}
-              A$
-            </span>
+            {data.position === 'guru' && (
+              <span className='text-green-500'>
+                received:{' '}
+                {data.sumCommission.toLocaleString('en-AU', {
+                  style: 'currency',
+                  currency: data.agreement.commissionCurrency || 'AUD',
+                })}
+              </span>
+            )}
           </div>
         </>
       ),
@@ -364,6 +436,8 @@ export default function Introductions() {
   ];
 
   const list = data || [];
+  console.log(list);
+
   return (
     <DashboardLayout title='Introductions' loading={loading}>
       <Table columns={columns} data={list} loading={loading} />

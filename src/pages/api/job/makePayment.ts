@@ -10,7 +10,6 @@ import { check, validate } from '@/lib/validator';
 import { env } from '@/config';
 import getCollections from '@/models';
 
-// todo: replace userId
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;

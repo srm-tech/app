@@ -3,11 +3,11 @@ import { Collection, ObjectId } from 'mongodb';
 function prepareFieldObfuscator(fields, obfuscate = true) {
   const query: Array<any> = [];
 
-  fields.forEach(function (field: any) {
+  fields.forEach(function (item: any) {
     const replace = {
       $replaceWith: {
         $setField: {
-          field: field.newField,
+          field: item.newField,
           input: '$$ROOT',
           value: {
             $cond: [
@@ -17,12 +17,12 @@ function prepareFieldObfuscator(fields, obfuscate = true) {
               {
                 $concat: [
                   {
-                    $substr: [field.field, 0, 1],
+                    $substr: [item.field, 0, 1],
                   },
-                  field.replacement,
+                  item.replacement,
                 ],
               },
-              field.field,
+              item.field,
             ],
           },
         },
@@ -30,99 +30,98 @@ function prepareFieldObfuscator(fields, obfuscate = true) {
     };
     query.push(replace);
 
-    query.push({
-      $unset: field.field.slice(1),
-    });
+    // query.push({
+    //   $unset: item.newField.slice(1),
+    // });
   });
   return query;
 }
 
 const Introduction = (collection: Collection<Document>) => ({
   readMany: async (userId: ObjectId) => {
-    const query = prepareFieldObfuscator([
+    const obfuscatedFields = prepareFieldObfuscator([
       {
-        field: '$guru.firstName',
-        newField: 'firstName',
+        field: '$customer.firstName',
+        newField: 'obfsFirstName',
         replacement: '*****',
       },
       {
-        field: '$guru.lastName',
-        newField: 'lastName',
+        field: '$customer.lastName',
+        newField: 'obfsLastName',
         replacement: '*****',
       },
       {
-        field: '$guru.contactEmail',
-        newField: 'email',
+        field: '$customer.name',
+        newField: 'obfsName',
+        replacement: '*****',
+      },
+      {
+        field: '$customer.email',
+        newField: 'obfsContactEmail',
         replacement: '****@****.***',
+      },
+      {
+        field: '$customer.phone',
+        newField: 'obfsContactPhone',
+        replacement: '*****',
+      },
+      {
+        field: '$customer.businessName',
+        newField: 'obfsBusinessName',
+        replacement: '*****',
       },
     ]);
 
     const unset = {
       $unset: [
-        'guruId',
-        'agreementId',
-        'customerId',
         'user.isGuru',
         'user.isActive',
         'user.accountLink',
         'user.stripeId',
+        'obfsName',
+        'obfsFirstName',
+        'obfsLastName',
+        'obfsContactPhone',
+        'obfsContactEmail',
+        'obfsBusinessName',
       ],
     };
 
-    const addFields = {
-      $addFields: {
-        sumCommissionCustomer: { $sum: '$fresh.commissionCustomer' },
-        sumCommissionBusiness: { $sum: '$fresh.commissionBusiness' },
-      },
-    };
-
-    // console.log("query:", query);
-
+    // as business union with as guru
     const result = await collection
       .aggregate([
-        {
-          $lookup: {
-            from: 'userProfiles',
-            localField: 'guru._id',
-            foreignField: '_id',
-            as: 'fresh',
-          },
-        },
-        {
-          $unwind: '$fresh',
-        },
-        ...query,
-        addFields,
-        unset,
+        // as business
+        ...obfuscatedFields,
         {
           $addFields: {
-            user: '$business',
             position: 'business',
+            'customer.firstName': '$obfsFirstName',
+            'customer.lastName': '$obfsLastName',
+            'customer.name': '$obfsName',
+            'customer.email': '$obfsContactEmail',
+            'customer.phone': '$obfsContactPhone',
+            sumCommission: { $sum: '$commissionBusiness' },
           },
         },
+        unset,
         {
           $match: {
             action: 'sent',
             'business._id': userId,
           },
         },
+        // as guru
         {
           $unionWith: {
             coll: 'introductions',
             pipeline: [
               {
-                $lookup: {
-                  from: 'userProfiles',
-                  localField: 'guru._id',
-                  foreignField: '_id',
-                  as: 'fresh',
+                $addFields: {
+                  position: 'guru',
+
+                  sumCommission: { $sum: '$commissionCustomer' },
                 },
               },
-              {
-                $unwind: '$fresh',
-              },
-              ...query,
-              addFields,
               unset,
               {
                 $lookup: {
@@ -130,15 +129,6 @@ const Introduction = (collection: Collection<Document>) => ({
                   localField: '_id',
                   foreignField: 'jobId',
                   as: 'review',
-                },
-              },
-              {
-                $addFields: {
-                  user: '$business',
-                  firstName: '$business.firstName',
-                  lastName: '$business.lastName',
-                  email: '$business.email',
-                  position: 'guru',
                 },
               },
               {
@@ -161,95 +151,6 @@ const Introduction = (collection: Collection<Document>) => ({
             ],
           },
         },
-        // {
-        //   $lookup: {
-        //     from: 'userProfiles',
-        //     localField: 'guru._id',
-        //     foreignField: '_id',
-        //     as: 'user',
-        //   },
-        // },
-        // {
-        //   $unwind: '$user',
-        // },
-        // {
-        //   $lookup: {
-        //     from: 'agreements',
-        //     localField: 'agreement._id',
-        //     foreignField: '_id',
-        //     as: 'agreement',
-        //   },
-        // },
-        // {
-        //   $unwind: '$agreement',
-        // },
-        // ...query,
-        // addFields,
-        // {
-        //   $addFields: {
-        //     position: 'business',
-        //   },
-        // },
-        // unset,
-        // {
-        //   $match: {
-        //     action: 'sent',
-        //     'business._id': userId,
-        //   },
-        // },
-        // {
-        //   $unionWith: {
-        //     coll: 'introductions',
-        //     pipeline: [
-        //       {
-        //         $match: {
-        //           action: 'sent',
-        //           'guru._id': userId,
-        //         },
-        //       },
-        //       {
-        //         $lookup: {
-        //           from: 'userProfiles',
-        //           localField: 'business._id',
-        //           foreignField: '_id',
-        //           as: 'user',
-        //         },
-        //       },
-        //       {
-        //         $unwind: '$user',
-        //       },
-        //       {
-        //         $lookup: {
-        //           from: 'reviews',
-        //           localField: '_id',
-        //           foreignField: 'jobId',
-        //           as: 'review',
-        //         },
-        //       },
-        //       {
-        //         $addFields: {
-        //           firstName: '$user.firstName',
-        //           lastName: '$user.lastName',
-        //           email: '$user.email',
-        //           position: 'guru',
-        //         },
-        //       },
-        //       addFields,
-        //       unset,
-        //       {
-        //         $set: {
-        //           status: {
-        //             $cond: [
-        //               { $eq: ['$status', 'pending'] },
-        //               'waiting for approval',
-        //               { $concat: ['$status', ' by other party'] },
-        //             ],
-        //           },
-        //         },
-        //       },
-        //     ],
-        //   },
-        // },
       ])
       .toArray();
     // console.log(result);
@@ -349,9 +250,6 @@ const Introduction = (collection: Collection<Document>) => ({
             foreignField: '_id',
             as: 'fresh',
           },
-        },
-        {
-          $unwind: '$fresh',
         },
         // {
         //   $unwind: '$user',

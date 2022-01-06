@@ -20,6 +20,7 @@ import Logo from '../Logo';
 import Avatar from '../Avatar';
 import useFetch, { CachePolicies } from 'use-http';
 import LoadingOverlay from '../LoadingOverlay';
+import { env } from '@/config';
 
 const navigation = [
   // { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
@@ -248,6 +249,7 @@ export default function DashboardLayout({
                   </Menu.Button>
                 </div>
                 <Transition
+                  show={true}
                   as={Fragment}
                   enter='transition ease-out duration-100'
                   enterFrom='transform opacity-0 scale-95'
@@ -262,11 +264,10 @@ export default function DashboardLayout({
                         {({ active }) => (
                           <Link href={item.href} passHref>
                             <a
-                              onClick={(e) => {
+                              onClick={async (e) => {
                                 if (item.name === 'Sign out') {
                                   e.preventDefault();
-                                  signOut();
-                                  router.push('/');
+                                  signOut({ callbackUrl: env.BASE_URL });
                                 }
                               }}
                               className={classNames(

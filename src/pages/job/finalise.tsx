@@ -124,8 +124,6 @@ export default function Finalise(props) {
       total: 0,
     };
 
-    console.log('loaded:', loaded.agreement);
-
     if (loaded) {
       if (
         loaded.agreement.commissionType === 'commissionPerReceivedLead' ||

@@ -54,7 +54,7 @@ db.userProfiles.insertMany([
     commissionPerReceivedLead: 10000,
     commissionPerCompletedLead: 1000,
     commissionPerReceivedLeadPercent: 15,
-    commissionLabel: "completed Service"
+    commissionLabel: "completed service"
   },
   {
     _id: ObjectId('000000000000000000000003'),

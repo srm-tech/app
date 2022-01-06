@@ -31,5 +31,5 @@ export const useAdmin = ({ to = '/' }): UseAdmin => {
 };
 
 export default function Dashboard() {
-  return <DashboardLayout title='Dashboard'>Widgets</DashboardLayout>;
+  return <div>Widgets</div>;
 }
