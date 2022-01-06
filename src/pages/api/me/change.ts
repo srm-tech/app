@@ -24,32 +24,34 @@ export default handleErrors(
         check('address3').optional().isLength({ min: 0, max: 255 }),
         check('abn').isLength({ min: 11, max: 11 }),
         check('country').isLength({ min: 2, max: 2 }),
+        check('commissionType').optional().isString(),
+        check('commissionValue').optional().isNumeric(),
       ];
 
-      if (req.body.commissionPerReceivedLead) {
-        validators.push(
-          check('commissionPerReceivedLead').optional().isNumeric()
-        );
-        req.body.commissionPerReceivedLead = parseFloat(
-          req.body.commissionPerReceivedLead
-        );
-      }
-      if (req.body.commissionPerCompletedLead) {
-        validators.push(
-          check('commissionPerCompletedLead').optional().isNumeric()
-        );
-        req.body.commissionPerCompletedLead = parseFloat(
-          req.body.commissionPerCompletedLead
-        );
-      }
-      if (req.body.commissionPerReceivedLeadPercent) {
-        validators.push(
-          check('commissionPerReceivedLeadPercent').optional().isNumeric()
-        );
-        req.body.commissionPerReceivedLeadPercent = parseFloat(
-          req.body.commissionPerReceivedLeadPercent
-        );
-      }
+      // if (req.body.commissionPerReceivedLead) {
+      //   validators.push(
+      //     check('commissionPerReceivedLead').optional().isNumeric()
+      //   );
+      //   req.body.commissionPerReceivedLead = parseFloat(
+      //     req.body.commissionPerReceivedLead
+      //   );
+      // }
+      // if (req.body.commissionPerCompletedLead) {
+      //   validators.push(
+      //     check('commissionPerCompletedLead').optional().isNumeric()
+      //   );
+      //   req.body.commissionPerCompletedLead = parseFloat(
+      //     req.body.commissionPerCompletedLead
+      //   );
+      // }
+      // if (req.body.commissionPerReceivedLeadPercent) {
+      //   validators.push(
+      //     check('commissionPerReceivedLeadPercent').optional().isNumeric()
+      //   );
+      //   req.body.commissionPerReceivedLeadPercent = parseFloat(
+      //     req.body.commissionPerReceivedLeadPercent
+      //   );
+      // }
 
       await validate(validators)(req, res);
 
@@ -58,23 +60,17 @@ export default handleErrors(
       } else {
         req.body.isBusiness = false;
       }
+      // console.log("body:", req.body);
 
-      const result1 = await UserProfile.updateOne(user._id, {
+      req.body.agreement = {
+        commissionType: req.body.commissionType,
+        commissionValue: parseFloat(req.body.commissionValue),
+      };
+      delete req.body.commissionType;
+      delete req.body.commissionValue;
+      const result = await UserProfile.updateOne(user._id, {
         ...req.body,
       });
-      const result2 = await Agreement.updateOne({
-        userId: user._id,
-        commissionType: req.body.commissionType,
-        commissionPerReceivedLead: req.body.commissionPerReceivedLead,
-        commissionPerCompletedLead: req.body.commissionPerCompletedLead,
-        commissionPerReceivedLeadPercent:
-          req.body.commissionPerReceivedLeadPercent,
-      });
-
-      result = {
-        result1: result1,
-        result2: result2,
-      };
     } else {
       res.setHeader('Allow', 'POST');
       return res.status(405).end('Method Not Allowed');

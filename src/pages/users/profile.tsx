@@ -20,9 +20,10 @@ interface IFormInput {
   abn: string;
   country: string;
   commissionType: string;
-  commissionPerReceivedLead: string;
-  commissionPerCompletedLead: string;
-  commissionPerReceivedLeadPercent: string;
+  commissionValue: number;
+  // commissionPerReceivedLead: string;
+  // commissionPerCompletedLead: string;
+  // commissionPerReceivedLeadPercent: string;
 }
 
 export default function Profile() {
@@ -41,9 +42,10 @@ export default function Profile() {
     abn: '',
     country: '',
     commissionType: '',
-    commissionPerReceivedLead: '',
-    commissionPerCompletedLead: '',
-    commissionPerReceivedLeadPercent: '',
+    commissionValue: 0,
+    // commissionPerReceivedLead: '',
+    // commissionPerCompletedLead: '',
+    // commissionPerReceivedLeadPercent: '',
   });
   const [savedMessage, setSavedMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
@@ -96,17 +98,17 @@ export default function Profile() {
 
       // todo: dont repeat with switchDropdown function!
       // Plz, make it better & don't judge me: it's a fast-and-dirty job.
-      switch (loaded.commissionType) {
-        case 'commissionPerReceivedLead':
-          setReceivedCash(true);
-          break;
-        case 'commissionPerCompletedLead':
-          setCompletedCash(true);
-          break;
-        case 'commissionPerReceivedLeadPercent':
-          setReceivedPercent(true);
-          break;
-      }
+      // switch (loaded.commissionType) {
+      //   case 'commissionPerReceivedLead':
+      //     setReceivedCash(true);
+      //     break;
+      //   case 'commissionPerCompletedLead':
+      //     setCompletedCash(true);
+      //     break;
+      //   case 'commissionPerReceivedLeadPercent':
+      //     setReceivedPercent(true);
+      //     break;
+      // }
       reset(loaded);
     }
     loadData();
@@ -593,8 +595,41 @@ export default function Profile() {
                   </div>
                   {/* commission ends here */}
 
+                  {/* Commission valued field starts here */}
+                  {
+                    <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                      <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                        <label
+                          htmlFor='commission value'
+                          className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                        >
+                          Commission value:
+                        </label>
+                        <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                          <div className='flex max-w-lg rounded-md shadow-sm'>
+                            <input
+                              type='number'
+                              step='0.01'
+                              defaultValue={formValues.commissionValue}
+                              {...register('commissionValue', {
+                                maxLength: 255,
+                              })}
+                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      {errors.commissionValue?.type === 'required' && (
+                        <small className='text-red-900'>
+                          This field is required
+                        </small>
+                      )}
+                    </div>
+                  }
+                  {/* Commission value field ends here */}
+
                   {/* Commission per received lead field starts here */}
-                  {receivedCash && (
+                  {/* {receivedCash && (
                     <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                       <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                         <label
@@ -626,11 +661,11 @@ export default function Profile() {
                         </small>
                       )}
                     </div>
-                  )}
+                  )} */}
                   {/* Commission per received lead field ends here */}
 
                   {/* Commission per completed lead field starts here */}
-                  {completedCash && (
+                  {/* {completedCash && (
                     <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                       <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                         <label
@@ -662,11 +697,11 @@ export default function Profile() {
                         </small>
                       )}
                     </div>
-                  )}
+                  )} */}
                   {/* Commission per received lead field ends here */}
 
                   {/* Commission per received lead (%) field starts here */}
-                  {receivedPercent && (
+                  {/* {receivedPercent && (
                     <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                       <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                         <label
@@ -698,7 +733,7 @@ export default function Profile() {
                         </small>
                       )}
                     </div>
-                  )}
+                  )} */}
                   {/* Commission per received lead (%) field ends here */}
 
                   <div className='pt-5'>

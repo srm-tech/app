@@ -252,7 +252,7 @@ const Introduction = (collection: Collection<Document>) => ({
         // },
       ])
       .toArray();
-    console.log(result);
+    // console.log(result);
     return result;
   },
 

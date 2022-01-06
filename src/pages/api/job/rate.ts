@@ -20,7 +20,7 @@ export default handleErrors(
       const jobs = await Introduction.details(new ObjectId(req.body.jobId));
       let job;
       if (jobs.length > 0) job = jobs[0];
-      console.log('job:', job);
+      // console.log('job:', job);
       const business = job.business._id;
       const guru = job.guru._id;
       let rate = parseInt(req.body.rate);

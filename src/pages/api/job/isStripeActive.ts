@@ -26,7 +26,7 @@ export default handleErrors(
         apiVersion: '2020-08-27',
       });
       const jobGuru = await UserProfile.getOne(job.guru._id);
-      console.log('job guru:', jobGuru);
+      // console.log('job guru:', jobGuru);
       const stripeAccount = await stripe.accounts.retrieve(jobGuru!.stripeId);
 
       result = {
@@ -34,10 +34,10 @@ export default handleErrors(
         charges: stripeAccount.charges_enabled,
       };
 
-      console.log('result przed ifem:', result);
+      // console.log('result przed ifem:', result);
 
       if (!result.charges) {
-        console.log('result w ifie:', result);
+        // console.log('result w ifie:', result);
         await Introduction.updateStatus(job._id, 'waiting for Guru');
 
         const data = {

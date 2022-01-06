@@ -29,7 +29,7 @@ export default handleErrors(
       if (jobUser) {
         result.stripeCheck = jobUser.stripeId ? true : false;
       }
-      console.log('result:', result);
+      // console.log('result:', result);
 
       // send email to user if not stripe
       if (!result.stripeCheck && jobs.length > 0) {

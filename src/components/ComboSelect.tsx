@@ -57,7 +57,7 @@ export default function ComboSelect({ query, onChange, onSelect }) {
     itemToString: (item: Search | null) => (item ? item.label : ''),
     onInputValueChange: ({ inputValue }: { inputValue?: string }) => {
       onChange && onChange(inputValue || '');
-      console.log(222);
+      // console.log(222);
 
       debounceSetCurrentValue.current(inputValue);
     },
@@ -97,7 +97,7 @@ export default function ComboSelect({ query, onChange, onSelect }) {
         <input
           {...getInputProps({ value: query })}
           type='text'
-          className='block w-full border-gray-300 border-2 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+          className='block w-full border-2 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
         />
         <InlineError message={error?.message} />
         <button
@@ -112,7 +112,7 @@ export default function ComboSelect({ query, onChange, onSelect }) {
       <div className='relative mt-1'>
         <ul
           {...getMenuProps()}
-          className='absolute bg-white w-full shadow-md rounded-md overflow-hidden'
+          className='absolute w-full overflow-hidden bg-white rounded-md shadow-md'
         >
           {isOpen &&
             inputItems.map((item, index) => (
@@ -124,7 +124,7 @@ export default function ComboSelect({ query, onChange, onSelect }) {
                 )}
                 {...getItemProps({ item, index })}
               >
-                {/* <img className="h-10 w-10 rounded-full" src={person.image} alt="" /> */}
+                {/* <img className="w-10 h-10 rounded-full" src={person.image} alt="" /> */}
                 <div className='ml-3'>
                   <p
                     className='text-sm font-medium text-gray-900'

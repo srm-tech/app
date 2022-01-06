@@ -125,17 +125,17 @@ export default function Finalise(props) {
       total: 0,
     };
 
-    console.log('loaded:', loaded);
+    console.log('loaded:', loaded.agreement);
 
     if (loaded) {
       if (
-        loaded.agreement.commissionType === 'commissionPerCompletedLead' ||
+        loaded.agreement.commissionType === 'commissionPerReceivedLead' ||
         loaded.agreement.commissionType === 'commissionPerCompletedLead'
       ) {
-        data.reward = loaded.agreement[loaded.agreement.commissionType];
+        data.reward = loaded.agreement.commissionValue;
       }
       data.commissionType = loaded.agreement.commissionType;
-      data.commissionValue = loaded.agreement[loaded.agreement.commissionType];
+      data.commissionValue = loaded.agreement.commissionValue;
     }
     data = calculate(data);
     setJobData(loaded);

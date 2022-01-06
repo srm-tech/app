@@ -26,9 +26,10 @@ export default handleErrors(
       }
     } else if (req.method === 'POST') {
       await validate([
-        check('commissionPerReceivedLead').isNumeric(),
-        check('commissionPerCompletedLead').isNumeric(),
-        check('commissionPerReceivedLeadPercent').isNumeric(),
+        // check('commissionPerReceivedLead').isNumeric(),
+        // check('commissionPerCompletedLead').isNumeric(),
+        // check('commissionPerReceivedLeadPercent').isNumeric(),
+        check('commissionValue').isNumeric(),
         check('commissionType').isString(),
       ])(req, res);
       result = await Agreement.create({

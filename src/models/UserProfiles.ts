@@ -221,6 +221,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
     });
   },
   updateOne: async (_id, data) => {
+    delete data._id;
     return collection.updateOne({ _id }, { $set: data });
   },
   addStripe: async (data) => {

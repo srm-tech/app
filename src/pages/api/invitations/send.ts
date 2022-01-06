@@ -33,8 +33,9 @@ export default handleErrors(
         userId: new ObjectId(req.body.userId),
         email: req.body.email,
         commissionType: req.body.commissionType,
+        commissionValue: 0,
       };
-      idData[req.body.commissionType] = commission.value;
+      idData.commissionValue = commission.commissionValue;
 
       const id = await Agreement.createJob(idData);
 
@@ -62,15 +63,15 @@ function commissionFormatter(data) {
   switch (data.commissionType) {
     case 'commissionPerReceivedLead':
       label = 'Commission per received lead ($)';
-      value = data.commissionPerReceivedLead;
+      value = data.commissionValue;
       break;
     case 'commissionPerCompletedLead':
       label = 'Commission per completed lead ($)';
-      value = data.commissionPerCompletedLead;
+      value = data.commissionValue;
       break;
     case 'commissionPerReceivedLeadPercent':
       label = 'Commission per completed lead (%)';
-      value = data.commissionPerReceivedLeadPercent;
+      value = data.commissionValue;
       break;
   }
   return {

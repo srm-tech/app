@@ -131,7 +131,7 @@ export default function Introductions() {
       return null;
     }
     const reviewContent = formatCommissionDescriptions(job[0].agreement);
-    console.log('reviewContent:', job[0].agreement);
+    // console.log('reviewContent:', job[0].agreement);
     setCaption('Review the agreement');
     setContent(`${reviewContent.key}: ${reviewContent.value}`);
     setAcceptCaption('Proceed');
