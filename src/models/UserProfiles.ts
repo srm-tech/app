@@ -210,7 +210,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       ])
       .toArray();
   },
-  getOne: async (userId: ObjectId) => {
+  getOne: async (userId: any) => {
     const result = await collection.findOne({
       _id: userId,
     });
