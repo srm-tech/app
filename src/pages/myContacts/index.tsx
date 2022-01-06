@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import LoadingOverlay from 'react-loading-overlay-ts';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch, { CachePolicies } from 'use-http';
 
@@ -167,22 +166,8 @@ export default function MyContacts() {
     },
   ];
   return (
-    <DashboardLayout title='My Contacts'>
-      <LoadingOverlay
-        active={loaderVisible}
-        spinner
-        styles={{
-          overlay: (base) => ({
-            ...base,
-            background: 'rgba(255, 255, 255, 0.8)',
-            '& svg circle': {
-              stroke: 'rgba(0, 255, 0, 0.5)',
-            },
-          }),
-        }}
-      >
-        <Table data={data} columns={columns} loading={loading} />
-      </LoadingOverlay>
+    <DashboardLayout title='My Contacts' loading={loading}>
+      <Table data={data} columns={columns} loading={loading} />
     </DashboardLayout>
   );
 }

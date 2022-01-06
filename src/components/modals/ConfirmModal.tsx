@@ -12,17 +12,15 @@ export default function ConfirmModal({
   acceptCaption,
   cancel,
   cancelCaption,
-  hide,
 }: {
   isShowing: boolean;
   caption: string;
-  content: ReactElement;
+  content: ReactElement | string;
   accept: any;
   form?: string;
   acceptCaption: string;
   cancel: () => void;
   cancelCaption: string;
-  hide: any;
 }) {
   return isShowing
     ? ReactDOM.createPortal(

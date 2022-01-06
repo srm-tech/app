@@ -262,7 +262,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $match: {
             action: 'draft',
-            to: new ObjectId(userId),
+            to: userId,
           },
         },
         {

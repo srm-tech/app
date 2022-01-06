@@ -11,7 +11,7 @@ export default handleErrors(
     const { UserProfile } = await getCollections();
     if (req.method === 'GET') {
       const user = await getCurrentUser(req, res);
-      result = await UserProfile.getOne(user?._id);
+      result = await UserProfile.getOne(user._id);
     } else {
       res.setHeader('Allow', 'GET');
       return res.status(405).end('Method Not Allowed');

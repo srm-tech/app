@@ -21,12 +21,12 @@ const MyContacts = (collection: Collection<MyContact>) => ({
   }: MyContact) => {
     return collection.updateOne(
       {
-        userId: new ObjectId(userId),
+        userId: userId,
         contactId: new ObjectId(contactId),
       },
       {
         $set: {
-          userId: new ObjectId(userId),
+          userId: userId,
           contactId: new ObjectId(contactId),
           agreement,
           createdAt,

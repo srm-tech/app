@@ -18,7 +18,7 @@ export default handleErrors(
       const jobId = new ObjectId(_id);
 
       // get job data
-      const job = await Introduction.getFinalise(_user._id, jobId);
+      const job = await Introduction.getFinalise(jobId);
       // if not job found – 404
       if (!job) {
         return res.status(404).end('not found');
