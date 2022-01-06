@@ -1,4 +1,13 @@
 module.exports = {
+  async redirects() {
+    return [
+      {
+        source: '/dashboard',
+        destination: '/introductions',
+        permanent: true,
+      },
+    ];
+  },
   rewrites: () => [
     {
       source: '/api/register/:path*',
@@ -12,6 +21,6 @@ module.exports = {
   // frontend to access env
   env: {
     BASE_URL: process.env.BASE_URL || 'http://localhost:3000',
-    CURRENCY: process.env.CURRENCY || "AUD",
-  }
+    CURRENCY: process.env.CURRENCY || 'AUD',
+  },
 };

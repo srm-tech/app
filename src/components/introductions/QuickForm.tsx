@@ -171,7 +171,7 @@ export const QuickForm = () => {
       // final introduction
       await post('/introductions', draft);
       if (response.ok) {
-        router.push('/dashboard');
+        router.push('/introductions');
       }
       handleError(response, setErrorMessage);
     }
