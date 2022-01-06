@@ -18,7 +18,7 @@ import Link from 'next/link';
 import Logo from '../Logo';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
+  // { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
   {
     name: 'Introductions',
     href: '/introductions',
@@ -118,7 +118,7 @@ export default function DashboardLayout({
                 <div className='flex-1 h-0 mt-5 overflow-y-auto'>
                   <nav className='px-2 space-y-1'>
                     {activeNavigation.map((item) => (
-                      <Link href={item.href} passHref>
+                      <Link href={item.href} passHref key={item.href}>
                         <a
                           key={item.name}
                           href={item.href}
@@ -157,7 +157,7 @@ export default function DashboardLayout({
             <div className='flex flex-col flex-1 mt-5'>
               <nav className='flex-1 px-2 pb-4 space-y-1'>
                 {navigation.map((item) => (
-                  <Link href={item.href} passHref>
+                  <Link href={item.href} passHref key={item.href}>
                     <a
                       key={item.name}
                       className={classNames(
@@ -278,7 +278,7 @@ export default function DashboardLayout({
               <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
                 {/* Replace with your content */}
                 <div className='py-4'>
-                  <div className='p-2 border-4 border-gray-200 rounded-lg'>
+                  <div className='p-2 border-4 border-gray-200 rounded-lg overflow-y-auto'>
                     {children}
                   </div>
                 </div>

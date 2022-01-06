@@ -79,7 +79,7 @@ export default function Table({ columns, data, loading }: TableProps) {
 
   return (
     <>
-      <div>
+      {/* <div>
         {headerGroups.map((headerGroup) =>
           headerGroup.headers.map((column) => (
             <div key={`filter-${column.id}`}>
@@ -88,7 +88,7 @@ export default function Table({ columns, data, loading }: TableProps) {
             </div>
           ))
         )}
-      </div>
+      </div> */}
 
       <table
         className='min-w-full divide-y divide-gray-200'
