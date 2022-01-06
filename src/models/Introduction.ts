@@ -82,13 +82,24 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'customerId',
+            localField: 'guruId',
             foreignField: '_id',
             as: 'user',
           },
         },
         {
           $unwind: '$user',
+        },
+        {
+          $lookup: {
+            from: 'agreements',
+            localField: 'agreementId',
+            foreignField: '_id',
+            as: 'agreement',
+          },
+        },
+        {
+          $unwind: '$agreement',
         },
         ...query,
         addFields,
@@ -101,7 +112,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $match: {
             action: 'sent',
-            business: userId,
+            businessId: userId,
           },
         },
         {
@@ -111,13 +122,13 @@ const Introduction = (collection: Collection<Document>) => ({
               {
                 $match: {
                   action: 'sent',
-                  customerId: userId,
+                  guruId: userId,
                 },
               },
               {
                 $lookup: {
                   from: 'userProfiles',
-                  localField: 'business',
+                  localField: 'businessId',
                   foreignField: '_id',
                   as: 'user',
                 },
@@ -149,7 +160,7 @@ const Introduction = (collection: Collection<Document>) => ({
                     $cond: [
                       { $eq: ['$status', 'pending'] },
                       'waiting for approval',
-                      '$status',
+                      { $concat: ['$status', ' by other party'] },
                     ],
                   },
                 },
@@ -261,7 +272,7 @@ const Introduction = (collection: Collection<Document>) => ({
             status: {
               $in: statuses,
             },
-            business: businessId,
+            // business: businessId,
             _id: objId,
           },
         },
@@ -277,7 +288,7 @@ const Introduction = (collection: Collection<Document>) => ({
     return await collection.updateOne(
       {
         _id: objId,
-        business: userId,
+        // business: userId,
       },
       {
         $set: {
@@ -290,7 +301,7 @@ const Introduction = (collection: Collection<Document>) => ({
     return await collection.updateOne(
       {
         _id: objId,
-        business: userId,
+        // business: userId,
       },
       {
         $set: {
@@ -365,7 +376,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'customerId',
+            localField: 'guruId',
             foreignField: '_id',
             as: 'user',
           },
@@ -387,7 +398,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $lookup: {
             from: 'userProfiles',
-            localField: 'business',
+            localField: 'businessId',
             foreignField: '_id',
             as: 'business',
           },
@@ -400,11 +411,11 @@ const Introduction = (collection: Collection<Document>) => ({
             from: 'userProfiles',
             localField: 'guruId',
             foreignField: '_id',
-            as: 'introduced',
+            as: 'guru',
           },
         },
         {
-          $unwind: '$introduced',
+          $unwind: '$guru',
         },
         {
           $match: {

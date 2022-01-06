@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import { HttpError } from './error';
 
 // And to throw an error when an error happens in a middleware

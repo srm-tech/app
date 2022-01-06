@@ -41,7 +41,6 @@ export default function finalise(props) {
   }
 
   function processForm(data) {
-    // console.log("raw reward:", data.reward.value, "raw fee:", data.guruFee.value, "raw total:", data.total.value);
     const revenue: number = isNaN(parseFloat(data.revenue.value))
       ? 0
       : parseFloat(data.revenue.value);
@@ -72,10 +71,8 @@ export default function finalise(props) {
       commissionType: commissionType,
       commissionValue: commissionValue,
     };
-    // console.log("values:", values);
 
     values = calculate(values);
-    // console.log("calculated values:", values);
 
     data.reward.value = values.reward.toFixed(2);
     data.guruFee.value = values.guruFee.toFixed(2);
@@ -123,6 +120,7 @@ export default function finalise(props) {
       tip: 0,
       total: 0,
     };
+    console.log('loaded:', loaded);
     if (loaded) {
       if (
         loaded.agreement.commissionType === 'commissionPerCompletedLead' ||

@@ -9,7 +9,8 @@ import DashboardLayout from '@/components/layouts/DashboardLayout';
 interface IFormInput {
   firstName: string;
   lastName: string;
-  email: string;
+  contactEmail: string;
+  contactPhone: string;
   businessName: string;
   businessCategory: string;
   stripeId: string;
@@ -29,7 +30,8 @@ export default function profile() {
   const [formValues, setFormValues] = useState({
     firstName: '',
     lastName: '',
-    email: '',
+    contactEmail: '',
+    contactPhone: '',
     businessName: '',
     businessCategory: '',
     stripeId: '',
@@ -250,39 +252,73 @@ export default function profile() {
                   <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                     <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                       <label
-                        htmlFor='email'
+                        htmlFor='contactEmail'
                         className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                       >
-                        Email:
+                        Contact email:
                       </label>
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
                         <div className='flex max-w-lg rounded-md shadow-sm'>
                           <input
                             type='text'
-                            defaultValue={formValues.email}
+                            defaultValue={formValues.contactPhone}
                             {...register('email', {
-                              required: true,
+                              required: false,
                               pattern:
                                 /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                             })}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                           />
                         </div>
-                        {errors.email?.type === 'required' && (
+                        {errors.contactEmail?.type === 'required' && (
                           <small className='text-red-900'>
                             This field is required
                           </small>
                         )}
-                        {errors.email?.type === 'pattern' && (
+                        {errors.contactEmail?.type === 'pattern' && (
                           <small className='text-red-900'>
                             The email is invalid
                           </small>
                         )}
-                        {/* {errors.email} */}
                       </div>
                     </div>
                   </div>
                   {/* email field ends here */}
+
+                  {/* phone field starts */}
+                  <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
+                    <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                      <label
+                        htmlFor='contactPhone'
+                        className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
+                      >
+                        Contact phone:
+                      </label>
+                      <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                        <div className='flex max-w-lg rounded-md shadow-sm'>
+                          <input
+                            type='text'
+                            defaultValue={formValues.contactPhone}
+                            {...register('contactPhone', {
+                              required: false,
+                            })}
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                          />
+                        </div>
+                        {errors.contactPhone?.type === 'required' && (
+                          <small className='text-red-900'>
+                            This field is required
+                          </small>
+                        )}
+                        {errors.contactPhone?.type === 'pattern' && (
+                          <small className='text-red-900'>
+                            The phone is invalid
+                          </small>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  {/* phone field ends here */}
 
                   <div className='pt-8 space-y-6 divide-y divide-gray-200 sm:pt-10 sm:space-y-5'>
                     <h3 className='text-lg font-medium leading-6 text-gray-900'>
@@ -525,9 +561,7 @@ export default function profile() {
                       </label>
                       <div className='mt-1 sm:mt-0 sm:col-span-2'>
                         <select
-                          {...register('commissionType', {
-                            required: true,
-                          })}
+                          {...register('commissionType', {})}
                           onChange={handleDropdown}
                           className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                         >
@@ -539,7 +573,7 @@ export default function profile() {
                             Commission per completed lead ($)
                           </option>
                           <option value='commissionPerReceivedLeadPercent'>
-                            Commission per received lead (%)
+                            Commission per completed lead (%)
                           </option>
                         </select>
                       </div>
@@ -632,7 +666,7 @@ export default function profile() {
                           htmlFor='commissionPerReceivedLeadPercent'
                           className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                         >
-                          Commission per received lead (%):
+                          Commission per completed lead (%):
                         </label>
                         <div className='mt-1 sm:mt-0 sm:col-span-2'>
                           <div className='flex max-w-lg rounded-md shadow-sm'>

@@ -6,15 +6,16 @@ import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
 import { htmlNewStripeAccount } from '@/lib/utils';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Introduction, UserProfile } = await getCollections();
+
     if (req.method === 'GET') {
       const id = new ObjectId(req.query.id);
-      const _job = await models.Introduction.details(id);
+      const _job = await Introduction.details(id);
       let job;
       if (_job.length > 0) {
         job = _job[0]; // todo: make it better
@@ -29,7 +30,6 @@ export default handleErrors(
 
       // send email to user if not stripe
       if (!result.stripeCheck && _job.length > 0) {
-        console.log('sending email');
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
           apiVersion: '2020-08-27',
         });
@@ -55,8 +55,8 @@ export default handleErrors(
           accountLink: accountLink.url,
         };
 
-        const addDataToProfile = await models.UserProfile.addStripe(guru);
-        await models.Introduction.updateStatus(job._id, 'waiting for Guru');
+        const addDataToProfile = await UserProfile.addStripe(guru);
+        await Introduction.updateStatus(job._id, 'waiting for Guru');
 
         result.mailSent =
           addDataToProfile.acknowledged && addDataToProfile.modifiedCount === 1
@@ -82,6 +82,5 @@ export default handleErrors(
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );

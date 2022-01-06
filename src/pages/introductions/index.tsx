@@ -18,7 +18,7 @@ export default function introductions() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(true);
-  const [rating, setRating] = useState(1);
+  // const [rating, setRating] = useState(1);
 
   const {
     isShowing,
@@ -75,7 +75,6 @@ export default function introductions() {
       defaultComment = original.review[0].comment;
       defaultRate = original.review[0].rate;
     }
-
     toggle();
     setCaption(`Rate ${original.firstName} ${original.lastName}`);
     setAcceptCaption('Rate');
@@ -168,7 +167,8 @@ export default function introductions() {
       );
       setAccept(() => handleAcceptDoNothing);
       setCancel(null);
-      setAcceptCaption('OK');
+      setCancelCaption('OK');
+      setAcceptCaption(null);
       return;
     }
     const isStripeActive = await get(`/api/job/isStripeActive?id=${jobId}`);
@@ -180,7 +180,8 @@ export default function introductions() {
       );
       setAccept(() => handleAcceptDoNothing);
       setCancel(null);
-      setAcceptCaption('OK');
+      setCancelCaption('OK');
+      setAcceptCaption(null);
       return;
     }
 
@@ -334,7 +335,9 @@ export default function introductions() {
         return (
           <>
             {original.status === 'pending' ? acceptDeclineButtons : null}
-            {original.status === 'accepted' ? finishJobButton : null}
+            {original.status === 'accepted' && original.position === 'business'
+              ? finishJobButton
+              : null}
             {original.position === 'guru' && original.review.length === 0
               ? rateButton
               : null}

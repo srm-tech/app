@@ -53,6 +53,12 @@ export default handleErrors(
 
       await validate(validators)(req, res);
 
+      if (req.body.commissionType) {
+        req.body.isBusiness = true;
+      } else {
+        req.body.isBusiness = false;
+      }
+
       const result1 = await UserProfile.updateOne(user._id, {
         ...req.body,
       });

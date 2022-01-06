@@ -4,38 +4,87 @@ db.introductions.drop();
 
 db.introductions.insertMany([
   {
-    customer: ObjectId('000000000000000000000001'),
-    business: ObjectId('000000000000000000000002'),
-    introducedBy: ObjectId('000000000000000000000003'),
-    status: 'pending',
-    date: ISODate('2021-11-01T14:22:11+01:00'),
-    action: "sent"
-  },
-  {
-    customer: ObjectId('000000000000000000000002'),
-    business: ObjectId('000000000000000000000001'),
-    introducedBy: ObjectId('000000000000000000000003'),
-    status: 'pending',
-    date: ISODate('2021-11-01T14:22:11+01:00'),
-    action: "sent"
-  },
-  {
-    customer: ObjectId('000000000000000000000003'),
-    business: ObjectId('000000000000000000000001'),
-    introducedBy: ObjectId('000000000000000000000003'),
-    status: 'pending',
-    date: ISODate('2021-11-01T14:22:11+01:00'),
-    action: "sent"
-  },
-  {
-    customer: ObjectId('000000000000000000000004'),
-    business: ObjectId('000000000000000000000001'),
-    introducedBy: ObjectId('000000000000000000000003'),
-    status: 'completed',
-    date: ISODate('2021-11-01T14:22:11+01:00'),
-    action: "sent"
-  },
-  
-  
+  "status": "pending",
+  "action": "sent",
+  "date": "2021-12-25T03:17:52.197Z",
+  "expiresAt": "2021-12-25T03:17:52.197Z",
 
+  "guruId": ObjectId("000000000000000000000001"),
+  "customerId": ObjectId("000000000000000000000003"),
+  "businessId": ObjectId("000000000000000000000002"),
+  agreementId: ObjectId("61ce0ca750875b78d6808426"),
+
+  "guru": {
+    "_id": {
+      "$oid": "000000000000000000000001"
+    },
+    "firstName": "Ernst Stavro",
+    "lastName": "Blofeld",
+    "businessName": "Spectre, Inc.",
+    "businessCategory": "world dominators",
+    "rating": 5,
+    "email": "marcin.barylka@gmail.com",
+    "succesfulRate": 0.99,
+    "averageCommission": 276,
+    "isActive": true,
+    "isGuru": false,
+    "isBusiness": true,
+    "accountLink": null,
+    "stripeId": "acct_1K702VRP3ieqtpLe",
+    "address1": "sss",
+    "address2": "adres2",
+    "address3": "",
+    "country": "AU",
+    "commissionPerReceivedLeadCash": 1000,
+    "commissionType": "commissionPerReceivedLeadPercent",
+    "commissionPerCompletedLead": 1000,
+    "commissionPerReceivedLeadPercent": 25,
+    "commissionBusiness": [
+    ],
+    "abn": "12345678901",
+    "contactEmail": "marcin.barylka@gmail.com",
+    "contactPhone": ""
+  },
+  "business": {
+    "_id": {
+      "$oid": "000000000000000000000002"
+    },
+    "firstName": "Marcin",
+    "lastName": "Baryłka",
+    "businessName": "Hicron sp. z o.o.",
+    "businessCategory": "software development",
+    "rating": 4,
+    "email": "marcin.barylka@gmail.com",
+    "succesfulRate": 0.62,
+    "averageCommission": 796,
+    "isActive": true,
+    "isGuru": true,
+    "isBusiness": true,
+    "commissionCustomer": [
+    ],
+    "accountLink": "https://connect.stripe.com/setup/s/7tA5oHf06pEV",
+    "stripeId": "acct_1K702VRP3ieqtpLe",
+    "commissionType": "commissionPerReceivedLeadPercent",
+    "commissionPerReceivedLeadPercent": 20
+  },
+
+  "customer": {
+      "_id": {
+        "$oid": "000000000000000000000003"
+    },
+    "firstName": "Julie",
+    "lastName": "Bautista",
+    "businessName": "Hoover-Price",
+    "businessCategory": "investors",
+    "rating": 3,
+    "email": "julie.bautista@mail.com",
+    "succesfulRate": 0.49,
+    "averageCommission": 661,
+    "isActive": true,
+    "isGuru": true,
+    "isBusiness": false,
+    "accountLink": "https://connect.stripe.com/setup/s/FgszLGd07cqT",
+    "stripeId": "acct_1K702VRP3ieqtpLe"
+    }
+  }
 ])
