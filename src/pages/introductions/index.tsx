@@ -221,13 +221,13 @@ export default function Introductions() {
             {original.firstName} {original.lastName}
           </div>
           <div className='cell-company'>
-            <small>{original.user.businessName}</small>
+            <small>{original.fresh.businessName}</small>
           </div>
           <div className='cell-email'>
             <small>{original.email}</small>
           </div>
           <div className='cell-phone'>
-            <small>{original.user.phone}</small>
+            <small>{original.guru.contactPhone}</small>
           </div>
         </>
       ),

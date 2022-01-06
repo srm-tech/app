@@ -4,33 +4,31 @@ function prepareFieldObfuscator(fields, obfuscate = true) {
   const query: Array<any> = [];
 
   fields.forEach(function (field: any) {
-    if (obfuscate) {
-      const replace = {
-        $replaceWith: {
-          $setField: {
-            field: field.newField,
-            input: '$$ROOT',
-            value: {
-              $cond: [
-                {
-                  $in: ['$status', ['pending', 'declined']],
-                },
-                {
-                  $concat: [
-                    {
-                      $substr: [field.field, 0, 1],
-                    },
-                    field.replacement,
-                  ],
-                },
-                field.field,
-              ],
-            },
+    const replace = {
+      $replaceWith: {
+        $setField: {
+          field: field.newField,
+          input: '$$ROOT',
+          value: {
+            $cond: [
+              {
+                $in: ['$status', ['pending', 'declined']],
+              },
+              {
+                $concat: [
+                  {
+                    $substr: [field.field, 0, 1],
+                  },
+                  field.replacement,
+                ],
+              },
+              field.field,
+            ],
           },
         },
-      };
-      query.push(replace);
-    }
+      },
+    };
+    query.push(replace);
 
     query.push({
       $unset: field.field.slice(1),
@@ -43,17 +41,17 @@ const Introduction = (collection: Collection<Document>) => ({
   readMany: async (userId: ObjectId) => {
     const query = prepareFieldObfuscator([
       {
-        field: '$user.firstName',
+        field: '$guru.firstName',
         newField: 'firstName',
         replacement: '*****',
       },
       {
-        field: '$user.lastName',
+        field: '$guru.lastName',
         newField: 'lastName',
         replacement: '*****',
       },
       {
-        field: '$user.contactEmail',
+        field: '$guru.contactEmail',
         newField: 'email',
         replacement: '****@****.***',
       },
@@ -78,7 +76,9 @@ const Introduction = (collection: Collection<Document>) => ({
       },
     };
 
-    return collection
+    // console.log("query:", query);
+
+    const result = await collection
       .aggregate([
         {
           $lookup: {
@@ -97,6 +97,7 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $addFields: {
             user: '$business',
+            position: 'business',
           },
         },
         {
@@ -137,6 +138,7 @@ const Introduction = (collection: Collection<Document>) => ({
                   firstName: '$business.firstName',
                   lastName: '$business.lastName',
                   email: '$business.email',
+                  position: 'guru',
                 },
               },
               {
@@ -145,7 +147,7 @@ const Introduction = (collection: Collection<Document>) => ({
                     $cond: [
                       { $eq: ['$status', 'pending'] },
                       'waiting for approval',
-                      { $concat: ['$status', ' by other party'] },
+                      { $concat: ['guru ', '$status'] },
                     ],
                   },
                 },
@@ -250,6 +252,8 @@ const Introduction = (collection: Collection<Document>) => ({
         // },
       ])
       .toArray();
+    console.log(result);
+    return result;
   },
 
   drafts: async (userId: ObjectId) => {

@@ -15,6 +15,7 @@ export default handleErrors(
     const user = await getCurrentUser(req, res);
     if (req.method === 'GET') {
       result = await Introduction.readMany(user._id);
+      // console.log(result);
     } else if (req.method === 'POST') {
       // this endopoint requires user
       const guru = await getCurrentUser(req, res);
