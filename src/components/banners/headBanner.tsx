@@ -1,4 +1,4 @@
-enum BannerType {
+export enum BannerType {
   OK = 'bg-green-100',
   WARN = 'bg-yellow-100',
   ERROR = 'bg-red-100',

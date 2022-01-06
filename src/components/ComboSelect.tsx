@@ -6,13 +6,13 @@ import clsx from 'clsx';
 import useFetch from 'use-http';
 import InlineError from './errors/InlineError';
 import { debounce } from '@/lib/helper';
-import { Query } from './introductions/QuickForm';
+import { Search } from './introductions/QuickForm';
 
 export default function ComboSelect({ query, onChange, onSelect }) {
   const debounceSetCurrentValue = useRef<any>(null);
   const { get, data, response, loading, error } = useFetch('/search/business');
 
-  let inputItems: Query[] = [];
+  let inputItems: Search[] = [];
   if (response.ok) {
     inputItems = data?.map((item) => ({
       _id: item._id,
@@ -54,7 +54,7 @@ export default function ComboSelect({ query, onChange, onSelect }) {
     items: inputItems,
     id: 'ComboSelect',
     inputId: 'ComboSelectInput',
-    itemToString: (item: Query | null) => (item ? item.label : ''),
+    itemToString: (item: Search | null) => (item ? item.label : ''),
     onInputValueChange: ({ inputValue }: { inputValue?: string }) => {
       onChange && onChange(inputValue || '');
       console.log(222);
@@ -63,7 +63,7 @@ export default function ComboSelect({ query, onChange, onSelect }) {
     },
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-        const item: Query = selectedItem;
+        const item: Search = selectedItem;
         onSelect && onSelect(item);
         onChange && onChange(item.label || '');
       }

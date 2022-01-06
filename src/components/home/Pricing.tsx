@@ -3,7 +3,7 @@ import * as React from 'react';
 import { fetchPostJSON } from '@/lib/api-helpers';
 import getStripe from '@/lib/get-stripe';
 
-import HeadBanner from '../banners/headBanner';
+import HeadBanner, { BannerType } from '../banners/headBanner';
 
 export const pricing = {
   tiers: [
@@ -95,7 +95,7 @@ export default function Pricing() {
     <>
       <div className='px-4 pt-1 pb-20 mx-auto sm:pt-20 max-w-7xl sm:px-6 lg:px-8'>
         {errorMessage && (
-          <HeadBanner type='bg-yellow-100'>
+          <HeadBanner type={BannerType.ERROR}>
             <p>{errorMessage}</p>
           </HeadBanner>
         )}
