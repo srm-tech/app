@@ -21,7 +21,7 @@ export default handleErrors(
         check('businessName').isLength({ min: 1, max: 55 }),
       ])(req, res);
       const user = await getCurrentUser(req, res);
-      result = await UserProfile.updateOne(user._id, {
+      result = await UserProfile.create(user._id, {
         isActive: true,
         ...req.body,
       });

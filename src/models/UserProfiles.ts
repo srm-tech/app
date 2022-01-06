@@ -24,8 +24,8 @@ export interface UserProfile {
 }
 
 const UserProfile = (collection: Collection<UserProfile>) => ({
-  create: async (data) => {
-    return collection?.insertOne(data);
+  create: async (_id, data) => {
+    return collection?.insertOne({ ...data, _id: new ObjectId(_id) });
   },
   readMany: async ({ userId }) => {
     return collection?.find({ userId }).toArray();
@@ -206,7 +206,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       ])
       .toArray();
   },
-  getOne: async (userId: string) => {
+  getOne: async (userId) => {
     return collection.findOne({
       _id: new ObjectId(userId),
     });
@@ -216,10 +216,12 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       email,
     });
   },
-  updateOne: async (id, data) => {
-    delete data.userId;
-    delete data._id;
-    return collection.updateOne({ _id: id }, { $set: data });
+  updateOne: async (_id, data) => {
+    return collection.updateOne(
+      { _id },
+      { $set: { ...data, _id: new ObjectId(_id) } },
+      { upsert: true }
+    );
   },
   addStripe: async (data) => {
     return collection.updateOne(

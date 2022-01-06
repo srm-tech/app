@@ -78,7 +78,7 @@ export const QuickForm = () => {
   const [step, setStep] = React.useState(router.query.step || 1);
   const { data: session } = useSession();
   const formRef = React.useRef<any>();
-  const { post, get, put, response, loading, error } = useFetch('/');
+  const { post, get, put, response, loading, error } = useFetch('');
 
   const loadData = async () => {
     const result: Draft = await get(`/drafts/${router.query.draftId}`);
@@ -126,6 +126,12 @@ export const QuickForm = () => {
         return setStep(2);
       }
 
+      // user not registered fully (no UserProfile) -> show dialog
+      await get(`/me`);
+      if (response.ok && !response.data) {
+        return setStep(3);
+      }
+
       // show agreement summary so guru accepts the conditions
       // same contract as it comes from the contacts (user agreed to it before connecting with business)
       // this agreement is then attached to the introduction
@@ -157,7 +163,7 @@ export const QuickForm = () => {
     [draft]
   );
 
-  const resubmit = () => (e) => {
+  const resubmit = (e) => {
     setStep(1);
     _handleSubmit(e);
   };
@@ -320,7 +326,7 @@ export const QuickForm = () => {
         form='registration'
         acceptCaption='Register Now'
         cancelCaption='I will do it later'
-        accept={() => console.info('register')}
+        accept={() => console.info('register from intro')}
         cancel={() => setStep(1)}
         caption='New to Introduce Guru?'
         content={
@@ -328,7 +334,10 @@ export const QuickForm = () => {
             <p>
               Almost there, please provide profile info for the introduction.
             </p>
-            <RegisterForm email={profile.email} onComplete={resubmit} />
+            <RegisterForm
+              email={profile.email}
+              onComplete={(e) => resubmit(e)}
+            />
           </div>
         }
       />

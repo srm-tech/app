@@ -5,21 +5,16 @@ import getCollections from '@/models';
 import type { UserProfile } from '@/models/UserProfiles';
 
 import { HttpError } from './error';
+import users from '@/pages/api/users';
 
 export default async function getCurrentUser(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const session = await getSession({ req });
-  if (!session?.user?.email) {
+  const email = session?.user?.email;
+  if (!session || !email) {
     throw new HttpError(401);
   }
-  const { UserProfile } = await getCollections();
-  const user = (await UserProfile.getOneByEmail(
-    session.user.email
-  )) as UserProfile;
-  if (!user) {
-    throw new HttpError(401);
-  }
-  return { ...user, email: session.user.email };
+  return { _id: session.user?._id, email };
 }

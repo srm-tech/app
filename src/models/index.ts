@@ -13,6 +13,7 @@ import Message from './Messages';
 import MyContacts from './MyContacts';
 import Review from './Reviews';
 import UserProfile from './UserProfiles';
+import User from './User';
 import { connectToDatabase } from '@/lib/db';
 
 export default async () => {
@@ -40,5 +41,6 @@ export default async () => {
     MyContacts: MyContacts(db.collection('myContacts')),
     Review: Review(db.collection('reviews')),
     UserProfile: UserProfile(db.collection('userProfiles')),
+    User: User(db.collection('users')),
   };
 };
