@@ -10,9 +10,9 @@ const Agreement = (collection: Collection<Document>) => ({
   createJob: async (data) => {
     return collection.insertOne(data);
   },
-  findOne: async (userId: string) => {
+  findOne: async (userId: ObjectId) => {
     return collection.findOne({
-      userId: new ObjectId(userId),
+      userId,
     });
   },
   updateOne: async (data) => {

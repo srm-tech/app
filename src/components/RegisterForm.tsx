@@ -3,6 +3,7 @@ import { Switch } from '@headlessui/react';
 import useFetch from 'use-http';
 import { handleError } from '@/lib/helper';
 import InlineError from './errors/InlineError';
+import Link from 'next/link';
 
 interface Profile {
   contactEmail: string;
@@ -219,19 +220,17 @@ export default function RegisterForm({
                 <div className='ml-3'>
                   <p className='text-base text-gray-500'>
                     By selecting this, you agree to the{' '}
-                    <a
-                      href='/legal/privacy'
-                      className='font-medium text-gray-700 underline'
-                    >
-                      Privacy Policy
-                    </a>{' '}
+                    <Link href='/legal/privacy' passHref>
+                      <a className='font-medium text-gray-700 underline'>
+                        Privacy Policy
+                      </a>
+                    </Link>{' '}
                     and{' '}
-                    <a
-                      href='/legal/terms'
-                      className='font-medium text-gray-700 underline'
-                    >
-                      Terms & Conditions
-                    </a>
+                    <Link href='/legal/terms' passHref>
+                      <a className='font-medium text-gray-700 underline'>
+                        Terms & Conditions
+                      </a>
+                    </Link>
                     .
                   </p>
                 </div>

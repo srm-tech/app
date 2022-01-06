@@ -28,8 +28,8 @@ export interface UserProfile {
 }
 
 const UserProfile = (collection: Collection<UserProfile>) => ({
-  create: async (data) => {
-    return collection?.insertOne(data);
+  create: async (_id, data) => {
+    return collection?.insertOne({ ...data, _id: new ObjectId(_id) });
   },
   readMany: async ({ userId }) => {
     return collection?.find({ userId }).toArray();
@@ -210,9 +210,9 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       ])
       .toArray();
   },
-  getOne: async (userId) => {
+  getOne: async (userId: ObjectId) => {
     return collection.findOne({
-      _id: new ObjectId(userId),
+      _id: userId,
     });
   },
   getOneByEmail: async (email) => {
@@ -220,10 +220,8 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       email,
     });
   },
-  updateOne: async (id, data) => {
-    delete data.userId;
-    delete data._id;
-    return collection.updateOne({ _id: id }, { $set: data });
+  updateOne: async (_id, data) => {
+    return collection.updateOne({ _id }, { $set: data });
   },
   addStripe: async (data) => {
     return collection.updateOne(

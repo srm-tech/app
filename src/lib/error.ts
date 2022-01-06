@@ -3,12 +3,12 @@ import httpStatus from './httpStatus';
 export class HttpError extends Error {
   statusCode: number;
   message: string;
-  errors: object[] | null;
+  errors: Record<string, unknown>[] | null;
 
   constructor(
     statusCode: number,
     message?: string,
-    errors?: object[] | null,
+    errors?: Record<string, unknown>[] | null,
     ...params: any[]
   ) {
     // Pass remaining arguments (including vendor specific ones) to parent constructor

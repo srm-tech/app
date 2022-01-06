@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import LoadingOverlay from 'react-loading-overlay-ts';
 import useFetch from 'use-http';
 
 import { formatCommissionDescriptions } from '@/lib/utils';
@@ -206,7 +205,7 @@ export default function Finalise(props) {
   }, [loading]);
   return (
     <>
-      <DashboardLayout>
+      <DashboardLayout loading={loading}>
         <form
           method='post'
           onSubmit={(e) => e.preventDefault()}
@@ -279,192 +278,179 @@ export default function Finalise(props) {
                   </div>
                 )}
                 {/* end of sent mail message */}
-                <LoadingOverlay
-                  active={loaderVisible}
-                  spinner
-                  styles={{
-                    overlay: (base) => ({
-                      ...base,
-                      background: 'rgba(255, 255, 255, 0.8)',
-                      '& svg circle': {
-                        stroke: 'rgba(0, 255, 0, 0.5)',
-                      },
-                    }),
-                  }}
-                >
-                  <div className='space-y-8 divide-y divide-gray-200'>
-                    <div>
-                      <div className='grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6'>
-                        {/* Revenue field starts here */}
-                        <div className='sm:col-span-4'>
-                          <label
-                            htmlFor='revenue'
-                            className='block text-sm font-medium text-gray-700'
-                          >
-                            Revenue:
-                          </label>
-                          <div className='flex mt-1 rounded-md shadow-sm'>
-                            <input
-                              type='number'
-                              step='0.01'
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                              {...register('revenue', {
-                                required: true,
-                              })}
-                            />
-                          </div>
 
-                          {errors.revenue?.type === 'required' && (
-                            <small className='text-red-900'>
-                              This field is required
-                            </small>
-                          )}
-                        </div>
-                        {/* Revenue field ends here */}
-
-                        {/* Reward field starts here */}
-                        <div className='sm:col-span-4'>
-                          <label
-                            htmlFor='revenue'
-                            className='block text-sm font-medium text-gray-700'
-                          >
-                            Reward:
-                          </label>
-                          <div className='flex mt-1 rounded-md shadow-sm'>
-                            <input
-                              type='number'
-                              step='0.01'
-                              disabled={true}
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                              {...register('reward', {
-                                required: true,
-                              })}
-                            />
-                          </div>
-
-                          {errors.reward?.type === 'required' && (
-                            <small className='text-red-900'>
-                              This field is required
-                            </small>
-                          )}
-                        </div>
-                        {/* Reward field ends here */}
-
-                        {/* Tip / bonus field starts here */}
-                        <div className='sm:col-span-4'>
-                          <label
-                            htmlFor='revenue'
-                            className='block text-sm font-medium text-gray-700'
-                          >
-                            Tip / bonus:
-                          </label>
-                          <div className='flex mt-1 rounded-md shadow-sm'>
-                            <input
-                              type='number'
-                              step='0.01'
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                              {...register('tip', {
-                                required: true,
-                              })}
-                            />
-                          </div>
-
-                          {errors.tip?.type === 'required' && (
-                            <small className='text-red-900'>
-                              This field is required
-                            </small>
-                          )}
-                        </div>
-                        {/* Tip / bonus field ends here */}
-
-                        {/* Guru fees field starts here */}
-                        <div className='sm:col-span-4'>
-                          <label
-                            htmlFor='guruFee'
-                            className='block text-sm font-medium text-gray-700'
-                          >
-                            Introduce.guru fee:
-                          </label>
-                          <div className='flex mt-1 rounded-md shadow-sm'>
-                            <input
-                              disabled={true}
-                              defaultValue={0}
-                              type='number'
-                              step='0.01'
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                              {...register('guruFee', {
-                                required: false,
-                              })}
-                            />
-                          </div>
-
-                          {errors.guruFee?.type === 'required' && (
-                            <small className='text-red-900'>
-                              This field is required
-                            </small>
-                          )}
-                        </div>
-                        {/* Tip / bonus field ends here */}
-
-                        {/* Total field starts here */}
-                        <div className='sm:col-span-4'>
-                          <label
-                            htmlFor='revenue'
-                            className='block text-sm font-medium text-gray-700'
-                          >
-                            Total payment:
-                          </label>
-                          <div className='flex mt-1 rounded-md shadow-sm'>
-                            <input
-                              disabled={true}
-                              type='number'
-                              className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                              {...register('total')}
-                            />
-                          </div>
-
-                          {errors.tip?.type === 'required' && (
-                            <small className='text-red-900'>
-                              This field is required
-                            </small>
-                          )}
-                        </div>
-                        {/* Total field ends here */}
-
-                        {/* Agreement part starts here */}
-                        {/* todo: make them hidden */}
-                        <div className='sm:col-span-4'>
+                <div className='space-y-8 divide-y divide-gray-200'>
+                  <div>
+                    <div className='grid grid-cols-1 mt-6 gap-y-6 gap-x-4 sm:grid-cols-6'>
+                      {/* Revenue field starts here */}
+                      <div className='sm:col-span-4'>
+                        <label
+                          htmlFor='revenue'
+                          className='block text-sm font-medium text-gray-700'
+                        >
+                          Revenue:
+                        </label>
+                        <div className='flex mt-1 rounded-md shadow-sm'>
                           <input
-                            type='hidden'
-                            disabled={true}
+                            type='number'
+                            step='0.01'
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            {...register('commissionType')}
-                          />
-                          <input
-                            type='hidden'
-                            disabled={true}
-                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                            {...register('commissionValue')}
+                            {...register('revenue', {
+                              required: true,
+                            })}
                           />
                         </div>
-                        {/* Agreement part ends here */}
+
+                        {errors.revenue?.type === 'required' && (
+                          <small className='text-red-900'>
+                            This field is required
+                          </small>
+                        )}
                       </div>
-                      <div className='pt-5'>
-                        <div className='flex justify-end'>
-                          {!mailSent && (
-                            <button
-                              type='submit'
-                              onClick={(e) => handleFormClick(e)}
-                              className='inline-flex justify-center px-4 py-2 ml-3 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
-                            >
-                              Confirm
-                            </button>
-                          )}
+                      {/* Revenue field ends here */}
+
+                      {/* Reward field starts here */}
+                      <div className='sm:col-span-4'>
+                        <label
+                          htmlFor='revenue'
+                          className='block text-sm font-medium text-gray-700'
+                        >
+                          Reward:
+                        </label>
+                        <div className='flex mt-1 rounded-md shadow-sm'>
+                          <input
+                            type='number'
+                            step='0.01'
+                            disabled={true}
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            {...register('reward', {
+                              required: true,
+                            })}
+                          />
                         </div>
+
+                        {errors.reward?.type === 'required' && (
+                          <small className='text-red-900'>
+                            This field is required
+                          </small>
+                        )}
+                      </div>
+                      {/* Reward field ends here */}
+
+                      {/* Tip / bonus field starts here */}
+                      <div className='sm:col-span-4'>
+                        <label
+                          htmlFor='revenue'
+                          className='block text-sm font-medium text-gray-700'
+                        >
+                          Tip / bonus:
+                        </label>
+                        <div className='flex mt-1 rounded-md shadow-sm'>
+                          <input
+                            type='number'
+                            step='0.01'
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            {...register('tip', {
+                              required: true,
+                            })}
+                          />
+                        </div>
+
+                        {errors.tip?.type === 'required' && (
+                          <small className='text-red-900'>
+                            This field is required
+                          </small>
+                        )}
+                      </div>
+                      {/* Tip / bonus field ends here */}
+
+                      {/* Guru fees field starts here */}
+                      <div className='sm:col-span-4'>
+                        <label
+                          htmlFor='guruFee'
+                          className='block text-sm font-medium text-gray-700'
+                        >
+                          Introduce.guru fee:
+                        </label>
+                        <div className='flex mt-1 rounded-md shadow-sm'>
+                          <input
+                            disabled={true}
+                            defaultValue={0}
+                            type='number'
+                            step='0.01'
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            {...register('guruFee', {
+                              required: false,
+                            })}
+                          />
+                        </div>
+
+                        {errors.guruFee?.type === 'required' && (
+                          <small className='text-red-900'>
+                            This field is required
+                          </small>
+                        )}
+                      </div>
+                      {/* Tip / bonus field ends here */}
+
+                      {/* Total field starts here */}
+                      <div className='sm:col-span-4'>
+                        <label
+                          htmlFor='revenue'
+                          className='block text-sm font-medium text-gray-700'
+                        >
+                          Total payment:
+                        </label>
+                        <div className='flex mt-1 rounded-md shadow-sm'>
+                          <input
+                            disabled={true}
+                            type='number'
+                            className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                            {...register('total')}
+                          />
+                        </div>
+
+                        {errors.tip?.type === 'required' && (
+                          <small className='text-red-900'>
+                            This field is required
+                          </small>
+                        )}
+                      </div>
+                      {/* Total field ends here */}
+
+                      {/* Agreement part starts here */}
+                      {/* todo: make them hidden */}
+                      <div className='sm:col-span-4'>
+                        <input
+                          type='hidden'
+                          disabled={true}
+                          className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                          {...register('commissionType')}
+                        />
+                        <input
+                          type='hidden'
+                          disabled={true}
+                          className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                          {...register('commissionValue')}
+                        />
+                      </div>
+                      {/* Agreement part ends here */}
+                    </div>
+                    <div className='pt-5'>
+                      <div className='flex justify-end'>
+                        {!mailSent && (
+                          <button
+                            type='submit'
+                            onClick={(e) => handleFormClick(e)}
+                            className='inline-flex justify-center px-4 py-2 ml-3 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+                          >
+                            Confirm
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
-                </LoadingOverlay>
+                </div>
               </div>
               {/* right panel ends here */}
             </div>

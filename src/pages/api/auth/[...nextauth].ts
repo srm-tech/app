@@ -109,19 +109,18 @@ export default async function auth(req, res) {
     callbacks: {
       // async signIn(user, account, profile) { return true },
       // async redirect(url, baseUrl) { return baseUrl },
-      // async session({ session, user }) {
-      //   if (user) {
-      //     session.uid = "111";
-      //   }
-      //   return Promise.resolve(session)
-      // },
-      // async jwt({ session, user, account, profile, isNewUser }) {
-      //   if (user) {
-      //     token.uid = user.id;
-      //   }
-      //   console.log(111, user, token);
-      //   return token
-      // }
+      async jwt({ token, user }) {
+        if (user) {
+          token.uid = user.id;
+        }
+        return token;
+      },
+      async session({ session, token }) {
+        if (session?.user) {
+          session.user._id = token.uid;
+        }
+        return session;
+      },
     },
 
     // Events are useful for logging
