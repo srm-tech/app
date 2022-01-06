@@ -12,7 +12,6 @@ import {
   DefaultColumnFilter,
   fuzzyTextFilterFn,
 } from '@/components/table/filters';
-// import { ListCollectionsCursor } from 'mongoose/node_modules/mongodb';
 
 type TableProps = {
   columns: any;

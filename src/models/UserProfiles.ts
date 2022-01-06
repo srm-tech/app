@@ -206,9 +206,9 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       ])
       .toArray();
   },
-  getOne: async (userId: ObjectId | string) => {
+  getOne: async (userId: ObjectId) => {
     return collection.findOne({
-      _id: new ObjectId(userId),
+      _id: userId,
     });
   },
   getOneByEmail: async (email) => {
@@ -217,11 +217,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
     });
   },
   updateOne: async (_id, data) => {
-    return collection.updateOne(
-      { _id },
-      { $set: { ...data, _id: new ObjectId(_id) } },
-      { upsert: true }
-    );
+    return collection.updateOne({ _id }, { $set: data });
   },
   addStripe: async (data) => {
     return collection.updateOne(

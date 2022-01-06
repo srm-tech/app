@@ -12,11 +12,11 @@ export default handleErrors(
     const { Agreement } = await getCollections();
     const user = await getCurrentUser(req, res);
     if (req.method === 'GET') {
-      let filter = user._id.toString();
+      let filter = user._id?.toString();
       if (req.query.businessId) {
         filter = req.query.businessId.toString();
       }
-      result = await Agreement.findOne(filter);
+      result = await Agreement.findOne(filter || '');
       if (!result) {
         result = {
           commissionPerReceivedLead: 0,
