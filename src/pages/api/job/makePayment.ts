@@ -41,7 +41,7 @@ export default handleErrors(
       const to = job.user;
       // const to = await models.UserProfile.getOne(job.business);
       // const from = job.user;
-      const business = await UserProfile.getOne(job.business);
+      const business = await UserProfile.getOne(job.businessId);
       const customer = job.user;
 
       // stripe
@@ -80,13 +80,15 @@ export default handleErrors(
           },
 
           mode: 'payment',
-
+          // automatic_tax: {
+          //   enabled: true
+          // },
           tax_id_collection: { enabled: true },
 
-          customer_update: {
-            name: 'auto',
-            address: 'auto',
-          },
+          // customer_update: {
+          //   name: 'auto',
+          //   address: 'auto',
+          // },
 
           success_url: `${
             process.env.BASE_URL

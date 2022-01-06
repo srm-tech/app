@@ -167,7 +167,8 @@ export default function introductions() {
       );
       setAccept(() => handleAcceptDoNothing);
       setCancel(null);
-      setAcceptCaption('OK');
+      setCancelCaption('OK');
+      setAcceptCaption(null);
       return;
     }
     const isStripeActive = await get(`/api/job/isStripeActive?id=${jobId}`);
@@ -179,7 +180,8 @@ export default function introductions() {
       );
       setAccept(() => handleAcceptDoNothing);
       setCancel(null);
-      setAcceptCaption('OK');
+      setCancelCaption('OK');
+      setAcceptCaption(null);
       return;
     }
 
@@ -333,7 +335,9 @@ export default function introductions() {
         return (
           <>
             {original.status === 'pending' ? acceptDeclineButtons : null}
-            {original.status === 'accepted' ? finishJobButton : null}
+            {original.status === 'accepted' && original.position === 'business'
+              ? finishJobButton
+              : null}
             {original.position === 'guru' && original.review.length === 0
               ? rateButton
               : null}

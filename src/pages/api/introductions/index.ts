@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import getCurrentUser from '@/lib/get-current-user';

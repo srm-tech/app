@@ -6,15 +6,16 @@ import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
 import { htmlStripeReminder } from '@/lib/utils';
 
-import models from '@/models';
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    await models.client.connect();
+    const { Introduction } = await getCollections();
+
     if (req.method === 'GET') {
       const id = new ObjectId(req.query.id);
-      const _job = await models.Introduction.details(id);
+      const _job = await Introduction.details(id);
       let job;
 
       if (_job.length > 0) {
@@ -33,7 +34,7 @@ export default handleErrors(
       }
 
       if (!result.charges) {
-        await models.Introduction.updateStatus(job._id, 'waiting for Guru');
+        await Introduction.updateStatus(job._id, 'waiting for Guru');
 
         const data = {
           name: `${job.user.firstName} ${job.user.lastName}`,
@@ -54,6 +55,5 @@ export default handleErrors(
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json(result);
-    await models.client.close();
   }
 );
