@@ -5,15 +5,18 @@ import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Logo from './Logo';
 
-const navigation = [
-  { name: 'Early Bird Offer', href: '/promotion' },
-  // { name: 'Marketplace', href: '#' },
-  // { name: 'Company', href: '#' },
-];
-
 export default function Nav() {
   const { data: session } = useSession();
 
+  const navigation = [
+    { name: 'Early Bird Offer', href: '/promotion' },
+
+    // { name: 'Marketplace', href: '#' },
+    // { name: 'Company', href: '#' },
+  ];
+  if (session) {
+    navigation.push({ name: 'My Introductions', href: '/introductions' });
+  }
   return (
     <Popover className='mx-auto max-w-7xl'>
       <nav
