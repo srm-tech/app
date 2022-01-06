@@ -15,7 +15,7 @@ export default function ConfirmModal({
   cancelCaption,
 }: {
   isShowing: boolean;
-  caption: string;
+  caption?: string;
   content: ReactElement | string;
   accept: any;
   form?: string;
@@ -71,14 +71,16 @@ export default function ConfirmModal({
                           aria-hidden='true'
                         />
                       </div> */}
-                      <div className='mt-3 text-center sm:mt-5'>
-                        <Dialog.Title
-                          as='h3'
-                          className='text-lg font-medium leading-6 text-gray-900'
-                        >
-                          {caption}
-                        </Dialog.Title>
-                        <div className='mt-2'>
+                      <div className='text-center'>
+                        {caption && (
+                          <Dialog.Title
+                            as='h3'
+                            className='mt-3 mb-2 text-lg font-medium leading-6 text-gray-900'
+                          >
+                            {caption}
+                          </Dialog.Title>
+                        )}
+                        <div className=''>
                           <div className='text-sm text-gray-500'>{content}</div>
                         </div>
                       </div>
