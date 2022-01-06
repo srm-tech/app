@@ -8,7 +8,7 @@ import useModal from '@/lib/useModal';
 import { formatCommissionDescriptions } from '@/lib/utils';
 
 import Button from '@/components/buttons/Button';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 import Modal from '@/components/modals/ConfirmModal';
 import Rating from '@/components/rating';
 import Table from '@/components/table/Table';

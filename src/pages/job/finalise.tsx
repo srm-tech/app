@@ -1,12 +1,12 @@
 import { GetServerSideProps } from 'next';
 import React, { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import useFetch from 'use-http';
 
 import { formatCommissionDescriptions } from '@/lib/utils';
 
 import Link from '@/components/buttons/Link';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 import { env } from '@/lib/envConfig';
 import UserProfile from '@/models/UserProfiles';
