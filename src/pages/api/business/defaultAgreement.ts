@@ -20,16 +20,17 @@ export default handleErrors(
       result = await Agreement.findOne(filter);
       if (!result) {
         result = {
-          commissionPerReceivedLeadCash: 0,
+          commissionPerReceivedLead: 0,
           commissionPerCompletedLead: 0,
           commissionPerReceivedLeadPercent: 0,
         };
       }
     } else if (req.method === 'POST') {
       await validate([
-        check('commissionPerReceivedLeadCash').isNumeric(),
+        check('commissionPerReceivedLead').isNumeric(),
         check('commissionPerCompletedLead').isNumeric(),
         check('commissionPerReceivedLeadPercent').isNumeric(),
+        check('commissionType').isString(),
       ])(req, res);
       result = await Agreement.create({
         userId: user._id,

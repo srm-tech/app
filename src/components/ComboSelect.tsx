@@ -31,7 +31,7 @@ export default function ComboSelect({ query, onChange, onSelect }) {
 
   useEffect(() => {
     loadData();
-  }, [query]);
+  }, []);
 
   // debounce function should only be created once
   if (!debounceSetCurrentValue.current) {
@@ -57,6 +57,8 @@ export default function ComboSelect({ query, onChange, onSelect }) {
     itemToString: (item: Query | null) => (item ? item.label : ''),
     onInputValueChange: ({ inputValue }: { inputValue?: string }) => {
       onChange && onChange(inputValue || '');
+      console.log(222);
+
       debounceSetCurrentValue.current(inputValue);
     },
     onSelectedItemChange: ({ selectedItem }) => {

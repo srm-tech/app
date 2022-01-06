@@ -6,7 +6,7 @@ import useFetch from 'use-http';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
 interface IFormInput {
-  commissionPerReceivedLeadCash: number;
+  commissionPerReceivedLead: number;
   commissionPerCompletedLead: number;
   commissionPerReceivedLeadPercent: number;
   email: string;
@@ -20,7 +20,7 @@ export default function profile() {
   // states
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [formValues, setFormValues] = useState({
-    commissionPerReceivedLeadCash: 0,
+    commissionPerReceivedLead: 0,
     commissionPerCompletedLead: 0,
     commissionPerReceivedLeadPercent: 0,
   });
@@ -52,10 +52,10 @@ export default function profile() {
     setReceivedPercent(false);
     setCompletedCash(false);
     switch (dropdown) {
-      case 'commissionPerReceivedLeadCash':
+      case 'commissionPerReceivedLead':
         setReceivedCash(true);
         break;
-      case 'commissionPerCompletedLeadCash':
+      case 'commissionPerCompletedLead':
         setCompletedCash(true);
         break;
       case 'commissionPerReceivedLeadPercent':
@@ -219,10 +219,10 @@ export default function profile() {
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                             >
                               <option value=''></option>
-                              <option value='commissionPerReceivedLeadCash'>
+                              <option value='commissionPerReceivedLead'>
                                 Commission per received lead ($)
                               </option>
-                              <option value='commissionPerCompletedLeadCash'>
+                              <option value='commissionPerCompletedLead'>
                                 Commission per completed lead ($)
                               </option>
                               <option value='commissionPerReceivedLeadPercent'>
@@ -241,7 +241,7 @@ export default function profile() {
                         {receivedCash && (
                           <div className='sm:col-span-4'>
                             <label
-                              htmlFor='commissionPerReceivedLeadCash'
+                              htmlFor='commissionPerReceivedLead'
                               className='block text-sm font-medium text-gray-700'
                             >
                               Commission per received lead ($):
@@ -250,15 +250,15 @@ export default function profile() {
                               <input
                                 type='number'
                                 defaultValue={
-                                  formValues.commissionPerReceivedLeadCash
+                                  formValues.commissionPerReceivedLead
                                 }
-                                {...register('commissionPerReceivedLeadCash', {
+                                {...register('commissionPerReceivedLead', {
                                   required: true,
                                 })}
                                 className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                               />
                             </div>
-                            {errors.commissionPerReceivedLeadCash?.type ===
+                            {errors.commissionPerReceivedLead?.type ===
                               'required' && (
                               <small className='text-red-900'>
                                 This field is required

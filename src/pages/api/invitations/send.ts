@@ -60,11 +60,11 @@ function commissionFormatter(data) {
   let label;
   let value;
   switch (data.commissionType) {
-    case 'commissionPerReceivedLeadCash':
+    case 'commissionPerReceivedLead':
       label = 'Commission per received lead ($)';
-      value = data.commissionPerReceivedLeadCash;
+      value = data.commissionPerReceivedLead;
       break;
-    case 'commissionPerCompletedLeadCash':
+    case 'commissionPerCompletedLead':
       label = 'Commission per completed lead ($)';
       value = data.commissionPerCompletedLead;
       break;

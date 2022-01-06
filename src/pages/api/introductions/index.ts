@@ -4,6 +4,9 @@ import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 import getCollections from '@/models';
 import { ObjectId } from 'mongodb';
+import { htmlIntroduction } from '@/lib/utils';
+import sendMail from '@/lib/mail';
+import { env } from '@/config';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -14,43 +17,69 @@ export default handleErrors(
       result = await Introduction.readMany(user._id);
     } else if (req.method === 'POST') {
       // this endopoint requires user
-      const guruUser = await getCurrentUser(req, res);
+      const guru = await getCurrentUser(req, res);
       await validate([
-        check('contactType').isIn(['phone', 'email']),
+        check('customer.contactType').isIn(['phone', 'email']),
         req.body.contactType === 'email'
-          ? check('contact').isEmail()
-          : check('contact').isLength({ min: 1, max: 55 }),
-        check('contactName').isLength({ min: 1, max: 55 }),
-        check('businessName').isLength({ min: 1, max: 55 }),
-        check('businessLabel').isLength({ min: 1, max: 55 }),
-        check('businessId').isMongoId(),
+          ? check('customer.contact').isEmail()
+          : check('customer.contact').isLength({ min: 1, max: 55 }),
+        check('customer.name').isLength({ min: 1, max: 55 }),
+        check('business.name').isLength({ min: 1, max: 55 }),
+        check('business.company').isLength({ min: 1, max: 55 }),
+        check('agreement.commissionCurrency').isLength({ min: 1, max: 3 }),
+        check('agreement.commissionLabel').isLength({ min: 1, max: 55 }),
+        check('agreement.commissionType').isLength({ min: 1, max: 55 }),
+        check('agreement.commissionValue').isNumeric(),
         check('_id').isMongoId(),
       ])(req, res);
-      const [firstName, lastName] = req.body.contactName?.split(' ');
-      const contact = req.body.contact;
-      // check if contact exists
-      let customer: any = await UserProfile.searchForCustomer(
-        contact,
-        req.body.contactType
+      const [firstName, lastName] = req.body.customer.name?.split(' ');
+      // contact is not a user in our system
+      const customer = {
+        fullName: req.body.customer.name,
+        firstName,
+        lastName,
+        phone:
+          (req.body.customer.contactType === 'phone' &&
+            req.body.customer.contact) ||
+          '',
+        email:
+          (req.body.customer.contactType === 'email' &&
+            req.body.customer.contact) ||
+          '',
+      };
+      const businessProfile = await UserProfile.getOne(
+        req.body.business._id.toString()
       );
-      // if contact doesn't exist, create one
-      if (!customer) {
-        const newUserProfile = await UserProfile.create({
-          isActive: false,
-          date: new Date(),
-          fullName: req.body.contactName,
-          firstName,
-          lastName,
-          phone: (req.body.contactType === 'phone' && req.body.contact) || '',
-          email: (req.body.contactType === 'email' && req.body.contact) || '',
-        });
-        customer = await UserProfile.getOne(newUserProfile.insertedId);
-      }
+
+      const business = {
+        _id: req.body.business._id,
+        firstName: businessProfile?.firstName,
+        lastName: businessProfile?.lastName,
+        name: `${businessProfile?.firstName} ${businessProfile?.lastName}`,
+        company: businessProfile?.businessName,
+        email: businessProfile?.email,
+      };
+
       result = await Introduction.update(req.body._id, {
         status: 'active',
-        customerId: customer._id,
-        guruId: guruUser._id,
+        customer,
+        guru,
+        business,
+        agreement: req.body.agreement,
       });
+
+      // send email
+      const mailData = {
+        from: process.env.EMAIL_FROM,
+        to: business?.email,
+        replyTo: business?.email,
+        bcc: 'kris@introduce.guru',
+        subject: `An introduction is waiting for you in introduce.guru!`,
+        // text: text(req.body),
+        html: htmlIntroduction(guru, customer, business),
+      };
+      const emailResult: any = await sendMail(mailData);
+      console.info(emailResult?.messageId);
     } else {
       return res
         .status(405)

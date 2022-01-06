@@ -26,12 +26,12 @@ export default handleErrors(
         check('country').isLength({ min: 2, max: 2 }),
       ];
 
-      if (req.body.commissionPerReceivedLeadCash) {
+      if (req.body.commissionPerReceivedLead) {
         validators.push(
-          check('commissionPerReceivedLeadCash').optional().isNumeric()
+          check('commissionPerReceivedLead').optional().isNumeric()
         );
-        req.body.commissionPerReceivedLeadCash = parseFloat(
-          req.body.commissionPerReceivedLeadCash
+        req.body.commissionPerReceivedLead = parseFloat(
+          req.body.commissionPerReceivedLead
         );
       }
       if (req.body.commissionPerCompletedLead) {
@@ -59,7 +59,7 @@ export default handleErrors(
       const result2 = await Agreement.updateOne({
         userId: user._id,
         commissionType: req.body.commissionType,
-        commissionPerReceivedLeadCash: req.body.commissionPerReceivedLeadCash,
+        commissionPerReceivedLead: req.body.commissionPerReceivedLead,
         commissionPerCompletedLead: req.body.commissionPerCompletedLead,
         commissionPerReceivedLeadPercent:
           req.body.commissionPerReceivedLeadPercent,

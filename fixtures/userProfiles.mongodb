@@ -49,8 +49,12 @@ db.userProfiles.insertMany([
     email: 'janusz@januszex.pl',
     isActive: true,
     isGuru: true,
-    isBusiness: true
-
+    isBusiness: true,
+    commissionType: "commissionPerCompletedLead",
+    commissionPerReceivedLead: 10000,
+    commissionPerCompletedLead: 1000,
+    commissionPerReceivedLeadPercent: 15,
+    commissionLabel: "completed Service"
   },
   {
     _id: ObjectId('000000000000000000000003'),

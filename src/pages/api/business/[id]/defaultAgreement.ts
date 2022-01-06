@@ -5,24 +5,30 @@ import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
 import getCollections from '@/models';
+import UserProfile from '@/models/UserProfiles';
+
+export const commissionLabel = {
+  commissionPerReceivedLead: 'received introduction',
+  commissionPerCompletedLead: 'completed service',
+  commissionPerReceivedLeadPercent: 'received introduction (%)',
+};
 
 // TODO: replace userId
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    const { Agreement } = await getCollections();
-    const user = await getCurrentUser(req, res);
+    const { Agreement, UserProfile } = await getCollections();
     if (req.method === 'GET') {
       await validate([check('id').isMongoId()])(req, res);
-      const filter = req.query.id.toString();
-      result = await Agreement.findOne(filter);
-      if (!result) {
-        result = {
-          commissionPerReceivedLeadCash: 0,
-          commissionPerCompletedLead: 0,
-          commissionPerReceivedLeadPercent: 0,
-        };
-      }
+      const businessId = req.query.id.toString();
+      // result = await Agreement.findOne(businessId);
+      const business = await UserProfile.getOne(businessId);
+      result = {
+        commissionType: business?.commissionType,
+        commissionValue: business?.[business?.commissionType],
+        commissionCurrency: business?.commissionCurrency || 'AUD',
+        commissionLabel: commissionLabel[business?.commissionType || ''],
+      };
     } else {
       res.setHeader('Allow', 'GET, POST');
       return res.status(405).end('Method Not Allowed');

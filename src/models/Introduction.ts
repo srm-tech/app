@@ -206,12 +206,6 @@ const Introduction = (collection: Collection<Document>) => ({
     return collection.insertOne(data);
   },
   update: async (_id, { _id: skipId, ...data }: any) => {
-    if (data.customerId) {
-      data.customerId = new ObjectId(data.customerId);
-    }
-    if (data.business) {
-      data.business = new ObjectId(data.business);
-    }
     if (data.guruId) {
       data.guruId = new ObjectId(data.guruId);
     }

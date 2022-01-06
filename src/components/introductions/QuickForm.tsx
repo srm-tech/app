@@ -11,49 +11,68 @@ import Modal from '@/components/modals/ConfirmModal';
 import RegisterForm from '../RegisterForm';
 import { handleError } from '@/lib/helper';
 
-export interface Query {
+export interface Search {
   _id: string;
   label: string;
   businessName: string;
   category: string;
 }
+
+export interface Customer {
+  contact: string;
+  name: string;
+  contactType: string;
+}
+export interface Business {
+  _id: string;
+  name: string;
+  company: string;
+}
+export interface Agreement {
+  commissionType: string;
+  commissionValue: number;
+  commissionCurrency: string;
+  commissionLabel: string;
+  agreedAt?: Date;
+}
 export interface Draft {
   _id?: string;
-  contact: string;
-  contactName: string;
-  contactType: string;
-  businessId: string;
-  businessName: string;
-  businessLabel: string;
-}
-
-export interface Agreement {
-  commissionPerReceivedLeadCash: number;
-  commissionPerCompletedLead: number;
-  commissionPerReceivedLeadPercent: number;
-  agreedAt?: Date;
+  customer: Customer;
+  business: Business;
 }
 
 export const QuickForm = () => {
   const [errorMessage, setErrorMessage] = React.useState('');
-  const [businessError, setBusinessError] = React.useState('');
   const [query, setQuery] = React.useState<string>('');
+  const [draftId, setDraftId] = React.useState<string | undefined>('');
   const [agreement, setAgreement] = React.useState<Agreement>({
-    commissionPerReceivedLeadCash: 0,
-    commissionPerCompletedLead: 0,
-    commissionPerReceivedLeadPercent: 0,
+    commissionType: '',
+    commissionValue: 0,
+    commissionCurrency: '',
+    agreedAt: new Date(),
+    commissionLabel: '',
   });
-  const [draft, setDraft] = React.useState<Draft>({
+  const [customer, setCustomer] = React.useState<Customer>({
     contact: '',
-    contactName: '',
+    name: '',
     contactType: 'phone',
-    businessId: '',
-    businessName: '',
-    businessLabel: query || '',
   });
+  const [business, setBusiness] = React.useState<Business>({
+    _id: '',
+    name: query || '',
+    company: '',
+  });
+
   const [profile, setProfile] = React.useState<{ email: string }>({
     email: '',
   });
+
+  const draft = {
+    _id: draftId,
+    customer,
+    business,
+    agreement,
+  };
 
   const router = useRouter();
   const [step, setStep] = React.useState(router.query.step || 1);
@@ -62,9 +81,11 @@ export const QuickForm = () => {
   const { post, get, put, response, loading, error } = useFetch('/');
 
   const loadData = async () => {
-    const result = await get(`/drafts/${router.query.draftId}`);
-    setQuery(result.businessLabel);
-    setDraft(result);
+    const result: Draft = await get(`/drafts/${router.query.draftId}`);
+    setQuery(result.business.name);
+    setCustomer(result.customer);
+    setBusiness(result.business);
+    setDraftId(result._id);
   };
 
   useEffect(() => {
@@ -79,15 +100,15 @@ export const QuickForm = () => {
       setErrorMessage('');
 
       // need existing business id
-      if (!draft.businessId) {
+      if (!business._id) {
         return setErrorMessage(
           'Business not found. Please select it from the dropdown.'
         );
       }
 
       // always save draft
-      if (draft._id) {
-        await put(`/drafts/${draft._id}`, draft);
+      if (draftId) {
+        await put(`/drafts/${draftId}`, draft);
       } else {
         await post('/drafts', draft);
       }
@@ -105,29 +126,23 @@ export const QuickForm = () => {
         return setStep(2);
       }
 
-      // user logged in but not registered -> show dialog
-      await get('/me');
-      setProfile({ email: response.data?.email });
-      if (response.ok && !response.data?.isActive) {
-        return setStep(3);
-      }
-
-      // users not connected -> show agreement
-      await get(`/myContacts/${draft.businessId}`);
-      if (response.ok && !response.data) {
-        await get(`/business/${draft.businessId}/defaultAgreement`);
-        if (response.ok && response.data) {
-          setAgreement(response.data);
+      // show agreement summary so guru accepts the conditions
+      // same contract as it comes from the contacts (user agreed to it before connecting with business)
+      // this agreement is then attached to the introduction
+      await get(`/myContacts/${draft.business._id}`);
+      if (response.ok) {
+        // already a contact, feed in the agreement
+        if (response.data) {
+          setAgreement(response.data.agreement);
+        } else {
+          // not yet a contact, agree to default contract and user to contacts
+          await get(`/business/${draft.business._id}/defaultAgreement`);
+          if (response.ok && response.data) {
+            setAgreement({ ...response.data, agreedAt: new Date() });
+          }
         }
         return setStep(4);
       }
-
-      // final introduction
-      await post('/introductions', draft);
-      if (response.ok) {
-        router.push('/dashboard');
-      }
-      handleError(response, setErrorMessage);
     },
     [draft]
   );
@@ -135,8 +150,8 @@ export const QuickForm = () => {
   const changeBusiness = React.useCallback(
     (inputValue) => {
       setQuery(inputValue);
-      if (draft.businessId && inputValue !== draft.businessLabel) {
-        setDraft({ ...draft, businessId: '' });
+      if (business._id && inputValue !== business.name) {
+        setBusiness({ ...business, _id: '' });
       }
     },
     [draft]
@@ -151,10 +166,14 @@ export const QuickForm = () => {
     // just create contact for now with a copy of a agreement and timestamp
     // agreement need to be able to be updated in the future so we add status isActive
     setErrorMessage('');
-    await post(`/myContacts`, { contactId: draft.businessId, agreement });
+    await post(`/myContacts`, { contactId: business._id, agreement });
     if (response.ok && response.data) {
-      setStep(1);
-      _handleSubmit(e);
+      // final introduction
+      await post('/introductions', draft);
+      if (response.ok) {
+        router.push('/dashboard');
+      }
+      handleError(response, setErrorMessage);
     }
     handleError(response, setErrorMessage);
   };
@@ -184,12 +203,12 @@ export const QuickForm = () => {
               <ComboSelect
                 query={query}
                 onChange={changeBusiness}
-                onSelect={(result: Query) => {
-                  setDraft({
-                    ...draft,
-                    businessId: result._id,
-                    businessLabel: result.label,
-                    businessName: result.businessName,
+                onSelect={(result: Search) => {
+                  setBusiness({
+                    ...business,
+                    _id: result._id,
+                    name: result.label,
+                    company: result.businessName,
                   });
                 }}
               />
@@ -211,34 +230,34 @@ export const QuickForm = () => {
                   placeholder='Joe Doe'
                   required
                   className='block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                  value={draft.contactName}
+                  value={customer.name}
                   onChange={(event) =>
-                    setDraft({ ...draft, contactName: event.target.value })
+                    setCustomer({ ...customer, name: event.target.value })
                   }
                 />
               </div>
               <div className='flex'>
                 <ContactType
                   onChange={(contactType) =>
-                    setDraft({ ...draft, contactType })
+                    setCustomer({ ...customer, contactType })
                   }
-                  value={draft.contactType}
+                  value={customer.contactType}
                 />
                 <input
-                  type={draft.contactType === 'email' ? 'email' : 'text'}
+                  type={customer.contactType === 'email' ? 'email' : 'text'}
                   name='contact'
                   id='contact'
                   autoComplete='contact'
                   placeholder={
-                    draft.contactType === 'email'
+                    customer.contactType === 'email'
                       ? 'contact email'
                       : 'contact phone'
                   }
                   required
                   className='ml-3  block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                  value={draft.contact}
+                  value={customer.contact}
                   onChange={(event) =>
-                    setDraft({ ...draft, contact: event.target.value })
+                    setCustomer({ ...customer, contact: event.target.value })
                   }
                 />
               </div>
@@ -320,16 +339,22 @@ export const QuickForm = () => {
         cancelCaption='Decline'
         accept={acceptAgreement}
         cancel={() => setStep(1)}
-        caption={`Your contract with ${draft.businessLabel}`}
+        caption={`Your contract summary`}
         content={
           <div>
             <p>
-              {draft.businessLabel} would like to offer you the following
-              incentives:
+              {business.name} would like to offer you the following incentive:
             </p>
-            <div>
+            <p>
+              {agreement.commissionValue?.toLocaleString('en-AU', {
+                style: 'currency',
+                currency: agreement.commissionCurrency || 'AUD',
+              })}
+            </p>
+            <p>for {agreement.commissionLabel}</p>
+            {/* <div>
               Commission for received introduction:{' '}
-              {agreement.commissionPerReceivedLeadCash.toLocaleString('en-AU', {
+              {agreement.commissionPerReceivedLead.toLocaleString('en-AU', {
                 style: 'currency',
                 currency: 'AUD',
               })}
@@ -347,7 +372,7 @@ export const QuickForm = () => {
                 'en-AU',
                 { style: 'currency', currency: 'AUD' }
               )}
-            </div>
+            </div> */}
             {errorMessage && (
               <div className='px-8 py-4'>
                 <InlineError message={errorMessage} />

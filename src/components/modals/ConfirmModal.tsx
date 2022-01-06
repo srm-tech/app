@@ -16,7 +16,7 @@ export default function ConfirmModal({
   isShowing: boolean;
   caption: string;
   content: ReactElement;
-  accept: () => void;
+  accept: any;
   form?: string;
   acceptCaption: string;
   cancel: () => void;

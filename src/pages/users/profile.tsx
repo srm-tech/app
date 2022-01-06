@@ -19,7 +19,7 @@ interface IFormInput {
   abn: string;
   country: string;
   commissionType: string;
-  commissionPerReceivedLeadCash: string;
+  commissionPerReceivedLead: string;
   commissionPerCompletedLead: string;
   commissionPerReceivedLeadPercent: string;
 }
@@ -39,7 +39,7 @@ export default function profile() {
     abn: '',
     country: '',
     commissionType: '',
-    commissionPerReceivedLeadCash: '',
+    commissionPerReceivedLead: '',
     commissionPerCompletedLead: '',
     commissionPerReceivedLeadPercent: '',
   });
@@ -67,10 +67,10 @@ export default function profile() {
 
   function switchDropdown(dropdown) {
     switch (dropdown) {
-      case 'commissionPerReceivedLeadCash':
+      case 'commissionPerReceivedLead':
         setReceivedCash(true);
         break;
-      case 'commissionPerCompletedLeadCash':
+      case 'commissionPerCompletedLead':
         setCompletedCash(true);
         break;
       case 'commissionPerReceivedLeadPercent':
@@ -94,10 +94,10 @@ export default function profile() {
 
       // todo: dont repeat with switchDropdown function! Plz, make it better!
       switch (loaded.commissionType) {
-        case 'commissionPerReceivedLeadCash':
+        case 'commissionPerReceivedLead':
           setReceivedCash(true);
           break;
-        case 'commissionPerCompletedLeadCash':
+        case 'commissionPerCompletedLead':
           setCompletedCash(true);
           break;
         case 'commissionPerReceivedLeadPercent':
@@ -262,10 +262,8 @@ export default function profile() {
                             defaultValue={formValues.email}
                             {...register('email', {
                               required: true,
-                              pattern: {
-                                value:
-                                  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                              },
+                              pattern:
+                                /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                             })}
                             className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                           />
@@ -534,10 +532,10 @@ export default function profile() {
                           className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                         >
                           <option value=''></option>
-                          <option value='commissionPerReceivedLeadCash'>
+                          <option value='commissionPerReceivedLead'>
                             Commission per received lead ($)
                           </option>
-                          <option value='commissionPerCompletedLeadCash'>
+                          <option value='commissionPerCompletedLead'>
                             Commission per completed lead ($)
                           </option>
                           <option value='commissionPerReceivedLeadPercent'>
@@ -559,7 +557,7 @@ export default function profile() {
                     <div className='p-4 mt-6 space-y-6 sm:mt-5 sm:space-y-5'>
                       <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                         <label
-                          htmlFor='commissionPerReceivedLeadCash'
+                          htmlFor='commissionPerReceivedLead'
                           className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                         >
                           Commission per received lead ($):
@@ -570,9 +568,9 @@ export default function profile() {
                               type='number'
                               step='0.01'
                               defaultValue={
-                                formValues.commissionPerReceivedLeadCash
+                                formValues.commissionPerReceivedLead
                               }
-                              {...register('commissionPerReceivedLeadCash', {
+                              {...register('commissionPerReceivedLead', {
                                 maxLength: 255,
                               })}
                               className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
@@ -580,7 +578,7 @@ export default function profile() {
                           </div>
                         </div>
                       </div>
-                      {errors.commissionPerReceivedLeadCash?.type ===
+                      {errors.commissionPerReceivedLead?.type ===
                         'required' && (
                         <small className='text-red-900'>
                           This field is required

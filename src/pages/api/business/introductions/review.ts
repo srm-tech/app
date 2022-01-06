@@ -12,7 +12,7 @@ export default handleErrors(
     if (req.method === 'POST') {
       const user = await getCurrentUser(req, res);
       await validate([
-        check('commissionPerReceivedLeadCash').isNumeric(),
+        check('commissionPerReceivedLead').isNumeric(),
         check('commissionPerCompletedLead').isNumeric(),
         check('commissionPerReceivedLeadPercent').isNumeric(),
         check('message').isLength({ min: 1, max: 1024 }),

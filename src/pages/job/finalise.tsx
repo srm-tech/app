@@ -125,7 +125,7 @@ export default function finalise(props) {
     };
     if (loaded) {
       if (
-        loaded.agreement.commissionType === 'commissionPerCompletedLeadCash' ||
+        loaded.agreement.commissionType === 'commissionPerCompletedLead' ||
         loaded.agreement.commissionType === 'commissionPerCompletedLead'
       ) {
         data.reward = loaded.agreement[loaded.agreement.commissionType];

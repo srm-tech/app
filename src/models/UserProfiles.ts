@@ -10,6 +10,12 @@ export interface UserProfile {
   rating: number;
   successfulRate: number;
   averageCommission: number;
+  commissionType: string;
+  commissionValue: number;
+  commissionCurrency: string;
+  commissionPerReceivedLead: number;
+  commissionPerCompletedLead: number;
+  commissionPerReceivedLeadPercent: number;
   isActive: boolean;
   address1: string;
   address2: string;
@@ -29,6 +35,15 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
     return collection
       .aggregate([
         //pipeline array
+        {
+          $project: {
+            firstName: 1,
+            lastName: 1,
+            businessName: 1,
+            businessCategory: 1,
+            isBusiness: 1,
+          },
+        },
         {
           $addFields: {
             search: {
@@ -53,6 +68,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
           },
         }, //stage2
       ])
+      .limit(10)
       .toArray();
   },
   searchForBusiness: async (q: string) => {
@@ -190,9 +206,9 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       ])
       .toArray();
   },
-  getOne: async (userId) => {
+  getOne: async (userId: string) => {
     return collection.findOne({
-      _id: userId,
+      _id: new ObjectId(userId),
     });
   },
   getOneByEmail: async (email) => {

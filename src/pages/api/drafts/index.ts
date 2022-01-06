@@ -10,19 +10,30 @@ export default handleErrors(
     const { Introduction } = await getCollections();
     if (req.method === 'POST') {
       await validate([
-        check('contactType').isIn(['phone', 'email']),
+        check('customer.contactType').isIn(['phone', 'email']),
         req.body.contactType === 'email'
-          ? check('contact').isEmail()
-          : check('contact').isLength({ min: 1, max: 55 }),
-        check('contactName').isLength({ min: 1, max: 55 }),
-        check('businessName').isLength({ min: 1, max: 55 }),
+          ? check('customer.contact').isEmail()
+          : check('customer.contact').isLength({ min: 1, max: 55 }),
+        check('customer.name').isLength({ min: 1, max: 55 }),
+        check('business.name').isLength({ min: 1, max: 55 }),
+        check('business.company').isLength({ min: 1, max: 55 }),
+        check('business._id').isMongoId(),
       ])(req, res);
       const today = new Date();
       result = await Introduction.create({
         status: 'draft',
-        date: new Date(),
+        updatedAt: new Date(),
         expiresAt: new Date(new Date().setDate(today.getDate() + 3)),
-        ...req.body,
+        business: {
+          _id: req.body.business._id,
+          company: req.body.business.company,
+          name: req.body.business.name,
+        },
+        customer: {
+          name: req.body.customer.name,
+          contact: req.body.customer.contact,
+          contactType: req.body.customer.contactType,
+        },
       });
     } else {
       return res

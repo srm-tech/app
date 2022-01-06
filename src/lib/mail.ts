@@ -16,14 +16,19 @@ export default function sendMail(params) {
   const mailOption = {
     from: params.from,
     to: params.to,
+    replyTo: params.replyTo,
+    bcc: params.bcc,
     subject: params.subject,
     text: params.text,
     html: params.html,
   };
 
-  transporter.sendMail(mailOption, (err, data) => {
-    if (err) {
-      return err; // todo:  throw Error maybe?
-    }
-  });
+  return new Promise((resolve, reject) =>
+    transporter.sendMail(mailOption, (err, data) => {
+      if (err) {
+        return reject(err); // todo:  throw Error maybe?
+      }
+      resolve(data);
+    })
+  );
 }
