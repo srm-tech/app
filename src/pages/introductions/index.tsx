@@ -1,7 +1,6 @@
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import React, { useEffect, useState, version } from 'react';
-import LoadingOverlay from 'react-loading-overlay-ts';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch, { CachePolicies } from 'use-http';
 
@@ -354,34 +353,19 @@ export default function Introductions() {
 
   const list = data || [];
   return (
-    <DashboardLayout title='Introductions'>
-      <LoadingOverlay
-        active={loaderVisible}
-        spinner
-        styles={{
-          overlay: (base) => ({
-            ...base,
-            background: 'rgba(255, 255, 255, 0.8)',
-            '& svg circle': {
-              stroke: 'rgba(0, 255, 0, 0.5)',
-            },
-          }),
-        }}
-      >
-        <Table columns={columns} data={list} loading={loading} />
-        <div>
-          <Modal
-            isShowing={isShowing}
-            acceptCaption={acceptCaption}
-            cancelCaption={cancelCaption}
-            hide={toggle}
-            content={content}
-            caption={caption}
-            accept={accept}
-            cancel={toggle}
-          />
-        </div>
-      </LoadingOverlay>
+    <DashboardLayout title='Introductions' loading={loading}>
+      <Table columns={columns} data={list} loading={loading} />
+      <div>
+        <Modal
+          isShowing={isShowing}
+          acceptCaption={acceptCaption}
+          cancelCaption={cancelCaption}
+          content={content}
+          caption={caption}
+          accept={accept}
+          cancel={toggle}
+        />
+      </div>
     </DashboardLayout>
   );
 }

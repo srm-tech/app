@@ -184,7 +184,7 @@ export default function Table({ columns, data, loading }: TableProps) {
         </tbody>
       </table>
 
-      <div className='flex items-center justify-between mt-2 pagination'>
+      <div className='flex items-center justify-between mt-2 pagination bg-gray-50 p-2'>
         <span>
           Page{' '}
           <strong>
