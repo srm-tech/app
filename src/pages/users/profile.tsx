@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import countryList from 'react-select-country-list';
 import useFetch from 'use-http';
 
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 interface IFormInput {
   firstName: string;

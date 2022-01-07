@@ -4,7 +4,7 @@ import useFetch, { CachePolicies } from 'use-http';
 
 import Button from '@/components/buttons/Button';
 import Link from '@/components/buttons/Link';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 import Table from '@/components/table/Table';
 
 export default function MyContacts() {

@@ -1,10 +1,6 @@
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
   BellIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
-  HomeIcon,
   InboxIcon,
   MenuAlt2Icon,
   UsersIcon,
@@ -16,11 +12,11 @@ import React, { FC, Fragment, useState } from 'react';
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
 
-import Logo from '../Logo';
-import Avatar from '../Avatar';
+import Logo from '../components/Logo';
+import Avatar from '../components/Avatar';
 import useFetch, { CachePolicies } from 'use-http';
-import LoadingOverlay from '../LoadingOverlay';
-import { env } from '@/config';
+import LoadingOverlay from '../components/LoadingOverlay';
+import { env } from '@/lib/envConfig';
 
 const navigation = [
   // { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
@@ -249,7 +245,6 @@ export default function DashboardLayout({
                   </Menu.Button>
                 </div>
                 <Transition
-                  show={true}
                   as={Fragment}
                   enter='transition ease-out duration-100'
                   enterFrom='transform opacity-0 scale-95'

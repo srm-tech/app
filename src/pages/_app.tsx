@@ -3,7 +3,7 @@ import { SessionProvider, useSession } from 'next-auth/react';
 import useFetch, { Provider, CachePolicies } from 'use-http';
 import Modal from '@/components/modals/ConfirmModal';
 import RegisterForm from '@/components/RegisterForm';
-import { env } from '../config';
+import { env } from '@/lib/envConfig';
 
 import '@/styles/globals.css';
 import '@/styles/roadmap.scss';

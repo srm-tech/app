@@ -1,3 +1,5 @@
+import { env } from '@/lib/envConfig';
+
 export function formatCommissionDescriptions(commission) {
   // console.log('commission', commission);
   const result = {
@@ -126,7 +128,7 @@ export function htmlIntroduction(guru, customer, business) {
     <tr>
       <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
         <p>
-        <a href="${process.env.NEXTAUTH_URL}/introductions">View contact details for ${customer.firstName}.</a>
+        <a href="${env.BASE_URL}/introductions">View contact details for ${customer.firstName}.</a>
         </p>
       </td>
     </tr>

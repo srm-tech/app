@@ -1,14 +1,14 @@
 import { GetServerSideProps } from 'next';
 import React, { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import useFetch from 'use-http';
 
 import { formatCommissionDescriptions } from '@/lib/utils';
 
 import Link from '@/components/buttons/Link';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
-import { env } from '@/config';
+import { env } from '@/lib/envConfig';
 import UserProfile from '@/models/UserProfiles';
 
 interface IFormInput {
@@ -35,7 +35,7 @@ export default function Finalise(props) {
     if (values.commissionType === 'commissionPerReceivedLeadPercent') {
       values.reward = (values.revenue * values.commissionValue) / 100;
     }
-    values.guruFee = (values.reward + values.tip) * env.TRANSACTION_FEE;
+    values.guruFee = (values.reward + values.tip) * Number(env.TRANSACTION_FEE);
     values.total = values.reward + values.tip + values.guruFee;
 
     return values;
@@ -160,7 +160,7 @@ export default function Finalise(props) {
     // told ya I've done this dirty?
     data.reward = parseFloat(data.reward);
     data.tip = parseFloat(data.tip);
-    data.guruFee = (data.reward + data.tip) * env.TRANSACTION_FEE;
+    data.guruFee = (data.reward + data.tip) * Number(env.TRANSACTION_FEE);
 
     const amount = data.reward + data.tip + data.guruFee;
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NextRouter, useRouter } from 'next/router';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 const transitionDuration = 300;
 type UseAdmin = {

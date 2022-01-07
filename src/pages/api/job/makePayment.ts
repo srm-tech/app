@@ -7,7 +7,7 @@ import { handleErrors } from '@/lib/middleware';
 import { formatAmountForStripe } from '@/lib/stripe-helpers';
 import { check, validate } from '@/lib/validator';
 
-import { env } from '@/config';
+import { env } from '@/lib/envConfig';
 import getCollections from '@/models';
 
 export default handleErrors(

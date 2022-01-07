@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Logo from './Logo';
-import { env } from '@/config';
+import { env } from '@/lib/envConfig';
 
 export default function Nav() {
   const { data: session } = useSession();

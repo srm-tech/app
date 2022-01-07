@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import useFetch from 'use-http';
 
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 import Seo from '@/components/Seo';
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
