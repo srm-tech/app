@@ -6,6 +6,7 @@ import Button from '@/components/buttons/Button';
 import Link from '@/components/buttons/Link';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import Table from '@/components/table/Table';
+import { env } from '@/lib/envConfig';
 
 export default function MyContacts() {
   const [loaderVisible, setLoaderVisible] = useState(false);
@@ -13,7 +14,7 @@ export default function MyContacts() {
   const [reload, setReload] = useState(true);
 
   const { get, post, response, loading, error } = useFetch(
-    `${process.env.BASE_URL}`,
+    `${env.BASE_URL}`,
     { cachePolicy: CachePolicies.NO_CACHE },
     []
   );

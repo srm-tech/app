@@ -43,7 +43,7 @@ export default handleErrors(
       const customer = job.guru;
 
       // stripe
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
         apiVersion: '2020-08-27',
       });
 
@@ -92,12 +92,12 @@ export default handleErrors(
           // },
 
           success_url: `${
-            process.env.BASE_URL
+            env.BASE_URL
           }/job/paymentFinished?jobId=${jobId}&amount=${formatAmountForStripe(
             amount,
             env.CURRENCY
           )}`,
-          cancel_url: `${process.env.BASE_URL}/job/finalise?jobId=${jobId}`,
+          cancel_url: `${env.BASE_URL}/job/finalise?jobId=${jobId}`,
         },
         {
           stripeAccount: customer.stripeId,

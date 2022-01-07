@@ -5,6 +5,7 @@ import useFetch from 'use-http';
 
 import Table from '@/components/table/Table';
 import Link from '@/components/buttons/Link';
+import { env } from '@/lib/envConfig';
 
 SearchForBusiness.getInitialProps = async ({ query }) => {
   const { data } = query;
@@ -12,7 +13,7 @@ SearchForBusiness.getInitialProps = async ({ query }) => {
 };
 
 export default function SearchForBusiness(query) {
-  const url = process.env.BASE_URL + '/api/business/search';
+  const url = env.BASE_URL + '/api/business/search';
   const search = query.query.search;
   const options = [];
   const {

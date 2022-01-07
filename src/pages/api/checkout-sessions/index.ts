@@ -4,7 +4,7 @@ import { pricing } from '@/components/home/Pricing';
 import { env } from '@/lib/envConfig';
 import { handleErrors } from '@/lib/middleware';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
   apiVersion: '2020-08-27',
 });
 

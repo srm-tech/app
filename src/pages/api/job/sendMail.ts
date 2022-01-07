@@ -7,6 +7,7 @@ import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
 
 import getCollections from '@/models';
+import { env } from '@/lib/envConfig';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -32,15 +33,15 @@ export default handleErrors(
       req.body.name = `${user?.firstName} ${user?.lastName}`;
 
       // stripe
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
         apiVersion: '2020-08-27',
       });
 
       const account = await stripe.accounts.create({ type: 'standard' });
       const accountLink = await stripe.accountLinks.create({
         account: account.id,
-        refresh_url: `${process.env.BASE_URL}/api/job/refreshToken?jobId=${jobId}`,
-        return_url: `${process.env.BASE_URL}/introductions`,
+        refresh_url: `${env.BASE_URL}/api/job/refreshToken?jobId=${jobId}`,
+        return_url: `${env.BASE_URL}/introductions`,
         type: 'account_onboarding',
       });
 
@@ -71,7 +72,7 @@ export default handleErrors(
       }
 
       const mailData = {
-        from: process.env.EMAIL_FROM,
+        from: env.EMAIL_FROM,
         to: user?.contactEmail,
         subject: `A payment from ${req.body.name} is waiting for you in introduce.guru!`,
         // text: text(req.body),

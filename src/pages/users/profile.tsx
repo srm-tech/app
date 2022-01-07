@@ -4,6 +4,7 @@ import countryList from 'react-select-country-list';
 import useFetch from 'use-http';
 
 import DashboardLayout from '@/layouts/DashboardLayout';
+import { env } from '@/lib/envConfig';
 
 interface IFormInput {
   firstName: string;
@@ -56,9 +57,7 @@ export default function Profile() {
     saveData(data);
   };
 
-  const { get, post, response, loading, error } = useFetch(
-    process.env.BASE_URL
-  );
+  const { get, post, response, loading, error } = useFetch(env.BASE_URL);
 
   useEffect(() => {
     async function loadData() {

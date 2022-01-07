@@ -12,6 +12,7 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import Modal from '@/components/modals/ConfirmModal';
 import Rating from '@/components/Rating';
 import Table from '@/components/table/Table';
+import { env } from '@/lib/envConfig';
 
 // prepare TimeAgo
 TimeAgo.addDefaultLocale(en);
@@ -42,7 +43,7 @@ export default function Introductions() {
   } = useModal();
 
   const { get, post, response, loading, error } = useFetch(
-    `${process.env.BASE_URL}`,
+    `${env.BASE_URL}`,
     { cachePolicy: CachePolicies.NO_CACHE },
     []
   );
@@ -52,7 +53,7 @@ export default function Introductions() {
   }
 
   function handleAcceptDoNothing() {
-    window.location.href = `${process.env.BASE_URL}/introductions`;
+    window.location.href = `${env.BASE_URL}/introductions`;
   }
 
   async function handleRate(e, original) {
@@ -66,7 +67,7 @@ export default function Introductions() {
         comment: comment,
         jobId: original._id,
       });
-      window.location.href = `${process.env.BASE_URL}/introductions`;
+      window.location.href = `${env.BASE_URL}/introductions`;
     }
 
     let ratingLength = 0;
@@ -122,7 +123,7 @@ export default function Introductions() {
         introId: original._id,
       });
 
-      window.location.href = `${process.env.BASE_URL}/introductions`;
+      window.location.href = `${env.BASE_URL}/introductions`;
     }
 
     const job = await get(`/api/job/details?id=${original._id}`);
@@ -147,7 +148,7 @@ export default function Introductions() {
       const decline = await post('/api/introductions/decline', {
         introId: original._id,
       });
-      window.location.href = `${process.env.BASE_URL}/introductions`;
+      window.location.href = `${env.BASE_URL}/introductions`;
     }
 
     toggle();
@@ -191,7 +192,7 @@ export default function Introductions() {
       return;
     }
 
-    window.location.href = `${process.env.BASE_URL}/job/finalise?jobId=${jobId}`;
+    window.location.href = `${env.BASE_URL}/job/finalise?jobId=${jobId}`;
   }
 
   async function loadData() {

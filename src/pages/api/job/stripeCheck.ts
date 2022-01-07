@@ -7,6 +7,7 @@ import { handleErrors } from '@/lib/middleware';
 import { htmlNewStripeAccount } from '@/lib/utils';
 
 import getCollections from '@/models';
+import { env } from '@/lib/envConfig';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -33,7 +34,7 @@ export default handleErrors(
 
       // send email to user if not stripe
       if (!result.stripeCheck && jobs.length > 0) {
-        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+        const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
           apiVersion: '2020-08-27',
         });
 
@@ -44,8 +45,8 @@ export default handleErrors(
         });
         const accountLink = await stripe.accountLinks.create({
           account: account.id,
-          refresh_url: `${process.env.BASE_URL}/api/job/refreshToken?jobId=${id}`,
-          return_url: `${process.env.BASE_URL}/introductions`,
+          refresh_url: `${env.BASE_URL}/api/job/refreshToken?jobId=${id}`,
+          return_url: `${env.BASE_URL}/introductions`,
           type: 'account_onboarding',
         });
 
@@ -72,7 +73,7 @@ export default handleErrors(
         };
 
         const mailData = {
-          from: process.env.EMAIL_FROM,
+          from: env.EMAIL_FROM,
           to: jobUser!.contactEmail,
           subject: `A payment from ${req.body.name} is waiting for you in introduce.guru!`,
           // text: text(req.body),

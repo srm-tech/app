@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { env } from './envConfig';
 
 const openDbConnection = (url) => {
   const p = new Promise((resolve, reject) => {
@@ -8,7 +9,7 @@ const openDbConnection = (url) => {
         return;
       }
 
-      const dbName = process.env.DB_NAME || 'test';
+      const dbName = env.DB_NAME || 'test';
       const db = client?.db(dbName);
 
       resolve({ client, db });

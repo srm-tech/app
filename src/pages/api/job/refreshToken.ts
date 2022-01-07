@@ -7,6 +7,7 @@ import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 
 import getCollections from '@/models';
+import { env } from '@/lib/envConfig';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -28,15 +29,15 @@ export default handleErrors(
       const user = await UserProfile.getOne(new ObjectId(job.from));
 
       // stripe
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
         apiVersion: '2020-08-27',
       });
 
       const account = await stripe.accounts.create({ type: 'standard' });
       const accountLink = await stripe.accountLinks.create({
         account: account.id,
-        refresh_url: `${process.env.BASE_URL}/api/job/refreshToken?jobId=${jobId}`,
-        return_url: `${process.env.BASE_URL}/introductions`,
+        refresh_url: `${env.BASE_URL}/api/job/refreshToken?jobId=${jobId}`,
+        return_url: `${env.BASE_URL}/introductions`,
         type: 'account_onboarding',
       });
 
