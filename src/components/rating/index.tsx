@@ -2,11 +2,7 @@ import { StarIcon } from '@heroicons/react/solid';
 import { useState } from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 
-export default function Rating(
-  { initialValue = 1 },
-  name = 'rating',
-  size = '10'
-) {
+export default function Rating({ initialValue = 1 }, size = '10') {
   const [value, setValue] = useState(initialValue);
   return (
     <>
@@ -21,7 +17,7 @@ export default function Rating(
         }}
         renderStarIcon={() => <StarIcon className={`w-${size} h-${size}`} />}
       />
-      <input type='hidden' name={name} value={value} />
+      <input type='hidden' value={value} />
     </>
   );
 }
