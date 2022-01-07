@@ -8,10 +8,11 @@ import useModal from '@/lib/useModal';
 import { formatCommissionDescriptions } from '@/lib/utils';
 
 import Button from '@/components/buttons/Button';
-import DashboardLayout from '@/layouts/DashboardLayout';
 import Modal from '@/components/modals/ConfirmModal';
 import Rating from '@/components/rating';
 import Table from '@/components/table/Table';
+
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 // prepare TimeAgo
 TimeAgo.addDefaultLocale(en);
@@ -95,7 +96,10 @@ export default function Introductions() {
               Your rating:
             </label>
             <div className='mt-1 rounded-md shadow-sm'>
-              <Rating initialValue={defaultRate} />
+              <Rating
+                initialValue={defaultRate}
+                name={'rating-' + original.guru._id}
+              />
             </div>
           </div>
 
@@ -247,7 +251,7 @@ export default function Introductions() {
             {data.position === 'guru' ? data.business.name : 'Me'}
           </div>
           {data.position === 'guru' && (
-            <div className='cell-business text-xs'>
+            <div className='text-xs cell-business'>
               <div>
                 {data.business.company}{' '}
                 {data.business.businessCategory &&
@@ -283,7 +287,7 @@ export default function Introductions() {
             {data.position === 'guru' ? 'Me' : data.guru.name}
           </div>
           {data.position === 'business' && (
-            <div className='cell-business text-xs'>
+            <div className='text-xs cell-business'>
               <div>
                 <a
                   className='text-xs text-blue-500'
