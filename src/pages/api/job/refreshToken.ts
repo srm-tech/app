@@ -19,14 +19,11 @@ export default handleErrors(
       const jobId = new ObjectId(_id);
 
       // get job data
-      const job = await Introduction.getFinalise(jobId);
+      const job = await Introduction.getOne(jobId);
       // if not job found – 404
       if (!job) {
         return res.status(404).end('not found');
       }
-
-      // get sender data
-      const user = await UserProfile.getOne(new ObjectId(job.from));
 
       // stripe
       const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
