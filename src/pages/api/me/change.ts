@@ -25,22 +25,29 @@ export default handleErrors(
         check('abn').isLength({ min: 11, max: 11 }),
         check('country').isLength({ min: 2, max: 2 }),
         check('commissionType').optional().isString(),
-        check('commissionPerReceivedLead').optional().isNumeric(),
-        check('commissionPerCompletedLead').optional().isNumeric(),
-        check('commissionPerReceivedLeadPercent').optional().isNumeric(),
+        // check('commissionPerReceivedLead').optional().isNumeric(),
+        // check('commissionPerCompletedLead').optional().isNumeric(),
+        // check('commissionPerReceivedLeadPercent').optional().isNumeric(),
       ];
 
       await validate(validators)(req, res);
 
       req.body.isBusiness = false;
+      console.log('1', req.body);
+
+      const valueFromRequest = req.body[req.body.commissionType];
+      const value = parseFloat(valueFromRequest);
+      if (isNaN(value)) {
+        delete req.body.commissionType; // do not write commission type is field is i.e. null
+        delete req.body[req.body.commissionType];
+      } else {
+        req.body[req.body.commissionType] = value;
+      }
+      console.log('2', req.body);
 
       if (req.body.commissionType) {
         req.body.isBusiness = true;
       }
-
-      const valueFromRequest = req.body[req.body.commissionType];
-      const value = parseFloat(valueFromRequest);
-      req.body[req.body.commissionType] = value;
 
       const result = await UserProfile.updateOne(user._id, {
         ...req.body,
