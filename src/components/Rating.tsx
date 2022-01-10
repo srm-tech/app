@@ -2,10 +2,12 @@ import { StarIcon } from '@heroicons/react/solid';
 import { useState } from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 
-export default function Rating(
-  { initialValue = 1, name = 'rating' },
-  size = '10'
-) {
+export default function Rating({
+  initialValue = 1,
+  name = 'rating',
+  size = '10',
+  editing = false,
+}) {
   const [value, setValue] = useState(initialValue);
   return (
     <>
@@ -15,7 +17,7 @@ export default function Rating(
         starCount={5}
         emptyStarColor='#ccc'
         starColor='#fa0'
-        editing={true}
+        editing={editing}
         onStarClick={(nextValue) => {
           setValue(nextValue);
         }}

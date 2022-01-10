@@ -9,7 +9,7 @@ import { formatCommissionDescriptions } from '@/lib/utils';
 
 import Button from '@/components/buttons/Button';
 import Modal from '@/components/modals/ConfirmModal';
-import Rating from '@/components/rating';
+import Rating from '@/components/Rating';
 import Table from '@/components/table/Table';
 
 import DashboardLayout from '@/layouts/DashboardLayout';
@@ -99,6 +99,7 @@ export default function Introductions() {
               <Rating
                 initialValue={defaultRate}
                 name={'rating-' + original.guru._id}
+                editing
               />
             </div>
           </div>
@@ -251,7 +252,7 @@ export default function Introductions() {
             {data.position === 'guru' ? data.business.name : 'Me'}
           </div>
           {data.position === 'guru' && (
-            <div className='text-xs cell-business'>
+            <div className='cell-business text-xs'>
               <div>
                 {data.business.company}{' '}
                 {data.business.businessCategory &&
@@ -287,7 +288,7 @@ export default function Introductions() {
             {data.position === 'guru' ? 'Me' : data.guru.name}
           </div>
           {data.position === 'business' && (
-            <div className='text-xs cell-business'>
+            <div className='cell-business text-xs'>
               <div>
                 <a
                   className='text-xs text-blue-500'

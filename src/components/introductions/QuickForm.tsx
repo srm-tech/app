@@ -88,11 +88,22 @@ export const QuickForm = () => {
     setDraftId(result._id);
   };
 
+  const loadBusiness = async () => {
+    const result: Business = await get(`/business/${router.query.businessId}`);
+    setQuery(result.name);
+    setBusiness(result);
+  };
+
   useEffect(() => {
     if (router.query.draftId) {
       loadData();
     }
   }, [router.query.draftId]);
+  useEffect(() => {
+    if (router.query.businessId) {
+      loadBusiness();
+    }
+  }, [router.query.businessId]);
 
   const _handleSubmit = React.useCallback(
     async (e) => {
