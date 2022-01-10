@@ -23,7 +23,6 @@ export default function Introductions() {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(true);
-  // const [rating, setRating] = useState(1);
 
   const {
     isShowing,
@@ -252,7 +251,7 @@ export default function Introductions() {
             {data.position === 'guru' ? data.business.name : 'Me'}
           </div>
           {data.position === 'guru' && (
-            <div className='cell-business text-xs'>
+            <div className='text-xs cell-business'>
               <div>
                 {data.business.company}{' '}
                 {data.business.businessCategory &&
@@ -288,7 +287,7 @@ export default function Introductions() {
             {data.position === 'guru' ? 'Me' : data.guru.name}
           </div>
           {data.position === 'business' && (
-            <div className='cell-business text-xs'>
+            <div className='text-xs cell-business'>
               <div>
                 <a
                   className='text-xs text-blue-500'
@@ -314,7 +313,11 @@ export default function Introductions() {
       Header: 'date',
       accessor: 'date',
       Cell: ({ row: { original } }) => (
-        <>{timeAgo.format(new Date(original.createdAt))}</>
+        <>
+          {original.date === undefined
+            ? ''
+            : timeAgo.format(new Date(original.date))}
+        </>
       ),
     },
     { Header: 'status', accessor: 'status' },

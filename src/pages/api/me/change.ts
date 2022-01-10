@@ -9,7 +9,7 @@ import getCollections from '@/models';
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
-    const { UserProfile, Agreement } = await getCollections();
+    const { UserProfile } = await getCollections();
     if (req.method === 'POST') {
       const user = await getCurrentUser(req, res);
 
@@ -25,23 +25,23 @@ export default handleErrors(
         check('abn').isLength({ min: 11, max: 11 }),
         check('country').isLength({ min: 2, max: 2 }),
         check('commissionType').optional().isString(),
-        check('commissionValue').optional().isNumeric(),
+        check('commissionPerReceivedLead').optional().isNumeric(),
+        check('commissionPerCompletedLead').optional().isNumeric(),
+        check('commissionPerReceivedLeadPercent').optional().isNumeric(),
       ];
 
       await validate(validators)(req, res);
 
+      req.body.isBusiness = false;
+
       if (req.body.commissionType) {
         req.body.isBusiness = true;
-      } else {
-        req.body.isBusiness = false;
       }
 
-      req.body.agreement = {
-        commissionType: req.body.commissionType,
-        commissionValue: parseFloat(req.body.commissionValue),
-      };
-      delete req.body.commissionType;
-      delete req.body.commissionValue;
+      const valueFromRequest = req.body[req.body.commissionType];
+      const value = parseFloat(valueFromRequest);
+      req.body[req.body.commissionType] = value;
+
       const result = await UserProfile.updateOne(user._id, {
         ...req.body,
       });
