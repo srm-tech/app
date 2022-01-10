@@ -70,10 +70,7 @@ export default function Profile() {
   useEffect(() => {
     async function loadData() {
       const loaded = await get('/api/me');
-      if (loaded.agreement) {
-        loaded.commissionType = loaded.agreement.commissionType;
-        loaded.commissionValue = loaded.agreement.commissionValue;
-      }
+      setCommissionField(loaded.commissionType);
       setFormValues(loaded);
       reset(loaded);
     }
