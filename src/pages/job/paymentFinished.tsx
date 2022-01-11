@@ -5,6 +5,7 @@ import useFetch from 'use-http';
 
 import DashboardLayout from '@/layouts/DashboardLayout';
 import Seo from '@/components/Seo';
+import { env } from '@/lib/envConfig';
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   return {
@@ -16,9 +17,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 };
 
 export default function StripeConfirmationPage(props) {
-  const { get, post, response, loading, error } = useFetch(
-    process.env.BASE_URL
-  );
+  const { get, post, response, loading, error } = useFetch(env.BASE_URL);
 
   async function setStatus() {
     await post('/api/job/setStatusPaid', {

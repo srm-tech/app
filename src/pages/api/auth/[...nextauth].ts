@@ -5,6 +5,7 @@ import EmailProvider from 'next-auth/providers/email';
 import nodemailer from 'nodemailer';
 
 import { getDb } from '@/lib/db';
+import { env } from '@/lib/envConfig';
 const { client, dbName } = getDb();
 
 // For more information on each option (and a full list of options) go to
@@ -17,16 +18,15 @@ export default async function auth(req, res) {
       EmailProvider({
         server: {
           host:
-            process.env.EMAIL_SERVER_HOST ||
-            'email-smtp.ap-southeast-2.amazonaws.com',
-          port: process.env.EMAIL_SERVER_PORT || 587,
+            env.EMAIL_SERVER_HOST || 'email-smtp.ap-southeast-2.amazonaws.com',
+          port: env.EMAIL_SERVER_PORT || 587,
           auth: {
-            user: process.env.EMAIL_SERVER_USER,
-            pass: process.env.EMAIL_SERVER_PASS,
+            user: env.EMAIL_SERVER_USER,
+            pass: env.EMAIL_SERVER_PASS,
           },
-          secure: Boolean(process.env.EMAIL_SECURE || 0),
+          secure: Boolean(env.EMAIL_SECURE || 0),
         },
-        from: process.env.EMAIL_FROM,
+        from: env.EMAIL_FROM,
         async sendVerificationRequest({
           identifier: email,
           url,
@@ -58,7 +58,7 @@ export default async function auth(req, res) {
     // The secret should be set to a reasonably long random string.
     // It is used to sign cookies and to sign and encrypt JSON Web Tokens, unless
     // a separate secret is defined explicitly for encrypting the JWT.
-    secret: process.env.SECRET,
+    secret: env.SECRET,
 
     session: {
       strategy: 'jwt',
@@ -79,7 +79,7 @@ export default async function auth(req, res) {
     // option is set - or by default if no database is specified.
     // https://next-auth.js.org/configuration/options#jwt
     jwt: {
-      secret: process.env.SECRET,
+      secret: env.SECRET,
       // A secret to use for key generation (you should set this explicitly)
       // secret: 'INp8IvdIyeMcoGAgFGoA61DdBglwwSqnXJZkgz8PSnw',
       // Set to true to use encryption (default: false)

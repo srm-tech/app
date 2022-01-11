@@ -108,9 +108,7 @@ export default function Finalise(props) {
     reset,
   } = useForm();
 
-  const { get, post, response, loading, error } = useFetch(
-    process.env.BASE_URL
-  );
+  const { get, post, response, loading, error } = useFetch(env.BASE_URL);
 
   async function loadData() {
     const loaded = await get(`/api/job/finalise?jobId=${props.jobId}`);

@@ -8,6 +8,7 @@ import { check, validate } from '@/lib/validator';
 
 import getCollections from '@/models';
 import { ObjectId } from 'mongodb';
+import { env } from '@/lib/envConfig';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -83,7 +84,7 @@ export default handleErrors(
 
       // send email
       const mailData = {
-        from: process.env.EMAIL_FROM,
+        from: env.EMAIL_FROM,
         to: business?.email,
         replyTo: business?.email,
         bcc: 'kris@introduce.guru',

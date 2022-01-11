@@ -5,6 +5,7 @@ import sendMail from '@/lib/mail';
 import { htmlStripeReminder } from '@/lib/utils';
 
 import getCollections from '@/models';
+import { env } from '@/lib/envConfig';
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,10 +17,10 @@ export default async function handler(
     try {
       const { authorization } = req.headers;
 
-      if (authorization === `Bearer ${process.env.SECRET}`) {
+      if (authorization === `Bearer ${env.SECRET}`) {
         const jobs = await Introduction.waitingForGuru();
 
-        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+        const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
           apiVersion: '2020-08-27',
         });
 
@@ -42,7 +43,7 @@ export default async function handler(
             };
 
             const mailData = {
-              from: process.env.EMAIL_FROM,
+              from: env.EMAIL_FROM,
               to: job.user.contactEmail,
               subject: `A payment from ${data.name} is waiting for you in introduce.guru!`,
               // text: text(req.body),

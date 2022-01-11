@@ -7,6 +7,7 @@ import { handleErrors } from '@/lib/middleware';
 import { htmlStripeReminder } from '@/lib/utils';
 
 import getCollections from '@/models';
+import { env } from '@/lib/envConfig';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -22,7 +23,7 @@ export default handleErrors(
         job = _job[0]; // todo: make it better
       }
 
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
         apiVersion: '2020-08-27',
       });
       const jobGuru = await UserProfile.getOne(job.guru._id);
@@ -46,7 +47,7 @@ export default handleErrors(
         };
 
         const mailData = {
-          from: process.env.EMAIL_FROM,
+          from: env.EMAIL_FROM,
           to: job.guru.contactEmail,
           subject: `A payment from ${req.body.name} is waiting for you in introduce.guru!`,
           // text: text(req.body),

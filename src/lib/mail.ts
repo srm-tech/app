@@ -1,15 +1,14 @@
 import nodemailer from 'nodemailer';
+import { env } from './envConfig';
 
 export default function sendMail(params) {
   const transporter = nodemailer.createTransport({
-    host:
-      process.env.EMAIL_SERVER_HOST ||
-      'email-smtp.ap-southeast-2.amazonaws.com',
-    port: process.env.EMAIL_SERVER_PORT || 587,
-    secure: Boolean(process.env.EMAIL_SECURE || 0),
+    host: env.EMAIL_SERVER_HOST || 'email-smtp.ap-southeast-2.amazonaws.com',
+    port: Number(env.EMAIL_SERVER_PORT) || 587,
+    secure: Boolean(env.EMAIL_SECURE || 0),
     auth: {
-      user: process.env.EMAIL_SERVER_USER,
-      pass: process.env.EMAIL_SERVER_PASS,
+      user: env.EMAIL_SERVER_USER,
+      pass: env.EMAIL_SERVER_PASS,
     },
   });
 
