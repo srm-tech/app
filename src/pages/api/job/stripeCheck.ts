@@ -27,8 +27,8 @@ export default handleErrors(
         job = jobs[0]; // todo: make it better
       }
       const jobUser = await UserProfile.getOne(job.guru._id);
-      console.log('job user:', jobUser);
-      console.log('result:', result);
+      // console.log('job user:', jobUser);
+      // console.log('result:', result);
 
       if (jobUser) {
         result.stripeCheck = jobUser.stripeId ? true : false;

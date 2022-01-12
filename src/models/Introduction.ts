@@ -137,7 +137,7 @@ const Introduction = (collection: Collection<Document>) => ({
                     $cond: [
                       { $eq: ['$status', 'pending'] },
                       'waiting for approval',
-                      { $concat: ['guru ', '$status'] },
+                      { $concat: ['$status'] },
                     ],
                   },
                 },
@@ -254,29 +254,6 @@ const Introduction = (collection: Collection<Document>) => ({
         {
           $unwind: '$fresh',
         },
-        // {
-        //   $unwind: '$user',
-        // },
-        // {
-        //   $lookup: {
-        //     from: 'agreements',
-        //     localField: 'agreementId',
-        //     foreignField: '_id',
-        //     as: 'agreement',
-        //   },
-        // },
-        // {
-        //   $unwind: '$agreement',
-        // },
-        // {
-        //   $match: {
-        //     action: 'sent',
-        //     status: {
-        //       $in: statuses,
-        //     },
-        //     _id: objId,
-        //   },
-        // },
       ])
       .toArray();
     if (result) {

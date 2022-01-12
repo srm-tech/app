@@ -160,7 +160,7 @@ export default function Finalise(props) {
 
     const amount = data.reward + data.tip + data.guruFee;
 
-    console.log('jobData:', jobData);
+    // console.log('jobData:', jobData);
 
     const paymentData = {
       amount: amount,

@@ -4,6 +4,7 @@ import React, { useEffect, useState, version } from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch, { CachePolicies } from 'use-http';
 
+import { env } from '@/lib/envConfig';
 import useModal from '@/lib/useModal';
 import { formatCommissionDescriptions } from '@/lib/utils';
 
@@ -11,7 +12,6 @@ import Button from '@/components/buttons/Button';
 import Modal from '@/components/modals/ConfirmModal';
 import Rating from '@/components/Rating';
 import Table from '@/components/table/Table';
-import { env } from '@/lib/envConfig';
 
 import DashboardLayout from '@/layouts/DashboardLayout';
 
@@ -445,7 +445,7 @@ export default function Introductions() {
   ];
 
   const list = data || [];
-  console.log(list);
+  // console.log(list);
 
   return (
     <DashboardLayout title='Introductions' loading={loading}>
