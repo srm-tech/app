@@ -14,6 +14,7 @@ import Rating from '@/components/Rating';
 import Table from '@/components/table/Table';
 
 import DashboardLayout from '@/layouts/DashboardLayout';
+import { getOriginalNode } from 'typescript';
 
 // prepare TimeAgo
 TimeAgo.addDefaultLocale(en);
@@ -321,7 +322,18 @@ export default function Introductions() {
         </>
       ),
     },
-    { Header: 'status', accessor: 'status' },
+    {
+      Header: 'status',
+      accessor: 'status',
+      Cell: ({ row: { original } }) => (
+        <>
+          {original.status === 'waiting for Guru' &&
+          original.position === 'guru'
+            ? 'waiting for business to accept'
+            : original.status}
+        </>
+      ),
+    },
     {
       Header: 'commission',
       accessor: 'commissionEarned',
