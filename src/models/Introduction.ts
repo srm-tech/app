@@ -251,6 +251,9 @@ const Introduction = (collection: Collection<Document>) => ({
             as: 'fresh',
           },
         },
+        {
+          $unwind: '$fresh',
+        },
         // {
         //   $unwind: '$user',
         // },

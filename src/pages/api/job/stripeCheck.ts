@@ -2,12 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 
 import { ObjectId } from '@/lib/db';
+import { env } from '@/lib/envConfig';
 import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
 import { htmlNewStripeAccount } from '@/lib/utils';
 
 import getCollections from '@/models';
-import { env } from '@/lib/envConfig';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -27,6 +27,9 @@ export default handleErrors(
         job = jobs[0]; // todo: make it better
       }
       const jobUser = await UserProfile.getOne(job.guru._id);
+      console.log('job user:', jobUser);
+      console.log('result:', result);
+
       if (jobUser) {
         result.stripeCheck = jobUser.stripeId ? true : false;
       }

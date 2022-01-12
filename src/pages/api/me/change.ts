@@ -25,15 +25,11 @@ export default handleErrors(
         check('abn').isLength({ min: 11, max: 11 }),
         check('country').isLength({ min: 2, max: 2 }),
         check('commissionType').optional().isString(),
-        // check('commissionPerReceivedLead').optional().isNumeric(),
-        // check('commissionPerCompletedLead').optional().isNumeric(),
-        // check('commissionPerReceivedLeadPercent').optional().isNumeric(),
       ];
 
       await validate(validators)(req, res);
 
       req.body.isBusiness = false;
-      console.log('1', req.body);
 
       const valueFromRequest = req.body[req.body.commissionType];
       const value = parseFloat(valueFromRequest);
@@ -43,10 +39,14 @@ export default handleErrors(
       } else {
         req.body[req.body.commissionType] = value;
       }
-      console.log('2', req.body);
 
       if (req.body.commissionType) {
         req.body.isBusiness = true;
+        const agreement = {
+          commissionType: req.body.commissionType,
+          commissionValue: req.body[req.body.commissionType],
+        };
+        req.body.agreement = agreement;
       }
 
       const result = await UserProfile.updateOne(user._id, {

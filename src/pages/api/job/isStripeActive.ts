@@ -2,12 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 
 import { ObjectId } from '@/lib/db';
+import { env } from '@/lib/envConfig';
 import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
 import { htmlStripeReminder } from '@/lib/utils';
 
 import getCollections from '@/models';
-import { env } from '@/lib/envConfig';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {

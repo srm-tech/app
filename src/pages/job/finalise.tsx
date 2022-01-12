@@ -3,13 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useFetch from 'use-http';
 
+import { env } from '@/lib/envConfig';
 import { formatCommissionDescriptions } from '@/lib/utils';
 
 import Link from '@/components/buttons/Link';
-import DashboardLayout from '@/layouts/DashboardLayout';
 
-import { env } from '@/lib/envConfig';
-import UserProfile from '@/models/UserProfiles';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 interface IFormInput {
   revenue: number;
@@ -135,7 +134,6 @@ export default function Finalise(props) {
     data = calculate(data);
     setJobData(loaded);
     setAgreement(formatCommissionDescriptions(loaded.agreement));
-    console.log(agreement);
     reset(data);
   }
 
@@ -161,6 +159,8 @@ export default function Finalise(props) {
     data.guruFee = (data.reward + data.tip) * Number(env.TRANSACTION_FEE);
 
     const amount = data.reward + data.tip + data.guruFee;
+
+    console.log('jobData:', jobData);
 
     const paymentData = {
       amount: amount,
