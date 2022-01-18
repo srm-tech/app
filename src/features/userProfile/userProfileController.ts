@@ -69,7 +69,7 @@ export default handleErrors(
         ...req.body,
       });
     } else {
-      res.setHeader('Allow', 'GET');
+      res.setHeader('Allow', 'GET, POST, PUT');
       return res.status(405).end('Method Not Allowed');
     }
     res.status(200).json(result);
