@@ -20,7 +20,7 @@ import {
   Business,
   Search,
   Agreement,
-} from '@/components/introductions/QuickForm';
+} from '@/features/introductions/QuickForm';
 import ComboSelectAdvanced from '@/components/ComboSelectAdvanced';
 import ConfirmModal from '@/components/modals/ConfirmModal';
 import BusinessDetails from '@/components/BusinessDetails';
@@ -96,7 +96,7 @@ export default function DashboardLayout({
   const changeBusiness = (inputValue) => {
     setQuery(inputValue);
     if (business?._id && inputValue !== business?.name) {
-      setBusiness({ ...business, _id: '' });
+      // setBusiness({ ...business, _id: '' });
     }
   };
 

@@ -56,9 +56,9 @@ export default function BusinessDetails({
             </dt>
             <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
               {formatCommissionDescriptions(business.commissionType)}:{' '}
-              {business.agreement?.commissionValue?.toLocaleString('en-AU', {
+              {business.commissionValue?.toLocaleString('en-AU', {
                 style: 'currency',
-                currency: business?.agreement.commissionCurrency || 'AUD',
+                currency: business?.commissionCurrency || 'AUD',
               })}{' '}
             </dd>
           </div>

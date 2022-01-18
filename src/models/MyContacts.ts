@@ -1,7 +1,7 @@
 import { Collection } from 'mongodb';
 
 import { ObjectId } from '@/lib/db';
-import { Agreement } from '@/components/introductions/QuickForm';
+import { Agreement } from '@/features/introductions/QuickForm';
 
 interface MyContact {
   userId: ObjectId;
