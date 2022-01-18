@@ -16,10 +16,16 @@ import Avatar from '../components/Avatar';
 import useFetch, { CachePolicies } from 'use-http';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import { env } from '@/lib/envConfig';
-import { Business, Search } from '@/components/introductions/QuickForm';
+import {
+  Business,
+  Search,
+  Agreement,
+} from '@/components/introductions/QuickForm';
 import ComboSelectAdvanced from '@/components/ComboSelectAdvanced';
 import ConfirmModal from '@/components/modals/ConfirmModal';
 import BusinessDetails from '@/components/BusinessDetails';
+import clsx from 'clsx';
+import { UserProfile } from '@/features/userProfile/UserProfileModel';
 
 const navigation = [
   // { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
@@ -51,20 +57,21 @@ export default function DashboardLayout({
   children,
   title,
   loading,
+  className,
+  actions,
 }: {
   children: any;
   title?: string;
   loading?: boolean;
+  className?: any;
+  actions?: any;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showBusiness, setShowBusiness] = useState(false);
   const { post, response } = useFetch('');
   const [query, setQuery] = React.useState<string>('');
-  const [business, setBusiness] = React.useState<Business>({
-    _id: '',
-    name: query || '',
-    company: '',
-  });
+  const [business, setBusiness] = React.useState<UserProfile | null>();
+
   const { data: session } = useSession();
   const router = useRouter();
   const { error, data: user = [] } = useFetch(
@@ -82,15 +89,20 @@ export default function DashboardLayout({
   });
 
   const introduce = async () => {
-    router.push(`/?businessId=${business._id}`);
+    router.push(`/?businessId=${business?._id}`);
     setShowBusiness(false);
   };
 
   const changeBusiness = (inputValue) => {
     setQuery(inputValue);
-    if (business._id && inputValue !== business.name) {
+    if (business?._id && inputValue !== business?.name) {
       setBusiness({ ...business, _id: '' });
     }
+  };
+
+  const selectBusiness = (business: UserProfile) => {
+    setShowBusiness(true);
+    setBusiness(business);
   };
 
   return (
@@ -234,15 +246,7 @@ export default function DashboardLayout({
                   <ComboSelectAdvanced
                     query={query}
                     onChange={changeBusiness}
-                    onSelect={(result: Search) => {
-                      setShowBusiness(true);
-                      setBusiness({
-                        ...business,
-                        _id: result._id,
-                        name: result.label,
-                        company: result.businessName,
-                      });
-                    }}
+                    onSelect={selectBusiness}
                   />
                 </div>
               </form>
@@ -313,13 +317,21 @@ export default function DashboardLayout({
         <main>
           <div className='py-6 relative'>
             <LoadingOverlay loading={loading} />
-            <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
-              <h1 className='text-2xl font-semibold text-gray-900'>{title}</h1>
+            <div className='py-4 px-8 border-gray-200 sm:flex sm:items-center sm:justify-between'>
+              <h3 className='text-2xl leading-6 font-medium text-gray-900'>
+                {title}
+              </h3>
+              {actions}
             </div>
             <div className='px-4 mx-auto max-w-7xl sm:px-6 md:px-8'>
               {/* Replace with your content */}
               <div className='py-4'>
-                <div className='p-2 border-4 border-gray-200 rounded-lg overflow-y-auto'>
+                <div
+                  className={clsx(
+                    'p-2 border-4 border-gray-200 rounded-lg overflow-y-auto',
+                    className
+                  )}
+                >
                   {children}
                 </div>
               </div>
@@ -333,12 +345,10 @@ export default function DashboardLayout({
         form='registration'
         acceptCaption='Introduce Now'
         cancelCaption='Close'
-        accept={() => introduce()}
-        cancel={() => setShowBusiness(false)}
+        onAccept={() => introduce()}
+        onCancel={() => setShowBusiness(false)}
         content={
-          <div>
-            <BusinessDetails business={business} />
-          </div>
+          <div>{business && <BusinessDetails business={business} />}</div>
         }
       />
     </div>

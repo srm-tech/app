@@ -5,7 +5,7 @@ import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
 
 import getCollections from '@/models';
-import UserProfile from '@/models/UserProfiles';
+import UserProfile from '@/features/userProfile/UserProfileModel';
 import { ObjectId } from 'mongodb';
 
 export const commissionLabel = {

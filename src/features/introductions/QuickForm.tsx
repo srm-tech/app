@@ -1,14 +1,13 @@
+import { useEffect } from 'react';
 import * as React from 'react';
 import useFetch from 'use-http';
-import ContactType from './ContactTypeSelect';
-import ComboSelect from '../ComboSelect';
 import { useSession, signIn } from 'next-auth/react';
-import InlineError from '../errors/InlineError';
-import { handleErrors } from '@/lib/middleware';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import ContactType from '@/components/ContactTypeSelect';
+import ComboSelect from '@/components/ComboSelect';
+import InlineError from '@/components/errors/InlineError';
+import RegisterForm from '@/components/RegisterForm';
 import Modal from '@/components/modals/ConfirmModal';
-import RegisterForm from '../RegisterForm';
 import { handleError } from '@/lib/helper';
 
 export interface Search {
@@ -323,12 +322,12 @@ export const QuickForm = () => {
         isShowing={step === 2}
         acceptCaption='Sign In'
         cancelCaption='I will do it later'
-        accept={() =>
+        onAccept={() =>
           signIn('', {
             callbackUrl: location.href,
           })
         }
-        cancel={() => setStep(1)}
+        onCancel={() => setStep(1)}
         caption='Not logged in?'
         content={<p>To save introduction please sign in with your email.</p>}
       />
@@ -337,8 +336,8 @@ export const QuickForm = () => {
         form='registration'
         acceptCaption='Register Now'
         cancelCaption='I will do it later'
-        accept={() => console.info('register from intro')}
-        cancel={() => setStep(1)}
+        onAccept={() => console.info('register from intro')}
+        onCancel={() => setStep(1)}
         caption='New to Introduce Guru?'
         content={
           <div>
@@ -357,8 +356,8 @@ export const QuickForm = () => {
         form='registration'
         acceptCaption='Accept & Introduce'
         cancelCaption='Decline'
-        accept={acceptAgreement}
-        cancel={() => setStep(1)}
+        onAccept={acceptAgreement}
+        onCancel={() => setStep(1)}
         caption={`Your contract summary`}
         content={
           <div>

@@ -4,9 +4,8 @@ import { SearchIcon } from '@heroicons/react/solid';
 import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import useFetch from 'use-http';
-import InlineError from './errors/InlineError';
 import { debounce } from '@/lib/helper';
-import { Search } from './introductions/QuickForm';
+import { Search } from '../features/introductions/QuickForm';
 
 export default function ComboSelectAdvanced({ query, onChange, onSelect }) {
   const debounceSetCurrentValue = useRef<any>(null);
@@ -57,14 +56,13 @@ export default function ComboSelectAdvanced({ query, onChange, onSelect }) {
     itemToString: (item: Search | null) => (item ? item.label : ''),
     onInputValueChange: ({ inputValue }: { inputValue?: string }) => {
       onChange && onChange(inputValue || '');
-      // console.log(222);
-
       debounceSetCurrentValue.current(inputValue);
     },
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
         const item: Search = selectedItem;
-        onSelect && onSelect(item);
+        onSelect &&
+          onSelect(data.find((dataItem) => dataItem._id === item._id));
         onChange && onChange(item.label || '');
       }
     },

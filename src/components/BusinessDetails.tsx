@@ -1,6 +1,12 @@
 import Rating from '@/components/Rating';
+import { formatCommissionDescriptions } from '@/lib/utils';
+import { UserProfile } from '@/features/userProfile/UserProfileModel';
 
-export default function BusinessDetails({ business }) {
+export default function BusinessDetails({
+  business,
+}: {
+  business: UserProfile;
+}) {
   return (
     <div className='bg-white shadow overflow-hidden sm:rounded-lg'>
       <div className='px-4 py-5 sm:px-6'>
@@ -22,26 +28,26 @@ export default function BusinessDetails({ business }) {
           <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
             <dt className='text-sm font-medium text-gray-500'>Company Name</dt>
             <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-              {business.company}
+              {business.businessName}
             </dd>
           </div>
           <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
             <dt className='text-sm font-medium text-gray-500'>Email address</dt>
             <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-              {business.email}
+              {business.contactEmail}
             </dd>
           </div>
           <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
             <dt className='text-sm font-medium text-gray-500'>Phone</dt>
             <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-              {business.phone}
+              {business.contactPhone}
             </dd>
           </div>
           <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
             <dt className='text-sm font-medium text-gray-500'>Rating</dt>
             <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-              <Rating initialValue={business.rating} />
-              {business.rating}
+              <Rating initialValue={business.avgRate || 0} />
+              {business.avgRate}
             </dd>
           </div>
           <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
@@ -49,10 +55,11 @@ export default function BusinessDetails({ business }) {
               Offered Incentive
             </dt>
             <dd className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
+              {formatCommissionDescriptions(business.commissionType)}:{' '}
               {business.agreement?.commissionValue?.toLocaleString('en-AU', {
                 style: 'currency',
                 currency: business?.agreement.commissionCurrency || 'AUD',
-              })}
+              })}{' '}
             </dd>
           </div>
         </dl>

@@ -26,7 +26,7 @@ export default function RegisterForm({
 }) {
   const [agreed, setAgreed] = useState(false);
   const formRef = useRef<any>();
-  const { put, response } = useFetch('');
+  const { post, response } = useFetch('');
   const [errorMessage, setErrorMessage] = useState('');
   const [profile, setProfile] = useState<Profile>({
     contactEmail: email || '',
@@ -42,7 +42,7 @@ export default function RegisterForm({
     if (!agreed) {
       return setErrorMessage('Please agree to our terms.');
     }
-    await put('/me/register', profile);
+    await post('/users', profile);
     handleError(response, setErrorMessage);
     if (response.ok) {
       onComplete(e);

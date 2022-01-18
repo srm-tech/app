@@ -2,7 +2,7 @@ import { ClockIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import Link from 'next/link';
 import { SignUpForBetaForm } from './SignUpForBetaForm';
-import { QuickForm } from '../introductions/QuickForm';
+import { QuickForm } from '../../features/introductions/QuickForm';
 
 export default function Hero() {
   return (

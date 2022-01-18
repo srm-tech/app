@@ -90,98 +90,101 @@ export default function Table({ columns, data, loading }: TableProps) {
           ))
         )}
       </div> */}
-
-      <table
-        className='min-w-full divide-y divide-gray-200'
-        {...getTableProps()}
-      >
-        <thead className='bg-gray-50'>
-          {
-            // Loop over the header rows
-            headerGroups.map((headerGroup) => (
-              // Apply the header row props
-              <tr
-                // key={`row-${headerGroup.toString()}`}
-                {...headerGroup.getHeaderGroupProps()}
-              >
-                {
-                  // Loop over the headers in each row
-                  headerGroup.headers.map((column) => (
-                    // Apply the header cell props
-                    <th
-                      scope='col'
-                      className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'
-                      // key={`col-${column.toString()}`}
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                    >
-                      {
-                        // Render the header
-                        column.render('Header')
-                      }
-                      {/* Add a sort direction indicator */}
-                      <span>
-                        {column.isSorted ? (
-                          column.isSortedDesc ? (
-                            <>
-                              {' '}
-                              <small>&#x25B2;</small>
-                            </>
-                          ) : (
-                            <>
-                              {' '}
-                              <small>&#x25BC;</small>
-                            </>
-                          )
-                        ) : (
-                          ''
-                        )}
-                      </span>
-                    </th>
-                  ))
-                }
-              </tr>
-            ))
-          }
-        </thead>
-        {/* Apply the table body props */}
-
-        <tbody {...getTableBodyProps()}>
-          {
-            // Loop over the table rows
-            page.map((row, index) => {
-              // Prepare the row for display
-              prepareRow(row);
-              return (
-                // Apply the row props
+      <div className=' overflow-y-auto'>
+        <table
+          className='min-w-full divide-y divide-gray-200'
+          {...getTableProps()}
+        >
+          <thead className='bg-gray-50'>
+            {
+              // Loop over the header rows
+              headerGroups.map((headerGroup) => (
+                // Apply the header row props
                 <tr
-                  // key={`row-${row.toString()}`}
-                  {...row.getRowProps()}
-                  className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                  // key={`row-${headerGroup.toString()}`}
+                  {...headerGroup.getHeaderGroupProps()}
                 >
                   {
-                    // Loop over the rows cells
-                    row.cells.map((cell) => {
-                      // Apply the cell props
-                      return (
-                        <td
-                          className='px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap'
-                          // key='cell-{cell.toString()}'
-                          {...cell.getCellProps()}
-                        >
-                          {
-                            // Render the cell contents
-                            cell.render('Cell')
-                          }
-                        </td>
-                      );
-                    })
+                    // Loop over the headers in each row
+                    headerGroup.headers.map((column) => (
+                      // Apply the header cell props
+                      <th
+                        scope='col'
+                        className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'
+                        // key={`col-${column.toString()}`}
+                        {...column.getHeaderProps(
+                          column.getSortByToggleProps()
+                        )}
+                      >
+                        {
+                          // Render the header
+                          column.render('Header')
+                        }
+                        {/* Add a sort direction indicator */}
+                        <span>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <>
+                                {' '}
+                                <small>&#x25B2;</small>
+                              </>
+                            ) : (
+                              <>
+                                {' '}
+                                <small>&#x25BC;</small>
+                              </>
+                            )
+                          ) : (
+                            ''
+                          )}
+                        </span>
+                      </th>
+                    ))
                   }
                 </tr>
-              );
-            })
-          }
-        </tbody>
-      </table>
+              ))
+            }
+          </thead>
+          {/* Apply the table body props */}
+
+          <tbody {...getTableBodyProps()}>
+            {
+              // Loop over the table rows
+              page.map((row, index) => {
+                // Prepare the row for display
+                prepareRow(row);
+                return (
+                  // Apply the row props
+                  <tr
+                    // key={`row-${row.toString()}`}
+                    {...row.getRowProps()}
+                    className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                  >
+                    {
+                      // Loop over the rows cells
+                      row.cells.map((cell) => {
+                        // Apply the cell props
+                        return (
+                          <td
+                            className='px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap'
+                            // key='cell-{cell.toString()}'
+                            {...cell.getCellProps()}
+                          >
+                            {
+                              // Render the cell contents
+                              cell.render('Cell')
+                            }
+                          </td>
+                        );
+                      })
+                    }
+                  </tr>
+                );
+              })
+            }
+          </tbody>
+        </table>
+      </div>
 
       <div className='flex items-center justify-between mt-2 pagination bg-gray-50 p-2'>
         <span>

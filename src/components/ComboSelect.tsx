@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import useFetch from 'use-http';
 import InlineError from './errors/InlineError';
 import { debounce } from '@/lib/helper';
-import { Search } from './introductions/QuickForm';
+import { Search } from '../features/introductions/QuickForm';
 
 export default function ComboSelect({ query, onChange, onSelect }) {
   const debounceSetCurrentValue = useRef<any>(null);

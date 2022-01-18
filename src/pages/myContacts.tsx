@@ -13,14 +13,10 @@ export default function MyContacts() {
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(true);
 
-  const { get, post, response, loading, error } = useFetch(
-    `${env.BASE_URL}`,
-    { cachePolicy: CachePolicies.NO_CACHE },
-    []
-  );
+  const { get, post, response, loading, error } = useFetch();
 
   async function loadData() {
-    const loaded = await get('/api/myContacts');
+    const loaded = await get('/myContacts');
     if (response.ok) {
       setReload(false);
       setData(loaded);
@@ -48,7 +44,7 @@ export default function MyContacts() {
   }
 
   async function handleToggleFav(e, contactId) {
-    const fav = await post('/api/favourites/toggle', { contactId: contactId });
+    const fav = await post('/favourites/toggle', { contactId: contactId });
     setReload(true);
   }
 

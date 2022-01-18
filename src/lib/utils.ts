@@ -1,31 +1,14 @@
 import { env } from '@/lib/envConfig';
 
-export function formatCommissionDescriptions(commission) {
-  // console.log('commission', commission);
-  const result = {
-    key: '',
-    value: '',
-  };
-  switch (commission.commissionType) {
-    case 'commissionPerReceivedLead':
-      result.key = 'Commission per received lead ($)';
-      break;
+export enum availableCommissions {
+  commissionPerReceivedLead = 'Commission per received lead',
+  commissionPerCompletedLead = 'Commission per completed lead',
+  commissionPerCompletedLeadPercent = 'Commission per completed lead (%)',
+  commissionPerReceivedLeadPercent = 'Commission per completed lead (%)',
+}
 
-    // todo: dedup this:
-    case 'commissionPerCompletedLead':
-      result.key = 'Commission per completed lead ($)';
-      break;
-
-    case 'commissionPerCompletedLeadPercent':
-      result.key = 'Commission per completed lead (%)';
-      break;
-    case 'commissionPerReceivedLeadPercent':
-      result.key = 'Commission per completed lead (%)';
-      break;
-  }
-  result.value = commission.commissionValue;
-
-  return result;
+export function formatCommissionDescriptions(commissionType: string) {
+  return availableCommissions[commissionType];
 }
 
 export function htmlNewStripeAccount(data) {

@@ -35,8 +35,8 @@ const CheckSession = () => {
       form='registration'
       acceptCaption='Register Now'
       cancelCaption='Continue as guest'
-      accept={() => console.info('register')}
-      cancel={() => setOpen(false)}
+      onAccept={() => console.info('register')}
+      onCancel={() => setOpen(false)}
       caption='New to Introduce Guru?'
       content={
         <div>

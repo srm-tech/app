@@ -8,22 +8,22 @@ export default function ConfirmModal({
   isShowing,
   caption,
   content,
-  accept,
+  onAccept: accept,
   form,
   acceptCaption,
-  cancel,
+  onCancel: cancel,
   cancelCaption,
 }: {
   isShowing: boolean;
   caption?: string;
   content: ReactElement | string;
-  accept: any;
+  onAccept: any;
   form?: string;
   acceptCaption: string;
-  cancel: () => void;
+  onCancel: () => void;
   cancelCaption: string;
 }) {
-  return isShowing
+  return process.browser && isShowing
     ? ReactDOM.createPortal(
         <React.Fragment>
           <Transition.Root show={true} as={Fragment}>

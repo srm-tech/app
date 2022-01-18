@@ -14,8 +14,7 @@ export default handleErrors(
       if (req.query.q !== undefined) {
         await validate([check('q').isLength({ min: 0, max: 255 })])(req, res);
         result =
-          (await UserProfile.searchForBusinessQuick(req.query.q.toString())) ||
-          [];
+          (await UserProfile.searchForBusiness(req.query.q.toString())) || [];
       } else {
         const user = await getCurrentUser(req, res);
         result = await UserProfile.readMany({ userId: user._id });

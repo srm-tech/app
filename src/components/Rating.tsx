@@ -5,10 +5,17 @@ import StarRatingComponent from 'react-star-rating-component';
 export default function Rating({
   initialValue = 1,
   name = 'rating',
-  size = '10',
+  size = 10,
   editing = false,
+  onStarClick,
+}: {
+  initialValue: number;
+  name?: string;
+  size?: number;
+  editing?: boolean;
+  onStarClick?: any;
 }) {
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState(initialValue || 0);
   return (
     <>
       <StarRatingComponent
@@ -20,6 +27,7 @@ export default function Rating({
         editing={editing}
         onStarClick={(nextValue) => {
           setValue(nextValue);
+          onStarClick && onStarClick(nextValue);
         }}
         renderStarIcon={() => <StarIcon className={`w-${size} h-${size}`} />}
       />

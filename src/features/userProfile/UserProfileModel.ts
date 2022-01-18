@@ -4,14 +4,16 @@ export interface UserProfile {
   _id: ObjectId;
   firstName: string;
   lastName: string;
+  name: string;
   businessName: string;
   email: string;
   contactEmail: string;
-  constactPhone: string;
+  contactPhone: string;
   businessCategory: string;
   rating: number;
   successfulRate: number;
   averageCommission: number;
+  avgRate: number;
   commissionType: string;
   commissionValue: number;
   commissionCurrency: string;
@@ -25,6 +27,7 @@ export interface UserProfile {
   country: string;
   stripeId: string;
   accountLink: string;
+  isAcceptingIntroductions: boolean;
 }
 
 const UserProfile = (collection: Collection<UserProfile>) => ({
@@ -68,7 +71,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
         {
           $match: {
             search: { $regex: query },
-            isBusiness: true,
+            isAcceptingIntroductions: true,
           },
         }, //stage2
       ])
@@ -138,6 +141,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
         {
           $match: {
             search: { $regex: query },
+            isAcceptingIntroductions: true,
           },
         },
       ])
