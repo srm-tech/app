@@ -61,11 +61,12 @@ export default function Profile() {
   } = useForm();
 
   const countryOptions = useMemo(() => countryList().getData(), []);
+  const { get, post, put, response, loading, error } = useFetch(env.BASE_URL);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setSavedMessage(false);
     setErrorMessage(false);
-    const saved = await post('/api/me', {
+    const saved = await put('/api/me', {
       ...data,
       isAcceptingIntroductions: formValues.isAcceptingIntroductions,
     });
@@ -75,8 +76,6 @@ export default function Profile() {
       setErrorMessage(true);
     }
   };
-
-  const { get, post, response, loading, error } = useFetch(env.BASE_URL);
 
   useEffect(() => {
     async function loadData() {
