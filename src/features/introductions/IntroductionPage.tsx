@@ -1,6 +1,9 @@
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
+import Link from 'next/link';
 import React, { useEffect, useState, version } from 'react';
+import { useForm } from 'react-hook-form';
+import { getOriginalNode } from 'typescript';
 import useFetch, { CachePolicies } from 'use-http';
 
 import { env } from '@/lib/envConfig';
@@ -11,17 +14,15 @@ import {
 } from '@/lib/utils';
 
 import Button from '@/components/buttons/Button';
+import Commission from '@/components/Commission';
 import Modal from '@/components/modals/ConfirmModal';
 import Rating from '@/components/Rating';
 import Table from '@/components/table/Table';
-
-import DashboardLayout from '@/layouts/DashboardLayout';
-import { getOriginalNode } from 'typescript';
-import { Agreement } from '@/features/introductions/QuickForm';
 import Toggle from '@/components/toggles/toggle';
+
+import { Agreement } from '@/features/introductions/QuickForm';
 import { UserProfile } from '@/features/userProfile/UserProfileModel';
-import Commission from '@/components/Commission';
-import { useForm } from 'react-hook-form';
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 // prepare TimeAgo
 TimeAgo.setDefaultLocale(en.locale);
@@ -82,7 +83,7 @@ export default function Introductions() {
   }
 
   function handleAcceptDoNothing() {
-    window.location.href = `${env.BASE_URL}/introductions`;
+    window.location.href = `${env.BASE_URL}/app/introductions`;
   }
 
   async function handleRate(original) {
@@ -96,7 +97,7 @@ export default function Introductions() {
         comment: comment,
         jobId: original._id,
       });
-      window.location.href = `${env.BASE_URL}/introductions`;
+      window.location.href = `${env.BASE_URL}/app/introductions`;
     }
 
     let ratingLength = 0;
@@ -184,7 +185,7 @@ export default function Introductions() {
       const decline = await post('/introductions/decline', {
         introId: original._id,
       });
-      window.location.href = `${env.BASE_URL}/introductions`;
+      window.location.href = `${env.BASE_URL}/app/introductions`;
     }
 
     toggle();
@@ -567,12 +568,11 @@ export default function Introductions() {
               </form>
             }
           />
-          <button
-            type='button'
-            className='ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
-          >
-            New Introduction
-          </button>
+          <Link href={'/'}>
+            <a className='ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>
+              New Introduction
+            </a>
+          </Link>
         </div>
       }
     >

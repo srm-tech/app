@@ -22,5 +22,7 @@ export const env = {
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
 };
 
-console.log(process.env.NODE_ENV);
-console.log(env);
+if (!process.browser) {
+  console.log(process.env.NODE_ENV);
+  console.log(env);
+}

@@ -2,12 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 
 import { ObjectId } from '@/lib/db';
+import { env } from '@/lib/envConfig';
 import getCurrentUser from '@/lib/get-current-user';
 import sendMail from '@/lib/mail';
 import { handleErrors } from '@/lib/middleware';
 
 import getCollections from '@/models';
-import { env } from '@/lib/envConfig';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -41,7 +41,7 @@ export default handleErrors(
       const accountLink = await stripe.accountLinks.create({
         account: account.id,
         refresh_url: `${env.BASE_URL}/api/job/refreshToken?jobId=${jobId}`,
-        return_url: `${env.BASE_URL}/introductions`,
+        return_url: `${env.BASE_URL}/app/introductions`,
         type: 'account_onboarding',
       });
 

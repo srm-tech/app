@@ -264,7 +264,7 @@ export default function Finalise(props) {
                           <span>
                             Your Guru hasn't got his/hers Stripe account yet. We
                             have to wait for him to create one.
-                            <Link href='/introductions'>
+                            <Link href='/app/introductions'>
                               {' '}
                               Click here to return to introductions page.
                             </Link>

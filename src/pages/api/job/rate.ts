@@ -36,7 +36,7 @@ export default handleErrors(
       result = await Review.create(payload);
     } else {
       res.setHeader('Allow', 'POST');
-      return res.status(405).end('Method Not Allowed');
+      return res.status(405).send({ message: 'Method Not Allowed' });
     }
     res.status(200).json(result);
   }

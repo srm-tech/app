@@ -1,16 +1,21 @@
 import { AppProps } from 'next/app';
-import { SessionProvider, useSession } from 'next-auth/react';
-import useFetch, { Provider, CachePolicies } from 'use-http';
-import Modal from '@/components/modals/ConfirmModal';
-import RegisterForm from '@/components/RegisterForm';
-import { env } from '@/lib/envConfig';
+import { useRouter } from 'next/router';
+import { SessionProvider, signIn, useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import useFetch, { CachePolicies, Provider } from 'use-http';
 
 import '@/styles/globals.css';
 import '@/styles/roadmap.scss';
-import { useEffect, useState } from 'react';
+
+import { env } from '@/lib/envConfig';
+
+import ButtonLink from '@/components/links/ButtonLink';
+import Modal from '@/components/modals/ConfirmModal';
+import RegisterForm from '@/components/RegisterForm';
 
 const CheckSession = () => {
   const { get, response, loading, error } = useFetch('');
+  const router = useRouter();
   const userSession = useSession();
   const [open, setOpen] = useState(false);
   const loadData = async () => {
@@ -29,25 +34,51 @@ const CheckSession = () => {
     return null;
   }
 
+  console.log(Boolean(router.query.session));
+
+  if (
+    userSession.status === 'unauthenticated' &&
+    window.location.pathname.startsWith('/app')
+  ) {
+    router.push('/?session=signout');
+  }
+
   return (
-    <Modal
-      isShowing={open}
-      form='registration'
-      acceptCaption='Register Now'
-      cancelCaption='Continue as guest'
-      onAccept={() => console.info('register')}
-      onCancel={() => setOpen(false)}
-      caption='New to Introduce Guru?'
-      content={
-        <div>
-          <p>Almost there, please provide profile info for the introduction.</p>
-          <RegisterForm
-            email={userSession.data?.user?.email || ''}
-            onComplete={() => setOpen(false)}
-          />
-        </div>
-      }
-    />
+    <>
+      <Modal
+        isShowing={router.query.session === 'signout'}
+        acceptCaption='Sign In'
+        cancelCaption='Close'
+        onAccept={() => signIn()}
+        onCancel={() => router.replace('/')}
+        caption='Session Timeout'
+        content={
+          <div>
+            <p>Your session has ended</p>
+          </div>
+        }
+      />
+      <Modal
+        isShowing={open}
+        form='registration'
+        acceptCaption='Register Now'
+        cancelCaption='Continue as guest'
+        onAccept={() => console.info('register')}
+        onCancel={() => setOpen(false)}
+        caption='New to Introduce Guru?'
+        content={
+          <div>
+            <p>
+              Almost there, please provide profile info for the introduction.
+            </p>
+            <RegisterForm
+              email={userSession.data?.user?.email || ''}
+              onComplete={() => setOpen(false)}
+            />
+          </div>
+        }
+      />
+    </>
   );
 };
 

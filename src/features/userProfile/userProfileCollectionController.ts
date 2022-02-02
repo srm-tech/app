@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
-import getCollections from '@/models';
 import { check, validate } from '@/lib/validator';
+
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -11,7 +13,7 @@ export default handleErrors(
     if (req.method === 'GET') {
       const user = await getCurrentUser(req, res);
       result = await UserProfile.getOne(user._id);
-    } else if (req.method === 'PUT') {
+    } else if (req.method === 'PUT' || req.method === 'POST') {
       await validate([
         check('contactEmail').isEmail(),
         check('contactPhone').isLength({ min: 1, max: 55 }),
@@ -26,7 +28,7 @@ export default handleErrors(
       });
     } else {
       res.setHeader('Allow', 'GET');
-      return res.status(405).end('Method Not Allowed');
+      return res.status(405).send({ message: 'Method Not Allowed' });
     }
     res.status(200).json(result);
   }

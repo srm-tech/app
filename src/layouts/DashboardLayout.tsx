@@ -6,32 +6,35 @@ import {
   UsersIcon,
   XIcon,
 } from '@heroicons/react/outline';
-import { useRouter } from 'next/router';
-import React, { FC, Fragment, useState } from 'react';
+import clsx from 'clsx';
 import Link from 'next/link';
-import { useSession, signIn, signOut } from 'next-auth/react';
-
-import Logo from '../components/Logo';
-import Avatar from '../components/Avatar';
+import { useRouter } from 'next/router';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import React, { FC, Fragment, useState } from 'react';
 import useFetch, { CachePolicies } from 'use-http';
-import LoadingOverlay from '@/components/LoadingOverlay';
+
 import { env } from '@/lib/envConfig';
+
+import BusinessDetails from '@/components/BusinessDetails';
+import ComboSelectAdvanced from '@/components/ComboSelectAdvanced';
+import LoadingOverlay from '@/components/LoadingOverlay';
+import ConfirmModal from '@/components/modals/ConfirmModal';
+
 import {
+  Agreement,
   Business,
   Search,
-  Agreement,
 } from '@/features/introductions/QuickForm';
-import ComboSelectAdvanced from '@/components/ComboSelectAdvanced';
-import ConfirmModal from '@/components/modals/ConfirmModal';
-import BusinessDetails from '@/components/BusinessDetails';
-import clsx from 'clsx';
 import { UserProfile } from '@/features/userProfile/UserProfileModel';
+
+import Avatar from '../components/Avatar';
+import Logo from '../components/Logo';
 
 const navigation = [
   // { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
   {
     name: 'Introductions',
-    href: '/introductions',
+    href: '/app/introductions',
     icon: InboxIcon,
     current: false,
   },
@@ -41,10 +44,15 @@ const navigation = [
   //   icon: InboxIcon,
   //   current: false,
   // },
-  { name: 'My Contacts', href: '/myContacts', icon: UsersIcon, current: false },
+  {
+    name: 'My Contacts',
+    href: '/app/myContacts',
+    icon: UsersIcon,
+    current: false,
+  },
 ];
 const userNavigation = [
-  { name: 'Your Profile', href: '/users/profile' },
+  { name: 'Your Profile', href: '/app/users/profile' },
   // { name: 'Settings', href: '#' },
   { name: 'Sign out', href: '#' },
 ];

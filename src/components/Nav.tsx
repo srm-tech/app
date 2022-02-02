@@ -1,11 +1,13 @@
 import { Popover, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
-import { Fragment } from 'react';
 import Link from 'next/link';
-import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Logo from './Logo';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { Fragment } from 'react';
+
 import { env } from '@/lib/envConfig';
+
+import Logo from './Logo';
 
 export default function Nav() {
   const { data: session } = useSession();
@@ -18,7 +20,7 @@ export default function Nav() {
     // { name: 'Company', href: '#' },
   ];
   if (session) {
-    navigation.push({ name: 'My Introductions', href: '/introductions' });
+    navigation.push({ name: 'My Introductions', href: '/app/introductions' });
   }
   return (
     <Popover className='mx-auto max-w-7xl'>

@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import useFetch from 'use-http';
 
-import DashboardLayout from '@/layouts/DashboardLayout';
-import Seo from '@/components/Seo';
 import { env } from '@/lib/envConfig';
+
+import Seo from '@/components/Seo';
+
+import DashboardLayout from '@/layouts/DashboardLayout';
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   return {
@@ -47,10 +49,10 @@ export default function StripeConfirmationPage(props) {
               className='mt-8 text-xl text-center text-gray-400 lg:text-2xl xl:text-3xl sm:w-11/12 sm:leading-none sm:tracking-tight'
               style={{ lineHeight: 1.3 }}
             >
-              You have succesfully paid {amount.toFixed(2)} A$.
+              You have successfully paid {amount.toFixed(2)} A$.
             </p>
 
-            <Link href='/introductions'>
+            <Link href='/app/introductions'>
               <a className='flex items-center justify-center px-4 py-2 text-base font-medium text-white border border-transparent rounded-md bg-primary-400 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-green-500 sm:mt-8'>
                 Go back
               </a>

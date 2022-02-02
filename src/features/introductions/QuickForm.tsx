@@ -1,14 +1,16 @@
+import { useRouter } from 'next/router';
+import { signIn, useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import * as React from 'react';
 import useFetch from 'use-http';
-import { useSession, signIn } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import ContactType from '@/components/ContactTypeSelect';
-import ComboSelect from '@/components/ComboSelect';
-import InlineError from '@/components/errors/InlineError';
-import RegisterForm from '@/components/RegisterForm';
-import Modal from '@/components/modals/ConfirmModal';
+
 import { handleError } from '@/lib/helper';
+
+import ComboSelect from '@/components/ComboSelect';
+import ContactType from '@/components/ContactTypeSelect';
+import InlineError from '@/components/errors/InlineError';
+import Modal from '@/components/modals/ConfirmModal';
+import RegisterForm from '@/components/RegisterForm';
 
 export interface Search {
   _id: string;
@@ -187,7 +189,7 @@ export const QuickForm = () => {
       // final introduction
       await post('/introductions', draft);
       if (response.ok) {
-        router.push('/introductions');
+        router.push('/app/introductions');
       }
       handleError(response, setErrorMessage);
     }
