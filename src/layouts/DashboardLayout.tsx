@@ -277,7 +277,7 @@ export default function DashboardLayout({
                       size='small'
                       text={
                         user &&
-                        `${user?.firstName?.charAt(0) || ' '}
+                        `${user?.firstName?.charAt(0) || 'G'}
                         `
                       }
                     />

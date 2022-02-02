@@ -34,19 +34,13 @@ const CheckSession = () => {
     return null;
   }
 
-  console.log(Boolean(router.query.session));
-
-  if (
-    userSession.status === 'unauthenticated' &&
-    window.location.pathname.startsWith('/app')
-  ) {
-    router.push('/?session=signout');
-  }
-
   return (
     <>
       <Modal
-        isShowing={router.query.session === 'signout'}
+        isShowing={
+          userSession.status === 'unauthenticated' &&
+          window.location.pathname.startsWith('/app')
+        }
         acceptCaption='Sign In'
         cancelCaption='Close'
         onAccept={() => signIn()}
