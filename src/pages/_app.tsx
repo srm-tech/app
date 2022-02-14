@@ -1,36 +1,36 @@
-import { AppProps } from 'next/app';
-import { useRouter } from 'next/router';
-import { SessionProvider, signIn, useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import useFetch, { CachePolicies, Provider } from 'use-http';
+import { AppProps } from "next/app";
+import { useRouter } from "next/router";
+import { SessionProvider, signIn, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import useFetch, { CachePolicies, Provider } from "use-http";
 
-import '@/styles/globals.css';
-import '@/styles/roadmap.scss';
+import "@/styles/globals.css";
+import "@/styles/roadmap.scss";
 
-import { env } from '@/lib/envConfig';
+import { env } from "@/lib/envConfig";
 
-import ButtonLink from '@/components/links/ButtonLink';
-import Modal from '@/components/modals/ConfirmModal';
-import RegisterForm from '@/components/RegisterForm';
+import ButtonLink from "@/components/links/ButtonLink";
+import Modal from "@/components/modals/ConfirmModal";
+import RegisterForm from "@/components/RegisterForm";
 
 const CheckSession = () => {
-  const { get, response, loading, error } = useFetch('');
+  const { get, response, loading, error } = useFetch("");
   const router = useRouter();
   const userSession = useSession();
   const [open, setOpen] = useState(false);
   const loadData = async () => {
     await get(`/me`);
-    if (response.ok && !response.data) {
+    if (response.ok && !response.data?.isActive) {
       return setOpen(true);
     }
   };
   useEffect(() => {
-    if (userSession.status === 'loading') return;
-    if (userSession.status === 'authenticated') {
+    if (userSession.status === "loading") return;
+    if (userSession.status === "authenticated") {
       loadData();
     }
   }, [userSession]);
-  if (userSession.status === 'loading') {
+  if (userSession.status === "loading") {
     return null;
   }
 
@@ -38,14 +38,14 @@ const CheckSession = () => {
     <>
       <Modal
         isShowing={
-          userSession.status === 'unauthenticated' &&
-          window.location.pathname.startsWith('/app')
+          userSession.status === "unauthenticated" &&
+          window.location.pathname.startsWith("/app")
         }
-        acceptCaption='Sign In'
-        cancelCaption='Close'
+        acceptCaption="Sign In"
+        cancelCaption="Close"
         onAccept={() => signIn()}
-        onCancel={() => router.replace('/')}
-        caption='Session Timeout'
+        onCancel={() => router.replace("/")}
+        caption="Session Timeout"
         content={
           <div>
             <p>Your session has ended</p>
@@ -54,19 +54,19 @@ const CheckSession = () => {
       />
       <Modal
         isShowing={open}
-        form='registration'
-        acceptCaption='Register Now'
-        cancelCaption='Continue as guest'
-        onAccept={() => console.info('register')}
+        form="registration"
+        acceptCaption="Register Now"
+        cancelCaption="Continue as guest"
+        onAccept={() => console.info("register")}
         onCancel={() => setOpen(false)}
-        caption='New to Introduce Guru?'
+        caption="New to Introduce Guru?"
         content={
           <div>
             <p>
               Almost there, please provide profile info for the introduction.
             </p>
             <RegisterForm
-              email={userSession.data?.user?.email || ''}
+              email={userSession.data?.user?.email || ""}
               onComplete={() => setOpen(false)}
             />
           </div>

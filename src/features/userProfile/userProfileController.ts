@@ -1,76 +1,81 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from "next";
 
-import getCurrentUser from '@/lib/get-current-user';
-import { handleErrors } from '@/lib/middleware';
-import { check, validate } from '@/lib/validator';
+import getCurrentUser from "@/lib/get-current-user";
+import { handleErrors } from "@/lib/middleware";
+import { check, validate } from "@/lib/validator";
 
-import getCollections from '@/models';
+import getCollections from "@/models";
+
+import { defaultProfile, UserProfile } from "./constants";
+
+type DefaultProfileKeys = keyof typeof defaultProfile;
+const getCheckByKey = (v: DefaultProfileKeys) => check(v);
+
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {
     let result;
+    const user = await getCurrentUser(req, res);
     const { UserProfile } = await getCollections();
-    if (req.method === 'GET') {
-      const user = await getCurrentUser(req, res);
+    if (req.method === "GET") {
       result = await UserProfile.getOne(user._id);
-    } else if (req.method === 'PUT') {
-      const user = await getCurrentUser(req, res);
-      const validators = [
-        check('isAcceptingIntroductions').optional().isBoolean(),
-        check('commissionPerReceivedLead').optional().isNumeric(),
-        check('commissionPerCompletedLead').optional().isNumeric(),
-        check('commissionPerReceivedLeadPercent').optional().isNumeric(),
-        check('commissionType').optional().isString(),
-      ];
-      await validate(validators)(req, res);
-      if (req.body.commissionType) {
-        req.body.isBusiness = true;
-        req.body.commissionValue = req.body[req.body.commissionType];
+    } else if (req.method === "PUT" || req.method === "POST") {
+      const profile: UserProfile = req.body;
+      await validate([
+        getCheckByKey("contactEmail").isEmail(),
+        getCheckByKey("lastName").isLength({
+          min: 1,
+          max: 55,
+        }),
+        getCheckByKey("firstName").isLength({
+          min: 1,
+          max: 55,
+        }),
+        getCheckByKey("contactPhone").optional().isLength({
+          min: 0,
+          max: 55,
+        }),
+        getCheckByKey("businessName").optional().isLength({ min: 0, max: 255 }),
+        getCheckByKey("isAcceptingIntroductions").optional().isBoolean(),
+      ])(req, res);
+      if (profile.isAcceptingIntroductions) {
+        await validate([
+          getCheckByKey("businessName").isLength({ min: 1, max: 255 }),
+          getCheckByKey("businessCategory").isLength({ min: 1, max: 255 }),
+          getCheckByKey("address1").isLength({ min: 1, max: 255 }),
+          getCheckByKey("address2").optional().isLength({ min: 0, max: 255 }),
+          getCheckByKey("commissionPerReceivedLead").optional().isNumeric(),
+          getCheckByKey("commissionPerCompletedLead").optional().isNumeric(),
+          getCheckByKey("commissionPerReceivedLeadPercent")
+            .optional()
+            .isNumeric(),
+          getCheckByKey("commissionType").optional().isString(),
+          getCheckByKey("abn")
+            .optional({ checkFalsy: true })
+            .isLength({ min: 11, max: 11 }),
+          getCheckByKey("country").isLength({ min: 2, max: 2 }),
+        ])(req, res);
+        if (req.body.commissionType) {
+          req.body.isBusiness = true;
+          req.body.commissionValue = req.body[req.body.commissionType];
+        }
       }
-
-      await UserProfile.updateOne(user._id, {
-        isAcceptingIntroductions: req.body.isAcceptingIntroductions,
-        commissionPerReceivedLead: req.body.commissionPerReceivedLead,
-        commissionPerCompletedLead: req.body.commissionPerCompletedLead,
-        commissionPerReceivedLeadPercent:
-          req.body.commissionPerReceivedLeadPercent,
-        commissionType: req.body.commissionType,
-        commissionValue: req.body.commissionValue,
-      });
-      result = await UserProfile.getOne(user._id);
-    } else if (req.method === 'POST') {
-      const user = await getCurrentUser(req, res);
-
-      const validators = [
-        check('firstName').isLength({ min: 1, max: 255 }),
-        check('lastName').isLength({ min: 1, max: 255 }),
-        check('businessName').isLength({ min: 1, max: 255 }),
-        check('businessCategory').isLength({ min: 1, max: 255 }),
-        check('contactEmail').isEmail(),
-        check('contactPhone').isLength({ min: 1, max: 255 }),
-        check('address1').isLength({ min: 1, max: 255 }),
-        check('address2').optional().isLength({ min: 0, max: 255 }),
-        check('address3').optional().isLength({ min: 0, max: 255 }),
-        check('abn')
-          .optional({ checkFalsy: true })
-          .isLength({ min: 11, max: 11 }),
-        check('country').isLength({ min: 2, max: 2 }),
-        check('commissionType').optional().isString(),
-      ];
-
-      await validate(validators)(req, res);
-
-      req.body.isBusiness = false;
-
-      if (req.body.commissionType) {
-        req.body.isBusiness = true;
-        req.body.commissionValue = req.body[req.body.commissionType];
+      if (req.method === "POST") {
+        result = {
+          ...(await UserProfile.create(user._id, {
+            ...profile,
+            isActive: true,
+          })),
+          contactEmail: user.email,
+        };
+      } else {
+        result = await UserProfile.updateOne({
+          ...profile,
+          isComplete: true,
+        });
       }
-      result = await UserProfile.updateOne(user._id, {
-        ...req.body,
-      });
     } else {
-      res.setHeader('Allow', 'GET, POST, PUT');
-      return res.status(405).send({ message: 'Method Not Allowed' });
+      res.setHeader("Allow", "GET, POST, PUT");
+      return res.status(405).send({ message: "Method Not Allowed" });
     }
     res.status(200).json(result);
   }

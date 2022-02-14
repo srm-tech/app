@@ -1,44 +1,19 @@
-import { BSONType, Collection, ObjectId } from 'mongodb';
+import { Collection, ObjectId } from "mongodb";
 
-export interface UserProfile {
-  _id: ObjectId;
-  firstName: string;
-  lastName: string;
-  name: string;
-  businessName: string;
-  email: string;
-  contactEmail: string;
-  contactPhone: string;
-  businessCategory: string;
-  rating: number;
-  successfulRate: number;
-  averageCommission: number;
-  avgRate: number;
-  commissionType: string;
-  commissionValue: number;
-  commissionCurrency: string;
-  commissionPerReceivedLead: number;
-  commissionPerCompletedLead: number;
-  commissionPerReceivedLeadPercent: number;
-  isActive: boolean;
-  address1: string;
-  address2: string;
-  address3: string;
-  country: string;
-  stripeId: string;
-  accountLink: string;
-  isAcceptingIntroductions: boolean;
-}
+import { defaultProfile, UserProfile } from "./constants";
 
 const UserProfile = (collection: Collection<UserProfile>) => ({
-  create: async (_id, data) => {
-    return collection?.insertOne({ ...data, _id: new ObjectId(_id) });
+  create: async (_id, data: UserProfile) => {
+    return {
+      defaultProfile,
+      ...(await collection?.insertOne({ ...data, _id: new ObjectId(_id) })),
+    };
   },
   readMany: async ({ userId }) => {
     return collection?.find({ userId }).toArray();
   },
   searchForBusinessQuick: async (q: string) => {
-    const query = new RegExp(q, 'i');
+    const query = new RegExp(q, "i");
     return collection
       .aggregate([
         //pipeline array
@@ -55,17 +30,17 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
           $addFields: {
             search: {
               $concat: [
-                '$firstName',
-                ' ',
-                '$lastName',
-                ' - ',
-                '$businessName',
-                ' (',
-                '$businessCategory',
-                ')',
+                "$firstName",
+                " ",
+                "$lastName",
+                " - ",
+                "$businessName",
+                " (",
+                "$businessCategory",
+                ")",
               ],
             },
-            name: { $concat: ['$firstName', ' ', '$lastName'] },
+            name: { $concat: ["$firstName", " ", "$lastName"] },
           },
         }, //stage1
         {
@@ -79,15 +54,15 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       .toArray();
   },
   searchForBusiness: async (q: string) => {
-    const query = new RegExp(q, 'i');
+    const query = new RegExp(q, "i");
     return collection
       .aggregate([
         {
           $lookup: {
-            from: 'reviews',
-            localField: '_id',
-            foreignField: 'business',
-            as: 'reviews',
+            from: "reviews",
+            localField: "_id",
+            foreignField: "business",
+            as: "reviews",
             pipeline: [
               {
                 $project: {
@@ -106,36 +81,36 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
           $addFields: {
             search: {
               $concat: [
-                '$firstName',
-                ' ',
-                '$lastName',
-                ' - ',
-                '$businessName',
-                ' (',
-                '$businessCategory',
-                ')',
+                "$firstName",
+                " ",
+                "$lastName",
+                " - ",
+                "$businessName",
+                " (",
+                "$businessCategory",
+                ")",
               ],
             },
-            name: { $concat: ['$firstName', ' ', '$lastName'] },
+            name: { $concat: ["$firstName", " ", "$lastName"] },
             avgCommissionCustomer: {
-              $avg: '$commissionCustomer',
+              $avg: "$commissionCustomer",
             },
             avgCommissionBusiness: {
-              $avg: '$commissionBusiness',
+              $avg: "$commissionBusiness",
             },
             avgRate: {
-              $avg: '$reviews.rate',
+              $avg: "$reviews.rate",
             },
           },
         },
         {
           $unset: [
-            'rating',
-            'successfulRate',
-            'averageCommission',
-            'isActive',
-            'isGuru',
-            'isBusiness',
+            "rating",
+            "successfulRate",
+            "averageCommission",
+            "isActive",
+            "isGuru",
+            "isBusiness",
           ],
         },
         {
@@ -147,38 +122,38 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       ])
       .toArray();
   },
-  searchForCustomer: async (contact: string, type: 'email' | 'phone') => {
+  searchForCustomer: async (contact: string, type: "email" | "phone") => {
     const connections = await collection
       .aggregate([
         {
           $lookup: {
-            from: 'connections',
-            localField: '_id',
-            foreignField: 'user2',
-            as: 'myConnection',
+            from: "connections",
+            localField: "_id",
+            foreignField: "user2",
+            as: "myConnection",
           },
         },
 
         {
-          $match: { phone: '786865787' },
+          $match: { phone: "786865787" },
         },
         {
-          $unwind: '$myConnection',
+          $unwind: "$myConnection",
         },
         {
           $project: {
-            'myConnection.user2._id': 1,
+            "myConnection.user2._id": 1,
           },
         },
         {
-          $unset: 'myConnection',
+          $unset: "myConnection",
         },
         { $limit: 1 },
       ])
       .toArray();
     return connections[0];
   },
-  searchForGuru: async ({ query = '' }) => {
+  searchForGuru: async ({ query = "" }) => {
     return collection
       .aggregate([
         //pipeline array
@@ -186,48 +161,59 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
           $project: {
             search: {
               $concat: [
-                '$firstName',
-                ' ',
-                '$lastName',
-                ' - ',
-                '$businessName',
-                ' (',
-                '$businessCategory',
-                ')',
+                "$firstName",
+                " ",
+                "$lastName",
+                " - ",
+                "$businessName",
+                " (",
+                "$businessCategory",
+                ")",
               ],
             },
-            name: { $concat: ['$firstName', ' ', '$lastName'] },
-            businessName: '$businessName',
-            userId: '$userId',
-            category: '$businessCategory',
-            isBusiness: '$isBusiness',
-            isGuru: '$isGuru',
+            name: { $concat: ["$firstName", " ", "$lastName"] },
+            businessName: "$businessName",
+            userId: "$userId",
+            category: "$businessCategory",
+            isBusiness: "$isBusiness",
+            isGuru: "$isGuru",
           },
         },
         {
           $match: {
-            search: { $regex: query, $options: 'i' },
+            search: { $regex: query, $options: "i" },
             isGuru: true,
           },
         },
-        { $unset: 'userId' }, // remove filed from result
+        { $unset: "userId" }, // remove filed from result
       ])
       .toArray();
   },
   getOne: async (userId: any) => {
-    const result = await collection.findOne({
-      _id: userId,
-    });
-    return result;
+    return {
+      ...defaultProfile,
+      ...(await collection.findOne({
+        _id: userId,
+      })),
+    };
   },
   getOneByEmail: async (email) => {
-    return collection.findOne({
-      email,
-    });
+    return {
+      ...defaultProfile,
+      ...(await collection.findOne({
+        email,
+      })),
+    };
   },
-  updateOne: async (_id, data) => {
-    delete data._id;
-    return collection.updateOne({ _id }, { $set: data });
+  updateOne: async ({ _id, ...data }: UserProfile) => {
+    const result = await collection.updateOne(
+      { _id: new ObjectId(_id) },
+      { $set: data }
+    );
+    return {
+      ...defaultProfile,
+      ...(await collection.findOne({ _id: new ObjectId(_id) })),
+    };
   },
   addStripe: async (data) => {
     return collection.updateOne(
