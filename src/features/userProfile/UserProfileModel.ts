@@ -98,8 +98,8 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
             avgCommissionBusiness: {
               $avg: "$commissionBusiness",
             },
-            avgRate: {
-              $avg: "$reviews.rate",
+            rating: {
+              $avg: "$reviews.rating",
             },
           },
         },
@@ -275,7 +275,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
           reviews: {
             guru: data.guru,
             date: new Date(),
-            rate: data.rate,
+            rate: data.rating,
             comment: data.comment,
             job: jobId
           }

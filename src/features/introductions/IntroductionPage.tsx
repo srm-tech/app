@@ -98,7 +98,7 @@ export default function Introductions() {
     let defaultComment = "";
     if (ratingLength > 0) {
       defaultComment = original.review[0].comment;
-      defaultRate = original.review[0].rate;
+      defaultRate = original.review[0].rating;
     }
     toggle();
     setCaption(`Rate ${original.firstName} ${original.lastName}`);
@@ -447,7 +447,7 @@ export default function Introductions() {
         let ratingLength = 0;
         if ("review" in data) {
           ratingLength = data.review.length;
-          initialRating = ratingLength > 0 ? data.review[0].rate : 1;
+          initialRating = ratingLength > 0 ? data.review[0].rating : 1;
         }
 
         const rateStars = data.position === "guru" && (

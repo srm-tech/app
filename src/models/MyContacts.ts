@@ -1,13 +1,14 @@
-import { Collection } from 'mongodb';
+import { Collection } from "mongodb";
 
-import { ObjectId } from '@/lib/db';
-import { Agreement } from '@/features/introductions/QuickForm';
+import { ObjectId } from "@/lib/db";
+
+import { Agreement } from "@/features/agreement/constants";
 
 interface MyContact {
   userId: ObjectId;
   contactId: ObjectId;
   createdAt: Date;
-  status: 'accepted' | 'pending' | 'declined';
+  status: "accepted" | "pending" | "declined";
   agreement: Agreement;
 }
 
@@ -41,30 +42,30 @@ const MyContacts = (collection: Collection<MyContact>) => ({
 
   readOne: async (userId, { contactId }) => {
     const string = `(${userId.toString()} ${contactId}|${contactId} ${userId.toString()})`;
-    const query = new RegExp(string, 'i');
+    const query = new RegExp(string, "i");
     const result = await collection
       .aggregate([
         {
           $addFields: {
-            userRef: { $toString: '$userId' },
-            contactRef: { $toString: '$contactId' },
+            userRef: { $toString: "$userId" },
+            contactRef: { $toString: "$contactId" },
           },
         },
         {
           $addFields: {
             search: {
-              $concat: ['$userRef', ' ', '$contactRef'],
+              $concat: ["$userRef", " ", "$contactRef"],
             },
           },
         },
         {
           $match: {
             search: { $regex: query },
-            status: 'accepted',
+            status: "accepted",
           },
         },
         {
-          $unset: ['userRef', 'contactRef', 'search'],
+          $unset: ["userRef", "contactRef", "search"],
         },
       ])
       .toArray();
@@ -77,26 +78,26 @@ const MyContacts = (collection: Collection<MyContact>) => ({
         {
           $match: {
             userId: userId,
-            status: { $ne: 'declined' }, // don't get declined
+            status: { $ne: "declined" }, // don't get declined
           },
         },
         {
           $lookup: {
-            from: 'userProfiles',
-            localField: 'contactId',
-            foreignField: '_id',
-            as: 'contact',
+            from: "userProfiles",
+            localField: "contactId",
+            foreignField: "_id",
+            as: "contact",
           },
         },
         {
-          $unwind: '$contact',
+          $unwind: "$contact",
         },
         {
           $lookup: {
-            from: 'reviews',
-            localField: 'contactId',
-            foreignField: 'business',
-            as: 'reviews',
+            from: "reviews",
+            localField: "contactId",
+            foreignField: "business",
+            as: "reviews",
             pipeline: [
               {
                 $project: {
@@ -113,23 +114,23 @@ const MyContacts = (collection: Collection<MyContact>) => ({
         },
         {
           $addFields: {
-            'contact.avgRate': { $avg: '$reviews.rate' },
-            'contact.avgCommissionCustomer': {
-              $avg: '$contact.commissionCustomer',
+            "contact.rating": { $avg: "$reviews.rating" },
+            "contact.avgCommissionCustomer": {
+              $avg: "$contact.commissionCustomer",
             },
-            'contact.avgCommissionBusiness': {
-              $avg: '$contact.commissionBusiness',
+            "contact.avgCommissionBusiness": {
+              $avg: "$contact.commissionBusiness",
             },
           },
         },
         {
           $unset: [
-            'contact.rating',
-            'contact.succesfulRate',
-            'contact.averageCommission',
-            'contact.isActive',
-            'contact.isGuru',
-            'contact.isBusiness',
+            "contact.rating",
+            "contact.succesfulRate",
+            "contact.averageCommission",
+            "contact.isActive",
+            "contact.isGuru",
+            "contact.isBusiness",
           ],
         },
       ])
@@ -137,26 +138,26 @@ const MyContacts = (collection: Collection<MyContact>) => ({
     return contacts;
   },
 
-  search: async ({ userId, query = '' }) => {
+  search: async ({ userId, query = "" }) => {
     return collection
       ?.aggregate([
         {
           $match: {
             userId: userId,
-            status: { $ne: 'declined' }, // don't get declined
-            search: { $regex: query, $options: 'i' },
+            status: { $ne: "declined" }, // don't get declined
+            search: { $regex: query, $options: "i" },
           },
         },
         {
           $lookup: {
-            from: 'userProfiles',
-            localField: 'contactId',
-            foreignField: '_id',
-            as: 'contact',
+            from: "userProfiles",
+            localField: "contactId",
+            foreignField: "_id",
+            as: "contact",
           },
         },
         {
-          $unwind: '$contact',
+          $unwind: "$contact",
         },
         // {
         //   $unionWith: {
@@ -204,7 +205,7 @@ const MyContacts = (collection: Collection<MyContact>) => ({
       },
       {
         $set: {
-          status: 'accepted',
+          status: "accepted",
           date: new Date(),
         },
       }
@@ -219,7 +220,7 @@ const MyContacts = (collection: Collection<MyContact>) => ({
       },
       {
         $set: {
-          status: 'declined',
+          status: "declined",
           date: new Date(),
         },
       }
@@ -250,7 +251,7 @@ const MyContacts = (collection: Collection<MyContact>) => ({
         $set: {
           contactId: contactId,
           userId: userId,
-          status: 'accepted',
+          status: "accepted",
           date: new Date(),
           isFavourite: 0,
         },
@@ -269,7 +270,7 @@ const MyContacts = (collection: Collection<MyContact>) => ({
         $set: {
           contactId: userId,
           userId: contactId,
-          status: 'accepted',
+          status: "accepted",
           date: new Date(),
           isFavourite: 0,
         },
