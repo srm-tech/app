@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import getCurrentUser from '@/lib/get-current-user';
-import { check, validate } from '@/lib/validator';
-import getCollections from '@/models';
 import { handleErrors } from '@/lib/middleware';
+import { check, validate } from '@/lib/validator';
+
+import getCollections from '@/models';
 
 // TODO: replace userId
 export default handleErrors(
@@ -15,7 +17,7 @@ export default handleErrors(
         check('email').isEmail(),
         check('commissionPerReceivedLead').isNumeric(),
         check('commissionPerCompletedLead').isNumeric(),
-        check('commissionPerReceivedLeadPercent').isNumeric(),
+        check('commissionPerCompletedLeadPercent').isNumeric(),
         check('message').isLength({ min: 1, max: 1024 }),
       ])(req, res);
 

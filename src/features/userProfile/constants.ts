@@ -1,4 +1,4 @@
-import { ObjectId } from "bson";
+import { ObjectId } from 'bson';
 
 export interface UserProfile {
   _id: ObjectId;
@@ -18,7 +18,7 @@ export interface UserProfile {
   commissionCurrency: string;
   commissionPerReceivedLead: number;
   commissionPerCompletedLead: number;
-  commissionPerReceivedLeadPercent: number;
+  commissionPerCompletedLeadPercent: number;
   isAcceptingIntroductions: boolean;
   address1: string;
   address2: string;
@@ -30,32 +30,32 @@ export interface UserProfile {
   isComplete: boolean;
 }
 
-export type DefaultProfile = Omit<UserProfile, "_id">;
+export type DefaultProfile = Omit<UserProfile, '_id'>;
 
 export const defaultProfile: DefaultProfile = {
-  firstName: "",
-  lastName: "",
-  name: "",
-  contactEmail: "",
-  contactPhone: "",
-  businessName: "",
-  businessCategory: "",
-  stripeId: "",
-  accountLink: "",
-  address1: "",
-  address2: "",
-  address3: "",
-  abn: "",
-  country: "",
+  firstName: '',
+  lastName: '',
+  name: '',
+  contactEmail: '',
+  contactPhone: '',
+  businessName: '',
+  businessCategory: '',
+  stripeId: '',
+  accountLink: '',
+  address1: '',
+  address2: '',
+  address3: '',
+  abn: '',
+  country: '',
   rating: 0,
   successfulRate: 0,
   averageCommission: 0,
-  commissionCurrency: "AUD",
-  commissionType: "",
+  commissionCurrency: 'AUD',
+  commissionType: '',
   commissionValue: 0,
   commissionPerReceivedLead: 0,
   commissionPerCompletedLead: 0,
-  commissionPerReceivedLeadPercent: 0,
+  commissionPerCompletedLeadPercent: 0,
   isAcceptingIntroductions: false,
   isActive: false,
   isComplete: false,

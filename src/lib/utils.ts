@@ -4,7 +4,7 @@ export enum availableCommissions {
   commissionPerReceivedLead = 'Commission per received lead',
   commissionPerCompletedLead = 'Commission per completed lead',
   commissionPerCompletedLeadPercent = 'Commission per completed lead (%)',
-  commissionPerReceivedLeadPercent = 'Commission per completed lead (%)',
+  commissionPerCompletedLeadPercent = 'Commission per completed lead (%)',
 }
 
 export function formatCommissionDescriptions(commissionType: string) {
