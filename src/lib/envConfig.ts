@@ -17,7 +17,7 @@ export const env = {
     process.env.STRIPE_SUCCESS_PAGE || 'integrations/stripe/success',
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
   STRIPE_CANCEL_PAGE: process.env.STRIPE_CANCEL_PAGE || 'promotion',
-  TRANSACTION_FEE: process.env.TRANSACTION_FEE || 0.03, // 3% of the total payment
+  TRANSACTION_FEE: process.env.TRANSACTION_FEE || 0.05, // 3% of the total payment
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
 };
