@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+
 import { env } from './envConfig';
 
 export default function sendMail(params) {

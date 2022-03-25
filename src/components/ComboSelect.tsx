@@ -1,11 +1,13 @@
-import * as React from 'react';
-import { useCombobox } from 'downshift';
 import { SearchIcon } from '@heroicons/react/solid';
-import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
+import { useCombobox } from 'downshift';
+import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useFetch from 'use-http';
-import InlineError from './errors/InlineError';
+
 import { debounce } from '@/lib/helper';
+
+import InlineError from './errors/InlineError';
 import { Search } from '../features/introductions/QuickForm';
 
 export default function ComboSelect({ query, onChange, onSelect }) {

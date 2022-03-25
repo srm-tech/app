@@ -23,6 +23,6 @@ export const env = {
 };
 
 if (!process.browser) {
-  console.log(process.env.NODE_ENV);
-  console.log(env);
+  console.info(process.env.NODE_ENV);
+  console.info(env);
 }

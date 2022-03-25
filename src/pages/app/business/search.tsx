@@ -3,9 +3,10 @@ import React from 'react';
 import StarRatingComponent from 'react-star-rating-component';
 import useFetch from 'use-http';
 
-import Table from '@/components/table/Table';
-import Link from '@/components/buttons/Link';
 import { env } from '@/lib/envConfig';
+
+import Link from '@/components/buttons/Link';
+import Table from '@/components/table/Table';
 
 SearchForBusiness.getInitialProps = async ({ query }) => {
   const { data } = query;

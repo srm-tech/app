@@ -1,6 +1,7 @@
 import * as React from 'react';
-import UnstyledLink from '../links/UnstyledLink';
 import useFetch from 'use-http';
+
+import UnstyledLink from '../links/UnstyledLink';
 
 export const SignUpForBetaForm = () => {
   const [name, setName] = React.useState('');

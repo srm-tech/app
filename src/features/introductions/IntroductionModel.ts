@@ -1,4 +1,4 @@
-import { Collection, ObjectId } from "mongodb";
+import { Collection, ObjectId } from 'mongodb';
 
 function prepareFieldObfuscator(fields, obfuscate = true) {
   const query: Array<any> = [];
@@ -8,11 +8,11 @@ function prepareFieldObfuscator(fields, obfuscate = true) {
       $replaceWith: {
         $setField: {
           field: item.newField,
-          input: "$$ROOT",
+          input: '$$ROOT',
           value: {
             $cond: [
               {
-                $in: ["$status", ["pending", "declined"]],
+                $in: ['$status', ['pending', 'declined']],
               },
               {
                 $concat: [
@@ -41,49 +41,49 @@ const Introduction = (collection: Collection<Document>) => ({
   readMany: async (userId: ObjectId) => {
     const obfuscatedFields = prepareFieldObfuscator([
       {
-        field: "$customer.firstName",
-        newField: "obfsFirstName",
-        replacement: "*****",
+        field: '$customer.firstName',
+        newField: 'obfsFirstName',
+        replacement: '*****',
       },
       {
-        field: "$customer.lastName",
-        newField: "obfsLastName",
-        replacement: "*****",
+        field: '$customer.lastName',
+        newField: 'obfsLastName',
+        replacement: '*****',
       },
       {
-        field: "$customer.name",
-        newField: "obfsName",
-        replacement: "*****",
+        field: '$customer.name',
+        newField: 'obfsName',
+        replacement: '*****',
       },
       {
-        field: "$customer.email",
-        newField: "obfsContactEmail",
-        replacement: "****@****.***",
+        field: '$customer.email',
+        newField: 'obfsContactEmail',
+        replacement: '****@****.***',
       },
       {
-        field: "$customer.phone",
-        newField: "obfsContactPhone",
-        replacement: "*****",
+        field: '$customer.phone',
+        newField: 'obfsContactPhone',
+        replacement: '*****',
       },
       {
-        field: "$customer.businessName",
-        newField: "obfsBusinessName",
-        replacement: "*****",
+        field: '$customer.businessName',
+        newField: 'obfsBusinessName',
+        replacement: '*****',
       },
     ]);
 
     const unset = {
       $unset: [
-        "user.isGuru",
-        "user.isActive",
-        "user.accountLink",
-        "user.stripeId",
-        "obfsName",
-        "obfsFirstName",
-        "obfsLastName",
-        "obfsContactPhone",
-        "obfsContactEmail",
-        "obfsBusinessName",
+        'user.isGuru',
+        'user.isActive',
+        'user.accountLink',
+        'user.stripeId',
+        'obfsName',
+        'obfsFirstName',
+        'obfsLastName',
+        'obfsContactPhone',
+        'obfsContactEmail',
+        'obfsBusinessName',
       ],
     };
 
@@ -94,58 +94,58 @@ const Introduction = (collection: Collection<Document>) => ({
         ...obfuscatedFields,
         {
           $addFields: {
-            position: "business",
-            "customer.firstName": "$obfsFirstName",
-            "customer.lastName": "$obfsLastName",
-            "customer.name": "$obfsName",
-            "customer.email": "$obfsContactEmail",
-            "customer.phone": "$obfsContactPhone",
-            sumCommission: { $sum: "$commissionBusiness" },
+            position: 'business',
+            'customer.firstName': '$obfsFirstName',
+            'customer.lastName': '$obfsLastName',
+            'customer.name': '$obfsName',
+            'customer.email': '$obfsContactEmail',
+            'customer.phone': '$obfsContactPhone',
+            sumCommission: { $sum: '$commissionBusiness' },
           },
         },
         unset,
         {
           $match: {
-            action: "sent",
-            "business._id": userId,
+            action: 'sent',
+            'business._id': userId,
           },
         },
         // as guru
         {
           $unionWith: {
-            coll: "introductions",
+            coll: 'introductions',
             pipeline: [
               {
                 $addFields: {
-                  position: "guru",
+                  position: 'guru',
 
-                  sumCommission: { $sum: "$commissionCustomer" },
+                  sumCommission: { $sum: '$commissionCustomer' },
                 },
               },
               unset,
               {
                 $lookup: {
-                  from: "reviews",
-                  localField: "_id",
-                  foreignField: "jobId",
-                  as: "review",
+                  from: 'reviews',
+                  localField: '_id',
+                  foreignField: 'jobId',
+                  as: 'review',
                 },
               },
               {
                 $set: {
                   status: {
                     $cond: [
-                      { $eq: ["$status", "pending"] },
-                      "waiting for approval",
-                      { $concat: ["$status"] },
+                      { $eq: ['$status', 'pending'] },
+                      'waiting for approval',
+                      { $concat: ['$status'] },
                     ],
                   },
                 },
               },
               {
                 $match: {
-                  action: "sent",
-                  "guru._id": userId,
+                  action: 'sent',
+                  'guru._id': userId,
                 },
               },
             ],
@@ -167,38 +167,38 @@ const Introduction = (collection: Collection<Document>) => ({
       .aggregate([
         {
           $match: {
-            action: "draft",
+            action: 'draft',
             to: userId,
           },
         },
         {
           $lookup: {
-            from: "users",
-            localField: "from",
-            foreignField: "_id",
-            as: "user",
+            from: 'users',
+            localField: 'from',
+            foreignField: '_id',
+            as: 'user',
           },
         },
         {
-          $unwind: "$user",
+          $unwind: '$user',
         },
         {
           $addFields: {
-            userId: "$_id",
+            userId: '$_id',
             name: {
-              $concat: ["$user.firstName", " ", "$user.lastName"],
+              $concat: ['$user.firstName', ' ', '$user.lastName'],
             },
-            email: "$user.email",
-            phone: "$user.phone",
-            businessName: "$user.businessName",
-            businessCategory: "$user.businessCategory",
-            rating: "$user.rating",
-            successfulRate: "$user.successfulRate",
-            averageCommission: "$user.averageCommission",
-            commissionEarned: "$user.commissionEarned",
+            email: '$user.email',
+            phone: '$user.phone',
+            businessName: '$user.businessName',
+            businessCategory: '$user.businessCategory',
+            rating: '$user.rating',
+            successfulRate: '$user.successfulRate',
+            averageCommission: '$user.averageCommission',
+            commissionEarned: '$user.commissionEarned',
           },
         },
-        { $unset: "user" },
+        { $unset: 'user' },
       ])
       .sort({ date: -1 })
       .toArray();
@@ -228,7 +228,7 @@ const Introduction = (collection: Collection<Document>) => ({
   getFinalise: async (objId, status = null) => {
     let statuses;
     if (!status) {
-      statuses = ["waiting for guru", "accepted"];
+      statuses = ['waiting for guru', 'accepted'];
     } else {
       statuses = [status];
     }
@@ -236,12 +236,12 @@ const Introduction = (collection: Collection<Document>) => ({
       .aggregate([
         {
           $addFields: {
-            user: "$guru",
+            user: '$guru',
           },
         },
         {
           $match: {
-            action: "sent",
+            action: 'sent',
             status: {
               $in: statuses,
             },
@@ -250,14 +250,14 @@ const Introduction = (collection: Collection<Document>) => ({
         },
         {
           $lookup: {
-            from: "userProfiles",
-            localField: "guru._id",
-            foreignField: "_id",
-            as: "fresh",
+            from: 'userProfiles',
+            localField: 'guru._id',
+            foreignField: '_id',
+            as: 'fresh',
           },
         },
         {
-          $unwind: "$fresh",
+          $unwind: '$fresh',
         },
       ])
       .toArray();
@@ -275,7 +275,7 @@ const Introduction = (collection: Collection<Document>) => ({
       },
       {
         $set: {
-          status: "accepted",
+          status: 'accepted',
         },
       }
     );
@@ -288,7 +288,7 @@ const Introduction = (collection: Collection<Document>) => ({
       },
       {
         $set: {
-          status: "declined",
+          status: 'declined',
         },
       }
     );
@@ -417,58 +417,58 @@ const Introduction = (collection: Collection<Document>) => ({
       .aggregate([
         {
           $lookup: {
-            from: "userProfiles",
-            localField: "customerId",
-            foreignField: "_id",
-            as: "user",
+            from: 'userProfiles',
+            localField: 'customerId',
+            foreignField: '_id',
+            as: 'user',
           },
         },
         {
-          $unwind: "$user",
+          $unwind: '$user',
         },
         {
           $lookup: {
-            from: "agreements",
-            localField: "agreementId",
-            foreignField: "_id",
-            as: "agreement",
+            from: 'agreements',
+            localField: 'agreementId',
+            foreignField: '_id',
+            as: 'agreement',
           },
         },
         {
-          $unwind: "$agreement",
+          $unwind: '$agreement',
         },
         {
           $lookup: {
-            from: "userProfiles",
-            localField: "business",
-            foreignField: "_id",
-            as: "business",
+            from: 'userProfiles',
+            localField: 'business',
+            foreignField: '_id',
+            as: 'business',
           },
         },
         {
-          $unwind: "$business",
+          $unwind: '$business',
         },
         {
           $lookup: {
-            from: "userProfiles",
-            localField: "guruId",
-            foreignField: "_id",
-            as: "introduced",
+            from: 'userProfiles',
+            localField: 'guruId',
+            foreignField: '_id',
+            as: 'introduced',
           },
         },
         {
-          $unwind: "$introduced",
+          $unwind: '$introduced',
         },
         {
           $addFields: {
             remindersCount: {
-              $size: "$reminders",
+              $size: '$reminders',
             },
           },
         },
         {
           $match: {
-            status: "waiting for Guru",
+            status: 'waiting for Guru',
             remindersCount: { $lt: 3 },
           },
         },

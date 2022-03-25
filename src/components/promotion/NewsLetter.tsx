@@ -24,7 +24,7 @@ export default function NewsLetter() {
           setContact('');
           setName('');
         })
-        .catch((error) => console.log(e));
+        .catch((error) => console.error(e));
     }
   };
   return (

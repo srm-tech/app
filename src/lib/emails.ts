@@ -1,5 +1,6 @@
-import { env } from '@/lib/envConfig';
 import { NextApiRequest } from 'next';
+
+import { env } from '@/lib/envConfig';
 
 import sendMail from './mail';
 

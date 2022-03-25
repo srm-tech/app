@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { check, validate } from '@/lib/validator';
-import getCollections from '@/models';
+
 import { handleErrors } from '@/lib/middleware';
+import { check, validate } from '@/lib/validator';
+
+import getCollections from '@/models';
 
 export default handleErrors(
   async (req: NextApiRequest, res: NextApiResponse) => {

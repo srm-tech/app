@@ -1,4 +1,5 @@
-import { MongoClient, ObjectId, Db, Collection } from 'mongodb';
+import { Collection, Db, MongoClient, ObjectId } from 'mongodb';
+
 import { env } from '@/lib/envConfig';
 
 export const getDb = () => {

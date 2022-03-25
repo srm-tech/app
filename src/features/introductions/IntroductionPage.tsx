@@ -229,7 +229,6 @@ export default function Introductions() {
 
   async function loadUser() {
     const data: UserProfile = await get(`/me`);
-    console.log(data);
 
     if (response.ok) {
       setReload(false);

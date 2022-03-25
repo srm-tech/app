@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import StarRatingComponent from "react-star-rating-component";
 import useFetch, { CachePolicies } from "use-http";
 
+import { env } from "@/lib/envConfig";
+
 import Button from "@/components/buttons/Button";
 import Link from "@/components/buttons/Link";
-import DashboardLayout from "@/layouts/DashboardLayout";
 import Table from "@/components/table/Table";
-import { env } from "@/lib/envConfig";
+
+import DashboardLayout from "@/layouts/DashboardLayout";
 
 export default function MyContacts() {
   const [loaderVisible, setLoaderVisible] = useState(false);

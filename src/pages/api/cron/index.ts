@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 
+import { env } from '@/lib/envConfig';
 import sendMail from '@/lib/mail';
 import { htmlStripeReminder } from '@/lib/utils';
 
 import getCollections from '@/models';
-import { env } from '@/lib/envConfig';
 
 export default async function handler(
   req: NextApiRequest,

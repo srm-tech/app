@@ -1,5 +1,6 @@
-import CustomLink from '@/components/links/CustomLink';
 import * as React from 'react';
+
+import CustomLink from '@/components/links/CustomLink';
 
 export default function Privacy() {
   return (

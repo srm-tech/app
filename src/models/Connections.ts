@@ -1,5 +1,6 @@
-import { ObjectId } from '@/lib/db';
 import { Collection } from 'mongodb';
+
+import { ObjectId } from '@/lib/db';
 
 const Connection = (collection: Collection<Document>) => ({
   readMany: async (_id: ObjectId) => {

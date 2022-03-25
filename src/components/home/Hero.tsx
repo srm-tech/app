@@ -1,6 +1,7 @@
 import { ClockIcon } from '@heroicons/react/solid';
-import * as React from 'react';
 import Link from 'next/link';
+import * as React from 'react';
+
 import { SignUpForBetaForm } from './SignUpForBetaForm';
 import { QuickForm } from '../../features/introductions/QuickForm';
 

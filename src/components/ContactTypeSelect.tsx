@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { RadioGroup } from '@headlessui/react';
 import clsx from 'clsx';
+import { useState } from 'react';
 
 const types = [
   {

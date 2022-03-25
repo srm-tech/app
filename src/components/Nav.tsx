@@ -14,7 +14,7 @@ export default function Nav() {
   const router = useRouter();
 
   const navigation = [
-    { name: 'Early Bird Offer', href: '/promotion' },
+    { name: 'My contacts', href: '/app/myContacts' },
 
     // { name: 'Marketplace', href: '#' },
     // { name: 'Company', href: '#' },

@@ -3,6 +3,7 @@
  */
 
 import { loadStripe, Stripe } from '@stripe/stripe-js';
+
 import { env } from './envConfig';
 
 let stripePromise: Promise<Stripe | null>;

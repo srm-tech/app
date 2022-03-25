@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import getCurrentUser from '@/lib/get-current-user';
-import getCollections from '@/models';
 import { handleErrors } from '@/lib/middleware';
+
+import getCollections from '@/models';
 
 // todo: replace userId
 export default handleErrors(

@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+
 import { env } from './envConfig';
 
 const openDbConnection = (url) => {
@@ -15,7 +16,7 @@ const openDbConnection = (url) => {
       resolve({ client, db });
     });
   });
-  p.catch((err) => console.log('ERROR: openDbConnection', err));
+  p.catch((err) => console.error('ERROR: openDbConnection', err));
   return p;
 };
 

@@ -6,6 +6,7 @@ import Pricing from '@/components/home/Pricing';
 import Promo from '@/components/home/Promo';
 import Nav from '@/components/Nav';
 import Seo from '@/components/Seo';
+
 import PrivacyContent from '@/pages/legal/PrivacyContent';
 
 export default function Privacy() {

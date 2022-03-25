@@ -1,9 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+
+import { connectToDatabase } from '@/lib/db';
 import getCurrentUser from '@/lib/get-current-user';
 import { handleErrors } from '@/lib/middleware';
 import { check, validate } from '@/lib/validator';
+
 import getCollections from '@/models';
-import { connectToDatabase } from '@/lib/db';
 
 // TODO: replace userId
 export default handleErrors(

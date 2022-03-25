@@ -1,8 +1,8 @@
-import { Collection, ObjectId } from "mongodb";
+import { Collection, ObjectId } from 'mongodb';
 
-import { defaultProfile, UserProfile } from "./constants";
+import { defaultProfile, UserProfile } from './constants';
 
-const UserProfile = (collection: Collection<UserProfile>) => ({
+const UserProfileModel = (collection: Collection<UserProfile>) => ({
   create: async (_id, data: UserProfile) => {
     return {
       defaultProfile,
@@ -13,7 +13,7 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
     return collection?.find({ userId }).toArray();
   },
   searchForBusinessQuick: async (q: string) => {
-    const query = new RegExp(q, "i");
+    const query = new RegExp(q, 'i');
     return collection
       .aggregate([
         //pipeline array
@@ -30,17 +30,17 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
           $addFields: {
             search: {
               $concat: [
-                "$firstName",
-                " ",
-                "$lastName",
-                " - ",
-                "$businessName",
-                " (",
-                "$businessCategory",
-                ")",
+                '$firstName',
+                ' ',
+                '$lastName',
+                ' - ',
+                '$businessName',
+                ' (',
+                '$businessCategory',
+                ')',
               ],
             },
-            name: { $concat: ["$firstName", " ", "$lastName"] },
+            name: { $concat: ['$firstName', ' ', '$lastName'] },
           },
         }, //stage1
         {
@@ -54,15 +54,15 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       .toArray();
   },
   searchForBusiness: async (q: string) => {
-    const query = new RegExp(q, "i");
+    const query = new RegExp(q, 'i');
     return collection
       .aggregate([
         {
           $lookup: {
-            from: "reviews",
-            localField: "_id",
-            foreignField: "business",
-            as: "reviews",
+            from: 'reviews',
+            localField: '_id',
+            foreignField: 'business',
+            as: 'reviews',
             pipeline: [
               {
                 $project: {
@@ -81,36 +81,36 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
           $addFields: {
             search: {
               $concat: [
-                "$firstName",
-                " ",
-                "$lastName",
-                " - ",
-                "$businessName",
-                " (",
-                "$businessCategory",
-                ")",
+                '$firstName',
+                ' ',
+                '$lastName',
+                ' - ',
+                '$businessName',
+                ' (',
+                '$businessCategory',
+                ')',
               ],
             },
-            name: { $concat: ["$firstName", " ", "$lastName"] },
+            name: { $concat: ['$firstName', ' ', '$lastName'] },
             avgCommissionCustomer: {
-              $avg: "$commissionCustomer",
+              $avg: '$commissionCustomer',
             },
             avgCommissionBusiness: {
-              $avg: "$commissionBusiness",
+              $avg: '$commissionBusiness',
             },
             rating: {
-              $avg: "$reviews.rating",
+              $avg: '$reviews.rating',
             },
           },
         },
         {
           $unset: [
-            "rating",
-            "successfulRate",
-            "averageCommission",
-            "isActive",
-            "isGuru",
-            "isBusiness",
+            'rating',
+            'successfulRate',
+            'averageCommission',
+            'isActive',
+            'isGuru',
+            'isBusiness',
           ],
         },
         {
@@ -122,38 +122,38 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
       ])
       .toArray();
   },
-  searchForCustomer: async (contact: string, type: "email" | "phone") => {
+  searchForCustomer: async (contact: string, type: 'email' | 'phone') => {
     const connections = await collection
       .aggregate([
         {
           $lookup: {
-            from: "connections",
-            localField: "_id",
-            foreignField: "user2",
-            as: "myConnection",
+            from: 'connections',
+            localField: '_id',
+            foreignField: 'user2',
+            as: 'myConnection',
           },
         },
 
         {
-          $match: { phone: "786865787" },
+          $match: { phone: '786865787' },
         },
         {
-          $unwind: "$myConnection",
+          $unwind: '$myConnection',
         },
         {
           $project: {
-            "myConnection.user2._id": 1,
+            'myConnection.user2._id': 1,
           },
         },
         {
-          $unset: "myConnection",
+          $unset: 'myConnection',
         },
         { $limit: 1 },
       ])
       .toArray();
     return connections[0];
   },
-  searchForGuru: async ({ query = "" }) => {
+  searchForGuru: async ({ query = '' }) => {
     return collection
       .aggregate([
         //pipeline array
@@ -161,31 +161,31 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
           $project: {
             search: {
               $concat: [
-                "$firstName",
-                " ",
-                "$lastName",
-                " - ",
-                "$businessName",
-                " (",
-                "$businessCategory",
-                ")",
+                '$firstName',
+                ' ',
+                '$lastName',
+                ' - ',
+                '$businessName',
+                ' (',
+                '$businessCategory',
+                ')',
               ],
             },
-            name: { $concat: ["$firstName", " ", "$lastName"] },
-            businessName: "$businessName",
-            userId: "$userId",
-            category: "$businessCategory",
-            isBusiness: "$isBusiness",
-            isGuru: "$isGuru",
+            name: { $concat: ['$firstName', ' ', '$lastName'] },
+            businessName: '$businessName',
+            userId: '$userId',
+            category: '$businessCategory',
+            isBusiness: '$isBusiness',
+            isGuru: '$isGuru',
           },
         },
         {
           $match: {
-            search: { $regex: query, $options: "i" },
+            search: { $regex: query, $options: 'i' },
             isGuru: true,
           },
         },
-        { $unset: "userId" }, // remove filed from result
+        { $unset: 'userId' }, // remove filed from result
       ])
       .toArray();
   },
@@ -286,4 +286,4 @@ const UserProfile = (collection: Collection<UserProfile>) => ({
   }*/
 });
 
-export default UserProfile;
+export default UserProfileModel;

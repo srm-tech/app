@@ -1,6 +1,6 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { useState } from 'react';
 import { Switch } from '@headlessui/react';
+import { useState } from 'react';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');

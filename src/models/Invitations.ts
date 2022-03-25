@@ -1,5 +1,6 @@
-import { ObjectId } from '@/lib/db';
 import { Collection } from 'mongodb';
+
+import { ObjectId } from '@/lib/db';
 
 const Invitation = (collection: Collection<Document>) => ({
   getReceived: async (userId: ObjectId) => {

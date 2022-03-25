@@ -5,18 +5,21 @@ module.exports = {
     node: true,
   },
   plugins: ['@typescript-eslint', 'simple-import-sort'],
-  extends: [
-    'eslint:recommended',
-    'next',
-    'next/core-web-vitals',
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-  ],
+  extends: ['eslint:recommended', 'next'],
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
+  },
   rules: {
+    'no-console': ['warn', { allow: ['error', 'info'] }],
     'react/display-name': 'off',
     'react/no-unescaped-entities': 0,
+    'import/prefer-default-export': 'off',
     'no-unused-vars': 'off',
-    'no-console': 'warn',
+    'react-hooks/exhaustive-deps': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
 
     // Sort
@@ -55,6 +58,7 @@ module.exports = {
       },
     ],
   },
+
   globals: {
     React: true,
     JSX: true,

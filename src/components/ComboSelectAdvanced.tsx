@@ -1,10 +1,12 @@
-import * as React from 'react';
-import { useCombobox } from 'downshift';
 import { SearchIcon } from '@heroicons/react/solid';
-import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
+import { useCombobox } from 'downshift';
+import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useFetch from 'use-http';
+
 import { debounce } from '@/lib/helper';
+
 import { Search } from '../features/introductions/QuickForm';
 
 export default function ComboSelectAdvanced({ query, onChange, onSelect }) {

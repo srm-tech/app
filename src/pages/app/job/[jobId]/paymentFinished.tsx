@@ -23,7 +23,7 @@ export default function StripeConfirmationPage(props) {
 
   async function setStatus() {
     await post('/api/job/setStatusPaid', {
-      jobId: props.jobId,
+      jobId: props.query.jobId,
       amount: props.amount,
     });
   }

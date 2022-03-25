@@ -1,6 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { useState, useEffect, ReactElement } from 'react';
 import { NextRouter, useRouter } from 'next/router';
+import { ReactElement,useEffect, useState } from 'react';
+
 import Link from '@/components/links/UnstyledLink';
 
 const transitionDuration = 300;

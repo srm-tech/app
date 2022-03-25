@@ -1,5 +1,6 @@
-import { classNames } from '@/lib/helper';
 import { FC } from 'react';
+
+import { classNames } from '@/lib/helper';
 
 const Avatar: FC<{
   className?: string;
