@@ -2,6 +2,7 @@ export const env = {
   DB_URI: process.env.DB_URI,
   DB_NAME: process.env.DB_NAME || 'guru',
   BASE_URL: process.env.BASE_URL || 'http://localhost:3000',
+  DOMAIN: '',
   SECRET: process.env.SECRET || 'secretSantaXOXO',
   EMAIL_SERVER_HOST:
     process.env.EMAIL_SERVER_HOST || 'email-smtp.ap-southeast-2.amazonaws.com',
@@ -20,9 +21,15 @@ export const env = {
   TRANSACTION_FEE: process.env.TRANSACTION_FEE || 0.05, // 3% of the total payment
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
+  VERIFY_TOKEN_EXPIRY_DAYS: 1,
+  REFRESH_TOKEN_EXPIRY_DAYS: 180,
+  ACCESS_TOKEN_EXPIRY_MINUTES: 10,
+  ACCESS_TOKEN_SECRET: 'secretFantom#1',
 };
 
-if (!process.browser) {
+env.DOMAIN = env.BASE_URL.split('//')[1].split(':')[0];
+
+if (typeof window !== undefined) {
   console.info(process.env.NODE_ENV);
   console.info(env);
 }

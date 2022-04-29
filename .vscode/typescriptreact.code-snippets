@@ -1,20 +1,16 @@
 {
-  "import React": {
-    "prefix": "ir",
-    "body": ["import * as React from 'react';"]
-  },
   "React.useState": {
-    "prefix": "us",
+    "prefix": "re:us",
     "body": [
       "const [${1}, set${1/(^[a-zA-Z])(.*)/${1:/upcase}${2}/}] = React.useState(${2:initial${1/(^[a-zA-Z])(.*)/${1:/upcase}${2}/}})$0"
     ]
   },
   "React.useEffect": {
-    "prefix": "uf",
+    "prefix": "re:uf",
     "body": ["React.useEffect(() => {", "  $0", "}, []);"]
   },
   "React.useReducer": {
-    "prefix": "ur",
+    "prefix": "re:ur",
     "body": [
       "const [state, dispatch] = React.useReducer(${0:someReducer}, {",
       "  ",
@@ -22,13 +18,12 @@
     ]
   },
   "React.useRef": {
-    "prefix": "urf",
+    "prefix": "re:urf",
     "body": ["const ${1:someRef} = React.useRef($0)"]
   },
   "React Functional Component": {
-    "prefix": "rc",
+    "prefix": "re:rc",
     "body": [
-      "import * as React from 'react';\n",
       "export default function ${1:${TM_FILENAME_BASE}}() {",
       "  return (",
       "    <div>",
@@ -58,5 +53,41 @@
       "  )",
       "}"
     ]
+  },
+  // custom
+  "REACT - ClassNames": {
+    "prefix": "re:cn",
+    "body": ["className={classNames('$1',className)}"],
+    "description": "Add a classname prop"
+  },
+  "REACT - arrow function": {
+    "prefix": "re:fn",
+    "body": ["  const $1 = () => {  $2  }"],
+    "description": "Add a arrow function"
+  },
+  "REACT - useCallback arrow function": {
+    "prefix": "re:fncb",
+    "body": ["  const $1 = useCallback(() => {  $2  },[])"],
+    "description": "Add a useCallback with arrow function"
+  },
+  "REACT - useHistory": {
+    "prefix": "re:uh",
+    "body": ["const history = useHistory();"],
+    "description": "Add history hook"
+  },
+  "REACT - useLocation": {
+    "prefix": "re:ul",
+    "body": ["const history = useLocation();"],
+    "description": "Add location hook"
+  },
+  "REACT - useState": {
+    "prefix": "re:us",
+    "body": "const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2)",
+    "description": "Add useState hook"
+  },
+  "REACT - useStore": {
+    "prefix": "re:st",
+    "body": "const $1 = useStore((store) => store.$1)",
+    "description": "Add useState hook"
   }
 }

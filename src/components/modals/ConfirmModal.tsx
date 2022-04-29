@@ -1,5 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
+import {
+  ExclamationIcon,
+  QuestionMarkCircleIcon,
+  XIcon,
+} from '@heroicons/react/solid';
 import clsx from 'clsx';
 import React, { Component, Fragment, ReactElement, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -13,6 +17,8 @@ export default function ConfirmModal({
   acceptCaption,
   onCancel: cancel,
   cancelCaption,
+  isClosable,
+  icon,
 }: {
   isShowing: boolean;
   caption?: string;
@@ -21,7 +27,9 @@ export default function ConfirmModal({
   form?: string;
   acceptCaption: string;
   onCancel: () => void;
-  cancelCaption: string;
+  cancelCaption?: string;
+  isClosable?: boolean;
+  icon?: any;
 }) {
   return process.browser && isShowing
     ? ReactDOM.createPortal(
@@ -64,18 +72,23 @@ export default function ConfirmModal({
                   leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
                 >
                   <div className='inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6'>
-                    <div>
-                      {/* <div className='flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full'>
-                        <QuestionMarkCircleIcon
-                          className='w-6 h-6 text-green-600'
-                          aria-hidden='true'
-                        />
-                      </div> */}
-                      <div className='text-center'>
+                    <div className='hidden sm:block absolute top-0 right-0 pt-5 pr-5'>
+                      <button
+                        type='button'
+                        className='bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                        onClick={cancel}
+                      >
+                        <span className='sr-only'>Close</span>
+                        <XIcon className='h-6 w-6' aria-hidden='true' />
+                      </button>
+                    </div>
+                    <div className='sm:flex sm:items-start'>
+                      {icon && icon}
+                      <div className='text-left ml-4'>
                         {caption && (
                           <Dialog.Title
                             as='h3'
-                            className='mt-3 mb-2 text-lg font-medium leading-6 text-gray-900'
+                            className='text-lg leading-6 font-medium text-gray-900'
                           >
                             {caption}
                           </Dialog.Title>
@@ -85,6 +98,7 @@ export default function ConfirmModal({
                         </div>
                       </div>
                     </div>
+
                     <div
                       className={clsx(
                         `mt-5 sm:mt-6 sm:grid  sm:gap-3 sm:grid-flow-row-dense`,

@@ -1,19 +1,20 @@
-import { useRouter } from "next/router";
-import { signIn, useSession } from "next-auth/react";
-import { useEffect } from "react";
-import * as React from "react";
-import useFetch from "use-http";
+import { ExclamationIcon, UserIcon } from '@heroicons/react/solid';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import * as React from 'react';
+import useFetch from 'use-http';
 
-import { handleError } from "@/lib/helper";
+import { handleError } from '@/lib/helper';
 
-import ComboSelect from "@/components/ComboSelect";
-import ContactType from "@/components/ContactTypeSelect";
-import InlineError from "@/components/errors/InlineError";
-import Modal from "@/components/modals/ConfirmModal";
-import RegisterForm from "@/components/RegisterForm";
+import ComboSelect from '@/components/ComboSelect';
+import ContactType from '@/components/ContactTypeSelect';
+import InlineError from '@/components/errors/InlineError';
+import Modal from '@/components/modals/ConfirmModal';
+import RegisterForm from '@/components/RegisterForm';
 
-import AgreementSummary from "@/features/agreement/AgreementSummary";
-import type { Agreement } from "@/features/agreement/constants";
+import AgreementSummary from '@/features/agreement/AgreementSummary';
+import type { Agreement } from '@/features/agreement/constants';
+import { signIn, useSession } from '@/features/session/SessionContext';
 
 export interface Search {
   _id: string;
@@ -39,29 +40,29 @@ export interface Draft {
 }
 
 export const QuickForm = () => {
-  const [errorMessage, setErrorMessage] = React.useState("");
-  const [query, setQuery] = React.useState<string>("");
-  const [draftId, setDraftId] = React.useState<string | undefined>("");
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [query, setQuery] = React.useState<string>('');
+  const [draftId, setDraftId] = React.useState<string | undefined>('');
   const [agreement, setAgreement] = React.useState<Agreement>({
-    commissionType: "",
+    commissionType: '',
     commissionValue: 0,
-    commissionCurrency: "",
+    commissionCurrency: '',
     agreedAt: new Date(),
-    commissionLabel: "",
+    commissionLabel: '',
   });
   const [customer, setCustomer] = React.useState<Customer>({
-    contact: "",
-    name: "",
-    contactType: "phone",
+    contact: '',
+    name: '',
+    contactType: 'phone',
   });
   const [business, setBusiness] = React.useState<Business>({
-    _id: "",
-    name: query || "",
-    company: "",
+    _id: '',
+    name: query || '',
+    company: '',
   });
 
   const [profile, setProfile] = React.useState<{ email: string }>({
-    email: "",
+    email: '',
   });
 
   const draft = {
@@ -75,7 +76,7 @@ export const QuickForm = () => {
   const [step, setStep] = React.useState(router.query.step || 1);
   const { data: session } = useSession();
   const formRef = React.useRef<any>();
-  const { post, get, put, response, loading, error } = useFetch("");
+  const { post, get, put, response, loading, error } = useFetch('');
 
   const loadData = async () => {
     const result: Draft = await get(`/drafts/${router.query.draftId}`);
@@ -105,12 +106,12 @@ export const QuickForm = () => {
   const _handleSubmit = React.useCallback(
     async (e) => {
       e?.preventDefault();
-      setErrorMessage("");
+      setErrorMessage('');
 
       // need existing business id
       if (!business._id) {
         return setErrorMessage(
-          "Business not found. Please select it from the dropdown."
+          'Business not found. Please select it from the dropdown.'
         );
       }
 
@@ -118,7 +119,7 @@ export const QuickForm = () => {
       if (draftId) {
         await put(`/drafts/${draftId}`, draft);
       } else {
-        await post("/drafts", draft);
+        await post('/drafts', draft);
       }
 
       // on draft insert push draft id to url for further callback redirect (auth)
@@ -165,7 +166,7 @@ export const QuickForm = () => {
     (inputValue) => {
       setQuery(inputValue);
       if (business._id && inputValue !== business.name) {
-        setBusiness({ ...business, _id: "" });
+        setBusiness({ ...business, _id: '' });
       }
     },
     [draft]
@@ -179,13 +180,13 @@ export const QuickForm = () => {
   const acceptAgreement = async (e) => {
     // just create contact for now with a copy of a agreement and timestamp
     // agreement need to be able to be updated in the future so we add status isActive
-    setErrorMessage("");
+    setErrorMessage('');
     await post(`/myContacts`, { contactId: business._id, agreement });
     if (response.ok && response.data) {
       // final introduction
-      await post("/introductions", draft);
+      await post('/introductions', draft);
       if (response.ok) {
-        router.push("/app/introductions");
+        router.push('/app/introductions');
       }
       handleError(response, setErrorMessage);
     }
@@ -193,25 +194,25 @@ export const QuickForm = () => {
   };
 
   return (
-    <div className="m-auto bg-white rounded-lg sm:max-w-md sm:w-full">
-      <form ref={formRef} className="space-y-6" onSubmit={_handleSubmit}>
-        <div className="flex flex-col">
-          <div className="px-8 pt-4">
-            <label className="text-base font-medium text-gray-900">
+    <div className='m-auto bg-white rounded-lg sm:max-w-md sm:w-full'>
+      <form ref={formRef} className='space-y-6' onSubmit={_handleSubmit}>
+        <div className='flex flex-col'>
+          <div className='px-8 pt-4'>
+            <label className='text-base font-medium text-gray-900'>
               Quick Introduction
             </label>
-          </div>{" "}
-          <div className="flex px-8 py-4">
+          </div>{' '}
+          <div className='flex px-8 py-4'>
             <img
-              src="/home/img/introduceTo.svg"
-              alt="introducing"
-              className="w-20 h-20 mr-2"
+              src='/home/img/introduceTo.svg'
+              alt='introducing'
+              className='w-20 h-20 mr-2'
             />
-            <div className="flex-1">
-              <p className="text-sm leading-5 text-gray-500">
+            <div className='flex-1'>
+              <p className='text-sm leading-5 text-gray-500'>
                 Introducing trusted partner:
               </p>
-              <label htmlFor="name" className="sr-only">
+              <label htmlFor='name' className='sr-only'>
                 Contact list
               </label>
               <ComboSelect
@@ -229,28 +230,28 @@ export const QuickForm = () => {
             </div>
           </div>
           <hr />
-          <div className="flex px-8 py-4">
-            <div className="flex-1 space-y-2">
-              <div className="">
-                <p className="text-sm leading-5 text-gray-500">To client:</p>
-                <label htmlFor="name" className="sr-only">
+          <div className='flex px-8 py-4'>
+            <div className='flex-1 space-y-2'>
+              <div className=''>
+                <p className='text-sm leading-5 text-gray-500'>To client:</p>
+                <label htmlFor='name' className='sr-only'>
                   Introduce to (name)
                 </label>
                 <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  autoComplete="name"
-                  placeholder="Joe Doe"
+                  type='text'
+                  name='name'
+                  id='name'
+                  autoComplete='name'
+                  placeholder='Joe Doe'
                   required
-                  className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                  className='block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
                   value={customer.name}
                   onChange={(event) =>
                     setCustomer({ ...customer, name: event.target.value })
                   }
                 />
               </div>
-              <div className="flex">
+              <div className='flex'>
                 <ContactType
                   onChange={(contactType) =>
                     setCustomer({ ...customer, contactType })
@@ -258,17 +259,17 @@ export const QuickForm = () => {
                   value={customer.contactType}
                 />
                 <input
-                  type={customer.contactType === "email" ? "email" : "text"}
-                  name="contact"
-                  id="contact"
-                  autoComplete="contact"
+                  type={customer.contactType === 'email' ? 'email' : 'text'}
+                  name='contact'
+                  id='contact'
+                  autoComplete='contact'
                   placeholder={
-                    customer.contactType === "email"
-                      ? "contact email"
-                      : "contact phone"
+                    customer.contactType === 'email'
+                      ? 'contact email'
+                      : 'contact phone'
                   }
                   required
-                  className="block w-full ml-3 border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                  className='block w-full ml-3 border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm'
                   value={customer.contact}
                   onChange={(event) =>
                     setCustomer({ ...customer, contact: event.target.value })
@@ -277,38 +278,38 @@ export const QuickForm = () => {
               </div>
             </div>
             <img
-              src="/home/img/introducing.svg"
-              alt="introducing"
-              className="w-20 h-20 mt-4"
+              src='/home/img/introducing.svg'
+              alt='introducing'
+              className='w-20 h-20 mt-4'
             />
           </div>
           {errorMessage && (
-            <div className="px-8 py-4">
+            <div className='px-8 py-4'>
               <InlineError message={errorMessage} />
             </div>
           )}
-          <div className="px-8 py-4">
+          <div className='px-8 py-4'>
             <button
-              type="submit"
+              type='submit'
               disabled={loading}
-              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary-400 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              className='flex justify-center w-full px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-primary-400 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
             >
-              {loading ? "sending..." : "Introduce"}
+              {loading ? 'sending...' : 'Introduce'}
             </button>
           </div>
           {!session && (
-            <div className="px-4 py-6 border-t-2 sm:px-10">
-              <p className="text-xs leading-5 text-gray-500">
+            <div className='px-4 py-6 border-t-2 sm:px-10'>
+              <p className='text-xs leading-5 text-gray-500'>
                 <button
                   onClick={() =>
-                    signIn("", {
+                    signIn('', {
                       callbackUrl: location.href,
                     })
                   }
-                  className="font-medium text-blue-500 hover:underline"
+                  className='font-medium text-blue-500 hover:underline'
                 >
                   Sign In
-                </button>{" "}
+                </button>{' '}
                 to save and track introductions.
               </p>
             </div>
@@ -318,25 +319,29 @@ export const QuickForm = () => {
 
       <Modal
         isShowing={step === 2}
-        acceptCaption="Sign In"
-        cancelCaption="I will do it later"
+        acceptCaption='Sign In'
         onAccept={() =>
-          signIn("", {
+          signIn('', {
             callbackUrl: location.href,
           })
         }
         onCancel={() => setStep(1)}
-        caption="Not logged in?"
-        content={<p>To save introduction please sign in with your email.</p>}
+        icon={
+          <div className='mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10'>
+            <UserIcon className='h-6 w-6 text-yellow-600' aria-hidden='true' />
+          </div>
+        }
+        caption='Not logged in?'
+        content={<p>To save introduction please sign.</p>}
       />
       <Modal
         isShowing={step === 3}
-        form="registration"
-        acceptCaption="Register Now"
-        cancelCaption="I will do it later"
-        onAccept={() => console.info("register from intro")}
+        form='registration'
+        acceptCaption='Register Now'
+        cancelCaption='I will do it later'
+        onAccept={() => console.info('register from intro')}
         onCancel={() => setStep(1)}
-        caption="New to Introduce Guru?"
+        caption='New to Introduce Guru?'
         content={
           <div>
             <p>
@@ -351,9 +356,9 @@ export const QuickForm = () => {
       />
       <Modal
         isShowing={step === 4}
-        form="registration"
-        acceptCaption="Accept & Introduce"
-        cancelCaption="Decline"
+        form='registration'
+        acceptCaption='Accept & Introduce'
+        cancelCaption='Decline'
         onAccept={acceptAgreement}
         onCancel={() => setStep(1)}
         caption={`Your contract summary`}
@@ -364,7 +369,7 @@ export const QuickForm = () => {
             </p>
             <AgreementSummary agreement={agreement} />
             {errorMessage && (
-              <div className="px-8 py-4">
+              <div className='px-8 py-4'>
                 <InlineError message={errorMessage} />
               </div>
             )}

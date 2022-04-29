@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { HttpError } from './error';
+import HttpStatusCode from './httpStatus';
 
 // And to throw an error when an error happens in a middleware
 export function initMiddleware(middleware) {
@@ -23,10 +24,37 @@ export function validateMiddleware(validations, validationResult) {
     if (errors.isEmpty()) {
       return next();
     }
-
-    res.status(422).json({ errors: errors.array() });
+    const firstErr = errors.array()[0];
+    return next(
+      new HttpError(
+        HttpStatusCode.UNPROCESSABLE_ENTITY,
+        `${firstErr.msg} - ${firstErr.param}`
+      )
+    );
   };
 }
+
+export const handleError =
+  async (callback) => async (req: NextApiRequest, res: NextApiResponse) => {
+    try {
+      await callback(req, res);
+    } catch (e) {
+      console.error('IG Error:', e);
+      const statusCode = (e as HttpError).statusCode || 500;
+      res.status(statusCode).json({
+        statusCode,
+        message:
+          statusCode === 500
+            ? (e as HttpError).message || 'Oops, something went wrong.'
+            : (e as HttpError).message,
+      });
+    }
+  };
+
+export const defaultErrorHandler =
+  (callback) => async (req: NextApiRequest, res: NextApiResponse) => {
+    callback(req, res);
+  };
 
 export const handleErrors =
   (callback) => async (req: NextApiRequest, res: NextApiResponse) => {

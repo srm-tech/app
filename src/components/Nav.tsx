@@ -2,25 +2,25 @@ import { Popover, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { signIn, signOut, useSession } from 'next-auth/react';
 import { Fragment } from 'react';
 
 import { env } from '@/lib/envConfig';
 
+import { useSession } from '@/features/session/SessionContext';
+
 import Logo from './Logo';
 
 export default function Nav() {
-  const { data: session } = useSession();
+  const session = useSession();
   const router = useRouter();
 
   const navigation = [
-    { name: 'My contacts', href: '/app/myContacts' },
-
     // { name: 'Marketplace', href: '#' },
     // { name: 'Company', href: '#' },
   ];
-  if (session) {
-    navigation.push({ name: 'My Introductions', href: '/app/introductions' });
+  if (session.isActive) {
+    navigation.push({ name: 'Contacts', href: '/app/introductions' });
+    navigation.push({ name: 'Introductions', href: '/app/introductions' });
   }
   return (
     <Popover className='mx-auto max-w-7xl'>
@@ -54,18 +54,20 @@ export default function Nav() {
           </div>
           <button
             onClick={
-              session
+              session.isActive
                 ? () => {
-                    signOut({ callbackUrl: env.BASE_URL });
+                    session.signOut({ callbackUrl: env.BASE_URL });
                   }
-                : () =>
-                    signIn('', {
-                      callbackUrl: location.href,
-                    })
+                : () => {
+                    session.showLoginModal();
+                  }
+              // session.signIn('', {
+              //   callbackUrl: location.href,
+              // })
             }
             className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md hover:bg-gray-700'
           >
-            {session ? 'Log out' : 'Log in'}
+            {session.isActive ? 'Sign out' : 'Sign in'}
           </button>
         </div>
       </nav>
@@ -114,7 +116,7 @@ export default function Nav() {
               href='#'
               className='block w-full px-5 py-3 font-medium text-center text-green-600 bg-gray-50 hover:bg-gray-100'
             >
-              Log in
+              Sign in
             </a> */}
           </div>
         </Popover.Panel>

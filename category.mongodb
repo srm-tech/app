@@ -1,0 +1,144 @@
+use("guru");
+
+db.introductions.drop();
+
+db.introductions.insertMany([
+  [
+    {
+        "value": "auto_electrical",
+        "label": "Auto Electrical",
+    },
+    {
+        "value": "hair_beauty",
+        "label": "Hair & Beauty",
+    },
+    {
+        "value": "building_construction",
+        "label": "Building & Construction",
+    },
+    {
+        "value": "business_admin",
+        "label": "Business & Admin",
+    },
+    {
+        "value": "carpentry",
+        "label": "Carpentry",
+    },
+    {
+        "value": "cleaning",
+        "label": "Cleaning",
+    },
+    {
+        "value": "clothing_alteration_repair_services",
+        "label": "Clothing Alteration & Repair Services",
+    },
+    {
+        "value": "computers_it",
+        "label": "Computers & IT",
+    },
+    {
+        "value": "delivery",
+        "label": "Delivery",
+    },
+    {
+        "value": "electrical",
+        "label": "Electrical",
+    },
+    {
+        "value": "events_wedding_services",
+        "label": "Events & Wedding Services",
+    },
+    {
+        "value": "fencing",
+        "label": "Fencing",
+    },
+    {
+        "value": "floor_tiling",
+        "label": "Floor Tiling",
+    },
+    {
+        "value": "furniture_assembly",
+        "label": "Furniture Assembly",
+    },
+    {
+        "value": "fitness",
+        "label": "Fitness",
+    },
+    {
+        "value": "landscaping_and_gardening",
+        "label": "Landscaping and Gardening",
+    },
+    {
+        "value": "home_maintenance_and_handyperson",
+        "label": "Home Maintenance and Handyperson",
+    },
+    {
+        "value": "household_equipment_installation_repairs",
+        "label": "Household Equipment Installation & Repairs",
+    },
+    {
+        "value": "lifestyle",
+        "label": "Lifestyle",
+    },
+    {
+        "value": "marketing_design",
+        "label": "Marketing & Design",
+    },
+    {
+        "value": "music_audio",
+        "label": "Music & Audio",
+    },
+    {
+        "value": "vehicle_care_mechanic_services",
+        "label": "Vehicle Care & Mechanic Services",
+    },
+    {
+        "value": "nanny_babysitting_services",
+        "label": "Nanny & Babysitting services",
+    },
+    {
+        "value": "painting",
+        "label": "Painting",
+    },
+    {
+        "value": "pet_care",
+        "label": "Pet Care",
+    },
+    {
+        "value": "photography_videography_services",
+        "label": "Photography & Videography Services",
+    },
+    {
+        "value": "plumbing",
+        "label": "Plumbing",
+    },
+    {
+        "value": "removals",
+        "label": "Removals",
+    },
+    {
+        "value": "rubbish_removal",
+        "label": "Rubbish Removal",
+    },
+    {
+        "value": "tradesperson",
+        "label": "Tradesperson",
+    },
+    {
+        "value": "tutoring_training",
+        "label": "Tutoring & Training",
+    },
+    {
+        "value": "writing_translation",
+        "label": "Writing & Translation",
+    },
+    {
+        "value": "fun_quirky",
+        "label": "Fun & Quirky",
+    },
+    {
+        "value": "other",
+        "label": "Other",
+    }
+]
+])

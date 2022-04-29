@@ -21,7 +21,7 @@ export default function Footer() {
           alert('You have successfully submitted.');
           setContact('');
         })
-        .catch((error) => console.log(e));
+        .catch((error) => console.error(e));
     }
   };
   const navigation = {

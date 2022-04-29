@@ -3,7 +3,7 @@ import Link from 'next/link';
 import * as React from 'react';
 
 import { SignUpForBetaForm } from './SignUpForBetaForm';
-import { QuickForm } from '../../features/introductions/QuickForm';
+import { QuickForm as QuickIntroduction } from '../../features/introductions/QuickForm';
 
 export default function Hero() {
   return (
@@ -66,7 +66,7 @@ export default function Hero() {
             </div>
           </div>
           <div className='mt-16 sm:mt-24 lg:mt-0 lg:col-span-6 justify-self-end'>
-            <QuickForm />
+            <QuickIntroduction />
           </div>
         </div>
       </div>
