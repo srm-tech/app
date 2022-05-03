@@ -55,6 +55,7 @@ const UserProfileModel = (collection: Collection<UserProfile>) => ({
   },
   searchForBusiness: async (q: string) => {
     const query = new RegExp(q, 'i');
+    console.log(query);
     return collection
       .aggregate([
         {

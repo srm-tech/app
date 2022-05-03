@@ -2,9 +2,10 @@ import { ObjectId } from 'bson';
 
 export interface UserProfile {
   _id: ObjectId;
+  userId: ObjectId;
   firstName: string;
   lastName: string;
-  name: string;
+  fullName: string;
   abn: string;
   businessName: string;
   contactEmail: string;
@@ -30,12 +31,12 @@ export interface UserProfile {
   isComplete: boolean;
 }
 
-export type DefaultProfile = Omit<UserProfile, '_id'>;
+export type DefaultProfile = Omit<UserProfile, '_id' | 'userId'>;
 
 export const defaultProfile: DefaultProfile = {
   firstName: '',
   lastName: '',
-  name: '',
+  fullName: '',
   contactEmail: '',
   contactPhone: '',
   businessName: '',

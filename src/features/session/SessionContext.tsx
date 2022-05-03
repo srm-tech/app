@@ -144,8 +144,8 @@ export const SessionProvider = ({ children }) => {
   const setRefreshTimeout = async (expiresAt) => {
     clearTimeout(timeoutRefreshRef.current);
     if (expiresAt) {
-      console.info('next refresh at: ', expiresAt);
-      const expiresIn = expiresAt * 1000 - Date.now() - 5000; // subtract 5s from timeout to perform auto refresh before expiry
+      const expiresIn = Math.max(expiresAt * 1000 - Date.now() - 5000, 1000); // subtract 5s from timeout to perform auto refresh before expiry
+      console.info('next refresh at: ', expiresAt, 'in: ', expiresIn);
       timeoutRefreshRef.current = setTimeout(async () => {
         if (!session.isTimedOut) {
           try {
@@ -178,6 +178,10 @@ export const SessionProvider = ({ children }) => {
   };
 
   const loadData = async () => {
+    // ignore loading session data when user lands on verify page from email link
+    if (window.location.pathname.includes('/session/verify')) {
+      return;
+    }
     setNewSession({
       isLoading: true,
     });
@@ -196,18 +200,21 @@ export const SessionProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // ignore loading session data when user lands on verify page from email link
-    if (window.location.pathname.includes('/session/verify')) {
-      return;
-    }
     if (showModal) {
       loadData();
     }
-    return () => {
-      cleanup();
-    };
     // if user session is ok and user opens modal -> sign user
   }, [showModal]);
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener('focus', loadData);
+    return () => {
+      cleanup();
+      window.removeEventListener('focus', loadData);
+    };
+    // if user session is ok and user opens modal -> sign user
+  }, []);
 
   return (
     <Provider value={{ ...session, signIn, signOut, showLoginModal }}>

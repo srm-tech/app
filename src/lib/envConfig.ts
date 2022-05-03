@@ -23,7 +23,8 @@ export const env = {
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
   VERIFY_TOKEN_EXPIRY_DAYS: 1,
   REFRESH_TOKEN_EXPIRY_DAYS: 180,
-  ACCESS_TOKEN_EXPIRY_MINUTES: 10,
+  ACCESS_TOKEN_EXPIRY_MINUTES:
+    process.env.NODE_ENV === 'production' ? 10 : 7 * 12 * 60,
   ACCESS_TOKEN_SECRET: 'secretFantom#1',
 };
 
@@ -31,5 +32,5 @@ env.DOMAIN = env.BASE_URL.split('//')[1].split(':')[0];
 
 if (typeof window !== undefined) {
   console.info(process.env.NODE_ENV);
-  console.info(env);
+  // console.info(env);
 }

@@ -1,4 +1,10 @@
-import { check, CustomValidator, validationResult } from 'express-validator';
+import {
+  body,
+  check,
+  CustomValidator,
+  oneOf,
+  validationResult,
+} from 'express-validator';
 import isValidABN from 'is-valid-abn';
 
 import { initMiddleware, validateMiddleware } from '@/lib/middleware';
@@ -12,4 +18,4 @@ export const isABN: CustomValidator = (value) => {
 export const validate = (params) =>
   initMiddleware(validateMiddleware(params, validationResult));
 
-export { check };
+export { body, check, oneOf };

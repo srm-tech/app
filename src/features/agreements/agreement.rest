@@ -1,0 +1,34 @@
+@cookie = accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjZhNTNhYjA5ZmMwNTM1MTAyODJkNDMiLCJlbWFpbCI6ImtyaXNAaW50cm9kdWNlLmd1cnUiLCJpYXQiOjE2NTE1MDI4MTMsImV4cCI6MTY1MjEwMjc1M30.hooTAqxdDEjF8YE39bTpFAmDQoYyb7qdTxdwk1vFiIY
+
+### Create One
+POST http://localhost:3000/api/agreements HTTP/1.1
+content-type: application/json
+Cookie: {{cookie}}
+
+{
+    "guruId": "626a53ab09fc053510282d43",
+    "businessId": "626a53ab09fc053510282d43",
+    "commissionCurrency": "AUD",
+    "commissionType": "fixed",
+    "commissionPaymentType": "prepaid",
+    "commissionValue": 7
+}
+
+### Search
+GET http://localhost:3000/api/agreements HTTP/1.1
+Cookie: {{cookie}}
+
+### Find One
+GET http://localhost:3000/api/agreements/6270c67d6a488c0261684242 HTTP/1.1
+Cookie: {{cookie}}
+
+
+### Update
+PUT http://localhost:3000/api/agreements/6270c67d6a488c0261684242 HTTP/1.1
+content-type: application/json
+Cookie: {{cookie}}
+
+{
+    "commissionValue": 8
+}
+

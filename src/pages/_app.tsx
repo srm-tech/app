@@ -1,6 +1,7 @@
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import useFetch, { CachePolicies, Provider } from 'use-http';
@@ -111,6 +112,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 
   return (
     <Provider url={`${env.BASE_URL}/api`} options={options}>
+      <Toaster />
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
           <Component {...pageProps} />

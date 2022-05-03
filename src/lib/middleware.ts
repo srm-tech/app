@@ -24,11 +24,18 @@ export function validateMiddleware(validations, validationResult) {
     if (errors.isEmpty()) {
       return next();
     }
+    console.log(errors.array()[0].nestedErrors);
+
+    const nestedFields = errors
+      .array()[0]
+      .nestedErrors?.map((item) => item.param)
+      .join(', ');
+
     const firstErr = errors.array()[0];
     return next(
       new HttpError(
         HttpStatusCode.UNPROCESSABLE_ENTITY,
-        `${firstErr.msg} - ${firstErr.param}`
+        `${firstErr.msg} - ${nestedFields || firstErr.param}`
       )
     );
   };
