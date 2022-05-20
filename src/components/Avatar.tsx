@@ -10,7 +10,7 @@ const Avatar: FC<{
   return (
     <div
       className={classNames(
-        'rounded-full bg-green-500 flex items-center justify-center',
+        'rounded-full bg-green-500 flex items-center justify-center outline-white',
         size === 'large' ? 'w-24 h-24' : '',
         size === 'small' ? 'w-10 h-10' : '',
         size === 'medium' ? 'w-16 h-16' : '',

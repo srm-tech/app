@@ -1,6 +1,6 @@
 import { Switch } from '@headlessui/react';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useFetch from 'use-http';
 
@@ -40,6 +40,7 @@ export default function RegisterForm({
   const getUserProfile = useRequest<UserProfile>(
     userProfileApi.getUserProfile,
     {
+      runOnMount: true,
       onSuccess: (data: UserProfile) => {
         const profile = {
           ...data,
@@ -58,14 +59,6 @@ export default function RegisterForm({
       },
     }
   );
-  const updateUserProfile = useRequest<UserProfile>(
-    userProfileApi.updateUserProfile,
-    {
-      onSuccess: (data) => {
-        onSuccess && onSuccess(data);
-      },
-    }
-  );
 
   const {
     register,
@@ -76,22 +69,13 @@ export default function RegisterForm({
 
   const saveUserProfile = async (data) => {
     setErrorMessage('');
-    if (id === 'registration' && !agreed) {
+    if (!agreed) {
       return setErrorMessage('Please agree to our terms.');
     }
-
-    if (id === 'registration') {
-      createUserProfile.run(data);
-    } else {
-      updateUserProfile.run(data);
-    }
+    createUserProfile.run({
+      ...data,
+    });
   };
-
-  useEffect(() => {
-    if (session.isActive) {
-      getUserProfile.run();
-    }
-  }, [session]);
 
   return (
     <form
@@ -103,11 +87,7 @@ export default function RegisterForm({
       }}
     >
       <LoadingOverlay
-        isLoading={
-          getUserProfile.isLoading ||
-          createUserProfile.isLoading ||
-          updateUserProfile.isLoading
-        }
+        isLoading={getUserProfile.isLoading || createUserProfile.isLoading}
       >
         {getUserProfile.error ||
           (createUserProfile.error && (
@@ -258,7 +238,7 @@ export default function RegisterForm({
                 <input
                   type='text'
                   {...register('businessName', {
-                    required: false,
+                    required: true,
                     maxLength: 255,
                   })}
                   className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
@@ -271,46 +251,44 @@ export default function RegisterForm({
           </div>
         </div>
         <div className='sm:col-span-2'>
-          {id === 'registration' && (
-            <div className='flex items-start'>
-              <div className='flex-shrink-0'>
-                <Switch
-                  checked={agreed}
-                  onChange={setAgreed}
+          <div className='flex items-start'>
+            <div className='flex-shrink-0'>
+              <Switch
+                checked={agreed}
+                onChange={setAgreed}
+                className={classNames(
+                  agreed ? 'bg-indigo-600' : 'bg-gray-200',
+                  'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                )}
+              >
+                <span className='sr-only'>Agree to policies</span>
+                <span
+                  aria-hidden='true'
                   className={classNames(
-                    agreed ? 'bg-indigo-600' : 'bg-gray-200',
-                    'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                    agreed ? 'translate-x-5' : 'translate-x-0',
+                    'inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                   )}
-                >
-                  <span className='sr-only'>Agree to policies</span>
-                  <span
-                    aria-hidden='true'
-                    className={classNames(
-                      agreed ? 'translate-x-5' : 'translate-x-0',
-                      'inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                    )}
-                  />
-                </Switch>
-              </div>
-              <div className='ml-3'>
-                <p className='text-base text-gray-500'>
-                  By selecting this, you agree to the{' '}
-                  <Link href='/legal/privacy' passHref>
-                    <a className='font-medium text-gray-700 underline'>
-                      Privacy Policy
-                    </a>
-                  </Link>{' '}
-                  and{' '}
-                  <Link href='/legal/terms' passHref>
-                    <a className='font-medium text-gray-700 underline'>
-                      Terms & Conditions
-                    </a>
-                  </Link>
-                  .
-                </p>
-              </div>
+                />
+              </Switch>
             </div>
-          )}
+            <div className='ml-3'>
+              <p className='text-base text-gray-500'>
+                By selecting this, you agree to the{' '}
+                <Link href='/legal/privacy' passHref>
+                  <a className='font-medium text-gray-700 underline'>
+                    Privacy Policy
+                  </a>
+                </Link>{' '}
+                and{' '}
+                <Link href='/legal/terms' passHref>
+                  <a className='font-medium text-gray-700 underline'>
+                    Terms & Conditions
+                  </a>
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
           {errorMessage && (
             <div className='py-4'>
               <InlineError message={errorMessage} />

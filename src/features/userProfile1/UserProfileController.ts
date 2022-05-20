@@ -81,9 +81,7 @@ const register = async (
   if (req.body.isAcceptingIntroductions) {
     await validateBusiness(req, res);
   }
-  const data = await (
-    await UserProfileModel()
-  ).create(user._id, { ...req.body, isActive: true });
+  const data = await (await UserProfileModel()).create(user._id, req.body);
   return res.json(data);
 };
 

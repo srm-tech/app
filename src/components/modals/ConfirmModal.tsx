@@ -17,7 +17,7 @@ export default function ConfirmModal({
   acceptCaption,
   onCancel: cancel,
   cancelCaption,
-  isClosable,
+  isClosable = true,
   isLoading,
   icon,
   size = 'lg',
@@ -86,17 +86,19 @@ export default function ConfirmModal({
                     )}
                   >
                     <LoadingOverlay isLoading={isLoading}>
-                      <div className='hidden sm:block absolute top-0 right-0 pt-5 pr-5'>
-                        <button
-                          type='button'
-                          className='bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                          onClick={cancel}
-                        >
-                          <span className='sr-only'>Close</span>
-                          <XIcon className='h-6 w-6' aria-hidden='true' />
-                        </button>
-                      </div>
-                      <div className='sm:flex sm:items-start'>
+                      {isClosable && (
+                        <div className='hidden sm:block absolute top-0 right-0 pt-5 pr-5'>
+                          <button
+                            type='button'
+                            className='bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                            onClick={cancel}
+                          >
+                            <span className='sr-only'>Close</span>
+                            <XIcon className='h-6 w-6' aria-hidden='true' />
+                          </button>
+                        </div>
+                      )}
+                      <div className=''>
                         {icon && icon}
                         <div className='text-left mx-8 my-4'>
                           {caption && (

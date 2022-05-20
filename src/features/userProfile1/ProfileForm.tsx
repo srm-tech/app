@@ -10,6 +10,7 @@ import Toggle from '@/components/toggles/toggle';
 
 import userProfileApi from './requests';
 import { UserProfile } from './UserProfileModel';
+import { useSession } from '../session/SessionContext';
 
 export default function ProfileForm({
   id,
@@ -19,13 +20,21 @@ export default function ProfileForm({
   onSuccess?: (data: UserProfile) => void;
 }) {
   const [formValues, setFormValues] = useState();
+  const session = useSession();
+  console.log(session.data);
+
   const getUserProfile = useRequest<UserProfile>(
     userProfileApi.getUserProfile,
     {
       runOnMount: true,
       onSuccess: (data) => {
-        setFormValues(data);
-        reset(data);
+        const profile = {
+          ...data,
+          contactEmail: data.contactEmail || session.data.email,
+          country: data.country || 'AU',
+        };
+        setFormValues(profile);
+        reset(profile);
       },
     }
   );
@@ -150,7 +159,7 @@ export default function ProfileForm({
                 <input
                   type='text'
                   {...register('contactEmail', {
-                    required: false,
+                    required: true,
                     pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                   })}
                   className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'

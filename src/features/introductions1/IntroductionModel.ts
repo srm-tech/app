@@ -13,7 +13,7 @@ import {
 export interface Introduction {
   _id: ObjectId | string;
   status: IntroductionStatus;
-  paid: number;
+  paid: number | string;
   business: Business;
   customer: Customer;
   guru: Guru;
@@ -24,6 +24,10 @@ export interface Introduction {
 }
 
 export type NewIntroduction = Omit<Introduction, '_id'>;
+export type UpdatePaymentStatusIntroduction = Pick<
+  Introduction,
+  '_id' | 'status' | 'paid'
+>;
 export type UpdateStatusIntroduction = Pick<Introduction, '_id' | 'status'>;
 export type UpdateAgreementForIntroduction = Pick<Introduction, '_id'> & {
   dealValue: number | string;

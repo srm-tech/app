@@ -87,6 +87,9 @@ export const UserProfileModel = async () => {
       await collection.insertOne({
         ...defaultProfile,
         ...data,
+        fullName: `${data.firstName} ${data.lastName}`,
+        isActive: true,
+        isComplete: true,
         userId,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -100,11 +103,11 @@ export const UserProfileModel = async () => {
         ...defaultProfile,
         ...currentProfile,
         ...rest,
+        fullName: `${data.firstName} ${data.lastName}`,
+        userId,
+        updatedAt: new Date(),
       };
-      await collection.updateOne(
-        { userId },
-        { $set: { ...newProfile, userId, updatedAt: new Date() } }
-      );
+      await collection.updateOne({ userId }, { $set: newProfile });
       return newProfile;
     },
     findOne: async (userId) => {

@@ -26,7 +26,6 @@ export function useFirstRender() {
   useEffect(() => {
     firstRender.current = false;
   }, []);
-
   return firstRender.current;
 }
 
@@ -46,21 +45,27 @@ const useRequest = <T, P = undefined>(
   const [error, setError] = useState('');
   const [data, setData] = useState<T>();
   const dependenciesRef = useRef<DependencyList>([]);
-  const controller = new AbortController();
+  const controllerRef = useRef<AbortController>(new AbortController());
   const cancel = () => {
-    controller.abort();
+    controllerRef.current.abort();
+    controllerRef.current = new AbortController();
   };
 
-  const run = async (payload?: P) => {
+  const run = async (payloadOverride?: P) => {
     let timeReminder = 400;
     const startTime = Date.now();
     setIsLoading(true);
     setError('');
     try {
-      const { data } = await callback(controller.signal, payload);
-      setData(data);
-      options?.onSuccess?.(data);
-      return data;
+      const result = await callback(
+        controllerRef.current.signal,
+        payloadOverride || options?.payload
+      );
+      if (result?.data) {
+        setData(result?.data);
+        options?.onSuccess?.(result?.data);
+      }
+      return result?.data;
     } catch (error) {
       const msg =
         (error as AxiosError)?.response?.data?.message ||
@@ -77,6 +82,8 @@ const useRequest = <T, P = undefined>(
 
   const runOnChange = useCallback(
     debounce(async (payload?: P) => {
+      // cancel previous call if request within debounce range
+      cancel();
       run(payload);
     }, options?.debounce || 0),
     [options?.debounce]
@@ -84,6 +91,10 @@ const useRequest = <T, P = undefined>(
 
   useEffect(() => {
     // run on dependency changes but not for the first time
+    if (firstRender) {
+      return;
+    }
+
     // don't run if nothing changed or undefined dependency given (this saves u from checking for existence of value in each request :)
     const hasUndefinedDependency = options?.dependencies?.some(
       (item) => item === undefined
@@ -94,6 +105,7 @@ const useRequest = <T, P = undefined>(
     if (!hasDependenciesChanged || hasUndefinedDependency) {
       return;
     }
+
     runOnChange(options?.payload);
     dependenciesRef.current = options?.dependencies || [];
   }, options?.dependencies);

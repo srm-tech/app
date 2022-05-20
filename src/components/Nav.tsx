@@ -1,27 +1,43 @@
-import { Popover, Transition } from '@headlessui/react';
+import { Popover } from '@headlessui/react';
+import { Dialog, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
+import toast from 'react-hot-toast';
 
 import { env } from '@/lib/envConfig';
+import { classNames } from '@/lib/helper';
+
+import Modal from '@/components/modals/ConfirmModal';
 
 import { useSession } from '@/features/session/SessionContext';
+import RegisterForm from '@/features/userProfile1/RegisterForm';
+import userProfileStore from '@/features/userProfile1/userStore';
 
+import Avatar from './Avatar';
 import Logo from './Logo';
 
 export default function Nav() {
   const session = useSession();
   const router = useRouter();
+  const [showProfile, setShowProfile] = useState(false);
+  const userProfile = userProfileStore((state) => state.userProfile);
 
   const navigation = [
     // { name: 'Marketplace', href: '#' },
     // { name: 'Company', href: '#' },
   ];
   if (session.isActive) {
-    navigation.push({ name: 'Contacts', href: '/app/introductions' });
+    // navigation.push({ name: 'Contacts', href: '/app/introductions' });
     navigation.push({ name: 'Introductions', href: '/app/introductions' });
   }
+  const userNavigation = [
+    { name: 'My Profile', href: '/app/users/profile' },
+    // { name: 'Settings', href: '#' },
+    { name: 'Sign out', href: '#' },
+  ];
+
   return (
     <Popover className='mx-auto max-w-7xl'>
       <nav
@@ -39,8 +55,8 @@ export default function Nav() {
             </div>
           </div>
         </div>
-        <div className='flex items-center hidden md:flex'>
-          <div className='hidden space-x-10 mr-14 md:flex'>
+        <div className='flex items-center md:flex space-x-6'>
+          <div className='hidden  md:flex'>
             {navigation.map((item) => (
               <Link href={item.href} passHref key={item.name}>
                 <a
@@ -52,23 +68,80 @@ export default function Nav() {
               </Link>
             ))}
           </div>
-          <button
-            onClick={
-              session.isActive
-                ? () => {
-                    session.signOut({ callbackUrl: env.BASE_URL });
-                  }
-                : () => {
-                    session.showLoginModal();
-                  }
-              // session.signIn('', {
-              //   callbackUrl: location.href,
-              // })
-            }
-            className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md hover:bg-gray-700'
-          >
-            {session.isActive ? 'Sign out' : 'Sign in'}
-          </button>
+          {/* Profile dropdown */}
+          {session.isActive && (
+            <Menu as='div' className='relative ml-3'>
+              <div>
+                <Menu.Button className='flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
+                  <span className='sr-only'>Open user menu</span>
+                  <Avatar
+                    size='small'
+                    text={`${userProfile?.firstName?.charAt(0) || 'G'}
+                        `}
+                  />
+                </Menu.Button>
+              </div>
+              <Transition
+                as={Fragment}
+                enter='transition ease-out duration-100'
+                enterFrom='transform opacity-0 scale-95'
+                enterTo='transform opacity-100 scale-100'
+                leave='transition ease-in duration-75'
+                leaveFrom='transform opacity-100 scale-100'
+                leaveTo='transform opacity-0 scale-95'
+              >
+                <Menu.Items className='absolute right-0 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                  {userNavigation.map((item) => (
+                    <Menu.Item key={item.name}>
+                      {({ active }) => (
+                        <Link href={item.href} passHref>
+                          <a
+                            onClick={async (e) => {
+                              if (item.name === 'Sign out') {
+                                e.preventDefault();
+                                session.signOut({
+                                  callbackUrl: env.BASE_URL,
+                                });
+                              }
+                              if (item.name === 'My Profile') {
+                                e.preventDefault();
+                                setShowProfile(true);
+                              }
+                            }}
+                            className={classNames(
+                              active ? 'bg-gray-100' : '',
+                              'block px-4 py-2 text-sm text-gray-700'
+                            )}
+                          >
+                            {item.name}
+                          </a>
+                        </Link>
+                      )}
+                    </Menu.Item>
+                  ))}
+                </Menu.Items>
+              </Transition>
+            </Menu>
+          )}
+          {!session.isActive && (
+            <button
+              onClick={
+                session.isActive
+                  ? () => {
+                      session.signOut({ callbackUrl: env.BASE_URL });
+                    }
+                  : () => {
+                      session.showLoginModal();
+                    }
+                // session.signIn('', {
+                //   callbackUrl: location.href,
+                // })
+              }
+              className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md hover:bg-gray-700'
+            >
+              {session.isActive ? 'Sign out' : 'Sign in'}
+            </button>
+          )}
         </div>
       </nav>
 
@@ -121,6 +194,28 @@ export default function Nav() {
           </div>
         </Popover.Panel>
       </Transition>
+
+      <Modal
+        isShowing={showProfile}
+        form='profile'
+        acceptCaption='Update'
+        cancelCaption='Close'
+        onAccept={() => console.info('Saving...')}
+        onCancel={() => setShowProfile(false)}
+        caption='My profile'
+        content={
+          <div>
+            <RegisterForm
+              id='profile'
+              onSuccess={(data) => {
+                toast.success(`Your profile is now up to date!`);
+                userProfileStore.setState({ userProfile: data });
+                setShowProfile(false);
+              }}
+            />
+          </div>
+        }
+      />
     </Popover>
   );
 }

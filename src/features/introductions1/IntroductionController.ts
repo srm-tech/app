@@ -11,7 +11,11 @@ import { htmlIntroduction } from '@/lib/utils';
 import { body, check, oneOf, validate } from '@/lib/validator';
 
 import { IntroductionStatus } from './introductionConstants';
-import { newIntroductionTemplate } from './introductionEmailTemplates';
+import {
+  acceptedIntroductionTemplate,
+  newIntroductionTemplate,
+  pendingPaymentIntroductionTemplate,
+} from './introductionEmailTemplates';
 import IntroductionModel, {
   Introduction,
   IntroductionInput,
@@ -19,6 +23,7 @@ import IntroductionModel, {
 } from './IntroductionModel';
 import { CommissionType } from '../agreements/agreementConstants';
 import AgreementModel, { Agreement } from '../agreements/AgreementModel';
+import { parseAmount } from '../agreements/AgreementSummary';
 import { JWTToken } from '../session/jwt';
 import { auth } from '../session/middleware';
 import UserModel from '../user/UserModel';
@@ -143,6 +148,7 @@ const create = async (
     createdAt: new Date(),
     updatedAt: new Date(),
     expiresAt: new Date(new Date().setDate(today.getDate() + 3)),
+    paid: 0,
   };
 
   // send email
@@ -215,14 +221,67 @@ const update = async (
   const introductionModel = await IntroductionModel();
   const introduction = await introductionModel.findOne(_id);
   const isGuru = introduction?.guru.userId === user._id;
+  const isBusiness = introduction?.business.userId === user._id;
   if (req.body.status === IntroductionStatus.CANCELLED && !isGuru) {
     throw new HttpError(httpStatus.BAD_REQUEST, 'Only guru can cancel');
+  }
+  if (
+    [IntroductionStatus.ACCEPTED, IntroductionStatus.PAYMENT_PENDING].includes(
+      req.body.status
+    ) &&
+    !isBusiness
+  ) {
+    throw new HttpError(httpStatus.BAD_REQUEST, 'Only business can accept');
   }
   const newIntroduction = {
     ...introduction,
     ...rest,
   };
-  await introductionModel.updateOne(req.query.id, newIntroduction);
+
+  if (isBusiness) {
+    if (newIntroduction.status === IntroductionStatus.ACCEPTED) {
+      // send email
+      const mailData = {
+        from: env.EMAIL_FROM,
+        to: newIntroduction.guru.contactEmail,
+        replyTo: newIntroduction.business.contactEmail,
+        bcc: 'kris@introduce.guru',
+        subject: `Introduction accepted by ${newIntroduction.businessName}`,
+        // text: text(req.body),
+        html: acceptedIntroductionTemplate(
+          env.BASE_URL,
+          newIntroduction.guru,
+          newIntroduction.customer,
+          newIntroduction.business
+        ),
+      };
+      sendMail(mailData);
+    }
+    if (newIntroduction.status === IntroductionStatus.PAYMENT_PENDING) {
+      // send email
+      const mailData = {
+        from: env.EMAIL_FROM,
+        to: newIntroduction.guru.contactEmail,
+        replyTo: newIntroduction.business.contactEmail,
+        bcc: 'kris@introduce.guru',
+        subject: `You introduction has been paid by ${newIntroduction.businessName}`,
+        // text: text(req.body),
+        html: pendingPaymentIntroductionTemplate(
+          env.BASE_URL,
+          newIntroduction.guru,
+          newIntroduction.customer,
+          newIntroduction.business,
+          parseAmount(
+            introduction.agreement.commissionAmount,
+            introduction.agreement.commissionCurrency
+          )
+        ),
+      };
+      sendMail(mailData);
+    }
+    // final save
+    await introductionModel.updateOne(_id, newIntroduction);
+  }
   return res.json(newIntroduction);
 };
 

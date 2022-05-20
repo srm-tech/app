@@ -1,29 +1,20 @@
-import { AxiosResponse } from 'axios';
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useRef, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import useFetch, { CachePolicies, Provider } from 'use-http';
-import { useStore } from 'zustand';
 
 import '@/styles/globals.css';
 import '@/styles/roadmap.scss';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 import axios from '@/lib/axios';
 import { env } from '@/lib/envConfig';
 import useRequest from '@/lib/useRequest';
 
-import ButtonLink from '@/components/links/ButtonLink';
-import Modal from '@/components/modals/ConfirmModal';
-import RegisterForm from '@/components/RegisterForm';
-
 // import { SessionProvider, signIn, useSession } from 'next-auth/react';
 import { SessionProvider, useSession } from '@/features/session/SessionContext';
-import { UserProfile } from '@/features/userProfile/requests';
-import userProfileApi from '@/features/userProfile1/requests';
-import userProfileStore from '@/features/userProfile1/userStore';
+import { LoadUser } from '@/features/userProfile1/LoadUser';
 
 // const CheckSession = () => {
 //   const { get, response, loading, error } = useFetch('');
@@ -88,41 +79,9 @@ import userProfileStore from '@/features/userProfile1/userStore';
 //   );
 // };
 
-const LoadUser = () => {
-  const router = useRouter();
+function MyApp({ Component, pageProps: { ...pageProps } }: AppProps) {
   const session = useSession();
-  const userProfile = userProfileStore((state) => state.userProfile);
-  useRequest<UserProfile>(userProfileApi.getUserProfile, {
-    dependencies: [session.isActive],
-    onSuccess: (data) => {
-      userProfileStore.setState({ userProfile: data, isLoading: false });
-    },
-  });
-  const setInterceptor = useCallback(async (error) => {
-    const response: AxiosResponse = error.response;
-    if ([401].includes(response?.status)) {
-      console.info('Logging user out on 401');
-      if (userProfile) {
-        userProfileStore.setState({
-          userProfile: undefined,
-          isLoading: false,
-        });
-        toast.error('Your session has ended. Sign in again to continue.');
-      }
-      if (router.pathname !== '/') {
-        router.replace('/');
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    axios.interceptors.response.use((response) => response, setInterceptor);
-  }, []);
-
-  return null;
-};
-
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  const router = useRouter();
   const options = {
     cachePolicy: CachePolicies.NO_CACHE,
     interceptors: {
@@ -150,14 +109,14 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       },
     },
   });
-
   return (
     <Provider url={`${env.BASE_URL}/api`} options={options}>
       <Toaster />
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-          <LoadUser />
-          <Component {...pageProps} />
+          <LoadUser>
+            <Component {...pageProps} />
+          </LoadUser>
         </SessionProvider>
       </QueryClientProvider>
     </Provider>

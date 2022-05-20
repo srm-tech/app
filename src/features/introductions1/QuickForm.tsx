@@ -3,9 +3,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo } from 'react';
 import * as React from 'react';
 import toast from 'react-hot-toast';
-import useFetch from 'use-http';
 
-import { handleError } from '@/lib/helper';
 import useRequest from '@/lib/useRequest';
 
 import ComboSelect, { ComboSearch } from '@/components/ComboSelect';
@@ -74,7 +72,8 @@ export const QuickForm = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [query, setQuery] = React.useState<string>('');
   const [customer, setCustomer] = React.useState<Customer>(initialCustomer);
-  const [step, setStep] = React.useState(router.query.step || 1);
+  const [showRegistration, setShowRegistration] = React.useState(false);
+  const [showAgreement, setShowAgreement] = React.useState(false);
 
   const userProfile = userProfileStore((state) => state.userProfile);
   const { data: businessList, ...searchUserProfile } = useRequest<
@@ -100,18 +99,21 @@ export const QuickForm = () => {
     () => businessList?.find((item) => item.userId === comboItem?._id),
     [comboItem, businessList]
   );
-  const { data: defaultAgreement } = useRequest<
+
+  const { data: defaultAgreement, ...getUserProfileCommission } = useRequest<
     Commission,
     { businessId: string }
   >(userProfileApi.getUserProfileCommission, {
     payload: { businessId: business?.userId || '' },
-    dependencies: [business?.userId],
   });
 
+  // create new agreement when user accepts commission
   const { data: newAgreement, ...createAgreement } = useRequest<
     Agreement,
     AgreementInput
   >(agreementApi.createAgreement);
+
+  // load agreement
   const { data: agreement, ...searchAgreement } = useRequest<
     Agreement,
     AgreementInput
@@ -120,7 +122,6 @@ export const QuickForm = () => {
       businessId: `${business?.userId}`,
       guruId: `${userProfile?.userId}`,
     },
-    dependencies: [userProfile?.userId, business?.userId, newAgreement],
   });
   const createIntroduction = useRequest<Introduction, IntroductionInput>(
     introductionApi.createIntroduction
@@ -145,82 +146,60 @@ export const QuickForm = () => {
     if (createAgreement.error) {
       return setErrorMessage("Oops, we couldn't create an agreement.");
     }
+    const userAgreement = await searchAgreement.run();
     const introduction = await createIntroduction.run({
       businessId: `${business?.userId}`,
       guruId: `${userProfile?.userId}`,
-      agreementId: `${agreement?._id}`,
+      agreementId: `${userAgreement?._id}`,
       customer,
     });
 
     if (!introduction?._id) {
       return setErrorMessage("Oops, we couldn't create an introduction.");
     }
-    setStep(1);
     setIsLoading(false);
     toast.success(
       `Success! Your introduction has been sent to ${business?.businessName}`
     );
     setQuery('');
+    setComboItem(null);
     setCustomer(initialCustomer);
+    setShowAgreement(false);
   };
 
-  const introduce = (
-    isBusinessSelected,
+  const introduce = async (
     isActiveSession,
-    isActiveUserProfile,
-    isAgreed
+    isBusinessSelected,
+    isActiveUserProfile
   ) => {
     setErrorMessage('');
     setIsLoading(true);
-
-    // // need existing business id
     if (!isBusinessSelected) {
       setIsLoading(false);
       return setErrorMessage(
         'Business not found. Please select it from the dropdown.'
       );
     }
-
-    // user not logged?
-    if (!isActiveSession) {
+    if (!session.isActive) {
       setIsLoading(false);
       return showLoginModal();
     }
-
-    // user not registered fully (no UserProfile) -> show dialog
     if (!isActiveUserProfile) {
       setIsLoading(false);
-      return setStep(3);
+      return setShowRegistration(true);
     }
-
-    if (!isAgreed) {
-      setIsLoading(false);
-      return setStep(4);
-    }
-    setStep(4);
-    // show agreement summary so guru accepts the conditions
-    // same contract as it comes from the contacts (user agreed to it before connecting with business)
-    // this agreement is then attached to the introduction
-    // await get(`/myContacts/${draft.business._id}`);
-    // if (response.ok) {
-    //   // already a contact, feed in the agreement
-    //   if (response.data) {
-    //     setAgreement(response.data.agreement);
-    //   } else {
-    //     // not yet a contact, agree to default contract and user to contacts
-    //     await get(`/business/${draft.business._id}/defaultAgreement`);
-    //     if (response.ok && response.data) {
-    //       setAgreement({ ...response.data, agreedAt: new Date() });
-    //     }
-    //   }
-    //   return setStep(4);
-    // }
+    await getUserProfileCommission.run();
+    await searchAgreement.run();
+    setShowAgreement(true);
   };
 
   const isBusinessSelected = business?.userId;
   const isActiveSession = session.isActive;
   const isActiveUserProfile = userProfile?.isActive;
-  const isAgreed = Boolean(agreement);
+  const isLoadingAgreement =
+    createIntroduction.isLoading ||
+    searchAgreement.isLoading ||
+    getUserProfileCommission.isLoading;
 
   return (
     <div className='m-auto bg-white rounded-lg sm:max-w-md sm:w-full'>
@@ -228,13 +207,10 @@ export const QuickForm = () => {
         className='space-y-6'
         onSubmit={(e) => {
           e.preventDefault();
-          introduce(
-            isBusinessSelected,
-            isActiveSession,
-            isActiveUserProfile,
-            isAgreed
-          );
+          introduce(isActiveSession, isBusinessSelected, isActiveUserProfile);
         }}
+        autoComplete='off'
+        role='presentation'
       >
         <div className='flex flex-col'>
           <div className='px-8 pt-4'>
@@ -320,7 +296,7 @@ export const QuickForm = () => {
               className='w-20 h-20 mt-4'
             />
           </div>
-          {errorMessage && (
+          {errorMessage && !showAgreement && !showRegistration && (
             <div className='px-8 py-4'>
               <InlineError message={errorMessage} />
             </div>
@@ -349,27 +325,13 @@ export const QuickForm = () => {
           )}
         </div>
       </form>
-
       <Modal
-        isShowing={step === 2}
-        acceptCaption='Sign In'
-        onAccept={showLoginModal}
-        onCancel={() => setStep(1)}
-        icon={
-          <div className='mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10'>
-            <UserIcon className='h-6 w-6 text-yellow-600' aria-hidden='true' />
-          </div>
-        }
-        caption='Not logged in?'
-        content={<p>To save introduction please sign.</p>}
-      />
-      <Modal
-        isShowing={step === 3}
+        isShowing={showRegistration}
         form='registration'
         acceptCaption='Register Now'
         cancelCaption='Close'
         onAccept={() => console.info('register from intro')}
-        onCancel={() => setStep(1)}
+        onCancel={() => setShowRegistration(false)}
         caption='Register for an account'
         content={
           <div>
@@ -381,28 +343,24 @@ export const QuickForm = () => {
               onSuccess={(data) => {
                 toast.success(`Success! Welcome ${data?.firstName}!`);
                 userProfileStore.setState({ userProfile: data });
-                introduce(
-                  isBusinessSelected,
-                  isActiveSession,
-                  data.isActive,
-                  isAgreed
-                );
+                introduce(isBusinessSelected, isActiveSession, data.isActive);
+                setShowRegistration(false);
               }}
             />
           </div>
         }
       />
       <Modal
-        isShowing={step === 4}
-        isLoading={createIntroduction.isLoading}
+        isShowing={showAgreement}
+        isLoading={isLoadingAgreement}
         acceptCaption='Accept & Introduce'
         cancelCaption='Decline'
         onAccept={acceptAgreement}
         onCancel={() => {
-          setStep(1);
+          setShowAgreement(false);
           setIsLoading(false);
         }}
-        caption={`Review your agreement with ${business?.businessName}`}
+        caption={`Review your agreement`}
         content={
           <div>
             {agreement ? (

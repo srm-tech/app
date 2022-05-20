@@ -12,8 +12,6 @@ import React, {
 } from 'react';
 import toast from 'react-hot-toast';
 
-import 'react-loading-skeleton/dist/skeleton.css';
-
 import { env } from '@/lib/envConfig';
 import useRequest from '@/lib/useRequest';
 
@@ -39,6 +37,7 @@ import {
   Introduction,
   Quote,
   UpdateAgreementForIntroduction,
+  UpdatePaymentStatusIntroduction,
   UpdateStatusIntroduction,
 } from './IntroductionModel';
 import introductionApi from './requests';
@@ -67,6 +66,17 @@ export default function Introductions() {
   const router = useRouter();
   const inputRef = useRef<any>();
   const userProfile = userProfileStore((state) => state.userProfile);
+  const updateData = (newItem) => {
+    if (newItem) {
+      const newData = introductions.map((item) => {
+        if (item._id === newItem._id) {
+          return newItem;
+        }
+        return item;
+      });
+      setData(newData);
+    }
+  };
   const updateUserProfile = useRequest<UserProfile, NewUserProfile>(
     userProfileApi.updateUserProfile,
     {
@@ -85,11 +95,13 @@ export default function Introductions() {
   );
   const updateIntroduction = useRequest<
     Introduction,
-    UpdateStatusIntroduction | UpdateAgreementForIntroduction
+    | UpdateStatusIntroduction
+    | UpdateAgreementForIntroduction
+    | UpdatePaymentStatusIntroduction
   >(introductionApi.updateIntroduction, {
     onSuccess: useCallback(
       (updatedItem: Introduction) => {
-        toast.success('Success. Introduction has been updated!');
+        updateData(updatedItem);
       },
       [introductions]
     ),
@@ -118,7 +130,8 @@ export default function Introductions() {
       const introductionId = router.query['introductionId'];
       updateIntroduction.run({
         _id: `${introductionId}`,
-        status: IntroductionStatus.PAYMENT_SUCCESS,
+        status: IntroductionStatus.PAYMENT_PENDING,
+        paid: Number(router.query.amount) / 1000,
       });
       toast.success('Payment Successful!');
     }
@@ -131,23 +144,7 @@ export default function Introductions() {
     setModal({ isLoading: updateIntroduction.isLoading });
   }, [updateIntroduction.isLoading]);
 
-  const updateData = (newItem) => {
-    if (newItem) {
-      const newData = introductions.map((item) => {
-        if (item._id === newItem._id) {
-          return newItem;
-        }
-        return item;
-      });
-      setData(newData);
-    }
-  };
-
-  function handleAcceptDoNothing() {
-    window.location.href = `${env.BASE_URL}/app/introductions`;
-  }
-
-  async function handleRate(data: Introduction) {
+  async function rate(data: Introduction) {
     // const isGuru = data.guru.userId === userProfile?.userId;
     // async function handleAcceptButton() {
     //   const form: any = document.getElementById('rateForm');
@@ -209,7 +206,7 @@ export default function Introductions() {
     // setContent(ratingContent);
   }
 
-  async function handleAcceptByBusiness(data) {
+  async function acceptByBusiness(data) {
     setModal({
       show: true,
       isLoading: false,
@@ -236,7 +233,7 @@ export default function Introductions() {
     });
   }
 
-  async function handleDeclineByBusiness(data) {
+  async function declineByBusiness(data) {
     // async function handleAcceptButton() {
     //   setModal({ show: false });
     //   const decline = await post('/introductions/decline', {
@@ -254,7 +251,7 @@ export default function Introductions() {
     // setReload(!reload);
   }
 
-  async function handleCancelByGuru(data: Introduction) {
+  async function cancelByGuru(data: Introduction) {
     setModal({
       show: true,
       isLoading: false,
@@ -275,55 +272,6 @@ export default function Introductions() {
       },
     });
   }
-
-  const showPaymentSummary = async (data: Introduction) => {
-    const { isFixed, value } = parseCommissionAmount(data.agreement);
-    setErrorMessage('');
-
-    setModal({
-      show: true,
-      isLoading: false,
-      caption: 'Summary of payment',
-      size: 'sm',
-      content: (
-        <div>
-          <p>
-            Your Guru {data.business.businessName} will receive {value}.
-          </p>
-          <p>Our fee: {value}.</p>
-          {!isFixed && (
-            <div className='mt-4'>
-              <div className='mx-auto'>
-                Please enter a value of a deal made {dealValue}:
-                <input type='number' ref={inputRef} className='w-full' />
-              </div>
-            </div>
-          )}
-        </div>
-      ),
-      acceptCaption: isFixed ? `Pay` : `Pay`,
-      cancelCaption: 'Cancel',
-      onCancel: () => {
-        setModal({ show: false });
-      },
-      onAccept: async () => {
-        setErrorMessage('');
-
-        if (!isFixed && !inputRef.current.value) {
-          return setErrorMessage('Please enter deal value');
-        }
-
-        setModal({ ...modal, content: <div>xxxx</div> });
-
-        // const updatedIntroduction = await updateIntroduction.run({
-        //   _id: data._id,
-        //   status: IntroductionStatus.CANCELLED,
-        // });
-        // updateData(updatedIntroduction);
-        // setModal({ show: false });,
-      },
-    });
-  };
 
   const columns = useMemo(
     () => [
@@ -474,6 +422,14 @@ export default function Introductions() {
                   })}`
                 : 'Paid';
               break;
+            case IntroductionStatus.PAYMENT_PENDING:
+              statusLabel = data.paid
+                ? `Payment pending ${Number(data.paid).toLocaleString('en-AU', {
+                    style: 'currency',
+                    currency: data.agreement.commissionCurrency,
+                  })}`
+                : 'Payment pending';
+              break;
             default:
               statusLabel = '';
               break;
@@ -524,6 +480,7 @@ export default function Introductions() {
             <button
               onClick={() => {
                 setRowItem(data);
+                getQuoteRequest.run(data._id);
                 setShowPaymentSummaryModal(true);
               }}
               className='bg-green-500 text-white py-2 px-4 rounded font-normal hover:text-opacity-75 animated-underline border border-gray-600 focus:outline-none focus-visible:text-white'
@@ -538,7 +495,7 @@ export default function Introductions() {
                 <Button
                   variants='primary'
                   className='text-xs mr-2'
-                  onClick={(e) => handleAcceptByBusiness(data)}
+                  onClick={(e) => acceptByBusiness(data)}
                 >
                   Accept
                 </Button>
@@ -547,7 +504,7 @@ export default function Introductions() {
                 <Button
                   variants='secondary'
                   className='text-xs'
-                  onClick={(e) => handleDeclineByBusiness(data)}
+                  onClick={(e) => declineByBusiness(data)}
                 >
                   Decline
                 </Button>
@@ -560,7 +517,7 @@ export default function Introductions() {
               <Button
                 variants='primary'
                 className='text-xs'
-                onClick={(e) => handleRate(data)}
+                onClick={(e) => rate(data)}
               >
                 Rate
               </Button>
@@ -572,7 +529,7 @@ export default function Introductions() {
               <Button
                 variants='primary'
                 className='text-xs'
-                onClick={(e) => handleCancelByGuru(data)}
+                onClick={(e) => cancelByGuru(data)}
               >
                 Cancel
               </Button>
@@ -580,6 +537,7 @@ export default function Introductions() {
           );
 
           const isGuru = data.guru.userId === userProfile?.userId;
+          const isBusiness = data.business.userId === userProfile?.userId;
           const isAgreementFixed =
             data.agreement.commissionType === CommissionType.fixed;
           let initialRating;
@@ -593,13 +551,13 @@ export default function Introductions() {
             <Rating
               initialValue={initialRating}
               // editing={false}
-              onStarClick={(e) => handleRate(data)}
+              onStarClick={(e) => rate(data)}
             />
           );
 
           // guru actions
           if (isGuru) {
-            if (data.status !== IntroductionStatus.CANCELLED) {
+            if (data.status === IntroductionStatus.PENDING) {
               return (
                 <div className='flex justify-end space-x-1'>
                   {cancelByGuruButton}
@@ -609,13 +567,16 @@ export default function Introductions() {
           }
 
           // business
-          return (
-            <div className='flex justify-end space-x-1'>
-              {data.status === IntroductionStatus.PENDING &&
-                acceptDeclineButtons}
-              {data.status === IntroductionStatus.ACCEPTED && completeButton}
-            </div>
-          );
+          if (isBusiness) {
+            return (
+              <div className='flex justify-end space-x-1'>
+                {data.status === IntroductionStatus.PENDING &&
+                  acceptDeclineButtons}
+                {data.status === IntroductionStatus.ACCEPTED && completeButton}
+              </div>
+            );
+          }
+          return null;
         },
       },
     ],
@@ -667,8 +628,6 @@ export default function Introductions() {
       window.location.href = `${paymentSession?.url}`;
     }
   };
-
-  console.log(quote);
 
   return (
     <DefaultLayout>
@@ -735,7 +694,8 @@ export default function Introductions() {
           >
             <div>
               <p>
-                Your Guru {rowItem?.business.businessName} will receive{' '}
+                Your Guru <b>{rowItem?.business.firstName}</b> from{' '}
+                {rowItem?.business.businessName} will receive{' '}
                 {quote?.amountOwned?.toLocaleString('en-AU', {
                   style: 'currency',
                   currency: 'AUD',
@@ -767,13 +727,13 @@ export default function Introductions() {
                   </span>
                 </div>
               )}
-              <p>
-                Our fee:{' '}
+              <p className='mt-4'>
+                Our fee of{' '}
                 {quote?.introduceGuruFee?.toLocaleString('en-AU', {
                   style: 'currency',
                   currency: 'AUD',
-                })}
-                .
+                })}{' '}
+                (incl. GST) is charged on top.
               </p>
               {errorMessage && (
                 <div className='mt-4'>

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function LoadingOverlay({ isLoading, children }: any) {
   return (
-    <div>
+    <div className='z-20'>
       {isLoading && (
         <div>
           <div
@@ -12,7 +12,7 @@ export default function LoadingOverlay({ isLoading, children }: any) {
             }}
             className='bg-white absolute top-0 left-0 w-full h-full z-20 opacity-50 transition-opacity'
           ></div>
-          <div className='absolute top-0 left-0 w-full h-full flex items-center'>
+          <div className='absolute top-0 left-0 w-full h-full flex items-center z-20 '>
             <svg
               className='m-auto animate-spin h-10 w-10 text-white'
               xmlns='http://www.w3.org/2000/svg'

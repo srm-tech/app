@@ -16,6 +16,7 @@ interface Session {
   isActive: boolean;
   isLoading: boolean;
   isPolling: boolean;
+  isRefreshing: boolean;
   isTimedOut: boolean;
   error: string;
   data: UserSession;
@@ -30,8 +31,9 @@ interface ContextProps extends Session {
 const defaultValue: Session = {
   status: 'unauthenticated',
   isActive: false,
-  isLoading: false,
+  isLoading: true,
   isPolling: false,
+  isRefreshing: false,
   isTimedOut: false,
   error: '',
   data: { email: '', _id: '', expiresAt: 30 * 60 },
@@ -53,32 +55,34 @@ export const SessionProvider = ({ children }) => {
   const [session, setSession] = useState<Session>(defaultValue);
   const [showModal, setShowModal] = useState(false);
 
-  const intervalRef = useRef<any>();
-  const timeoutRef = useRef<any>();
-  const timeoutRefreshRef = useRef<any>();
+  const pollingIntervalRef = useRef<any>();
+  const pollingTimeoutRef = useRef<any>();
+  const refreshIntervalRef = useRef<any>();
 
+  // utility to manipulate single session object with partial updates
   const setNewSession = (newSession: Partial<Session>) => {
     setSession((prevSession) => ({
+      ...defaultValue,
       ...prevSession,
       ...newSession,
     }));
   };
 
+  // modal has 3 states: not logged, pooling and logged
   const showLoginModal = () => {
     setShowModal(true);
   };
   const closeModal = () => {
-    setNewSession({
-      isLoading: false,
-      isPolling: false,
-      isTimedOut: false,
-      error: '',
-    });
-    cleanup();
+    stopPolling();
     setShowModal(false);
   };
 
+  // check session by sending cookies to backend
   const checkSession = async (email?: string, token?: string) => {
+    // ignore loading session data when user lands on verify page from email link
+    if (window.location.pathname.includes('/session/verify')) {
+      return;
+    }
     const result = await getUserSession.run(
       (email &&
         token && {
@@ -87,152 +91,131 @@ export const SessionProvider = ({ children }) => {
         }) ||
         undefined
     );
-    if (result) {
+
+    if (result?._id) {
       setNewSession({
         data: result,
         status: 'authenticated',
         isActive: true,
         isLoading: false,
-        isPolling: false,
       });
-      setRefreshTimeout(result?.expiresAt);
-      // set to default interval
-      clearTimeout(timeoutRef.current);
-      clearInterval(intervalRef.current);
     }
     return result;
   };
 
-  const checkSessionPolling = ({ interval, email, token }) => {
-    clearInterval(intervalRef.current);
-    clearTimeout(timeoutRefreshRef.current); // we don't want to refresh token while poling for user to clink email link
-    intervalRef.current = setInterval(async () => {
+  // Polling for activation link verification
+  const stopPolling = () => {
+    setNewSession({ isPolling: false });
+    clearInterval(pollingIntervalRef.current);
+  };
+  const startPolling = ({ interval, email, token }) => {
+    stopPolling();
+    setNewSession({ isPolling: true });
+    pollingIntervalRef.current = setInterval(async () => {
       checkSession(email, token);
     }, interval);
   };
 
+  // polling switch
+  const stopPollingTimeout = () => {
+    clearTimeout(pollingTimeoutRef.current);
+    setNewSession({ isTimedOut: false });
+  };
+  const setPollingTimeout = (min) => {
+    stopPollingTimeout();
+    pollingTimeoutRef.current = setTimeout(() => {
+      setNewSession({ isTimedOut: true });
+      stopPolling;
+    }, min * 60 * 1000);
+  };
+
+  // Silent session Refresh
+  const stopRefreshing = () => {
+    setNewSession({ isRefreshing: false });
+    clearInterval(refreshIntervalRef.current);
+  };
+  const startRefreshing = ({ interval }) => {
+    setNewSession({ isRefreshing: true });
+    stopRefreshing();
+    refreshIntervalRef.current = setInterval(async () => {
+      sessionApi.refreshSession();
+    }, interval);
+  };
+
+  // send email link
+  // start polling
   const signIn = async ({ email }) => {
     setNewSession({ isLoading: true, error: '' });
+    stopRefreshing();
+    stopPolling();
+    // kill polling after 10min
+    setPollingTimeout(10);
     try {
       const { data: token } = await sessionApi.signIn({ email });
-      setNewSession({ isPolling: true, isLoading: false });
-      checkSessionPolling({ interval: 2 * 1000, email, token });
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        // kill polling after 1hr -> set as fail
-        setNewSession({
-          isLoading: false,
-          isPolling: false,
-          error: 'Session check time out. Please try again.',
-        });
-        clearInterval(intervalRef.current);
-      }, 10 * 60 * 1000); // 10 min
+      startPolling({
+        interval: 2000,
+        email,
+        token,
+      });
     } catch (error) {
+      stopPolling();
       // handle Axios error, tap on the response data for validation error message if any
       setNewSession({
         error:
           (error as AxiosError)?.response?.data?.message ||
           (error as Error).message,
-        isLoading: false,
       });
+    } finally {
+      setNewSession({ isLoading: false });
     }
   };
-
   const signInAgain = async () => {
+    // clean state so user can enter email again in inactive state
     setNewSession(defaultValue);
   };
-
-  const signOut = async () => {
-    setNewSession(defaultValue);
-    cleanup(true);
-    await sessionApi.signOut();
-  };
-  const timeOut = async () => {
-    await sessionApi.signOut();
-    setNewSession({ ...defaultValue, isTimedOut: true });
-    cleanup(true);
-  };
-
-  const setRefreshTimeout = async (expiresAt) => {
-    clearTimeout(timeoutRefreshRef.current);
-    if (expiresAt) {
-      const expiresIn = Math.max(expiresAt * 1000 - Date.now() - 5000, 1000); // subtract 5s from timeout to perform auto refresh before expiry
-      console.info('next refresh at: ', expiresAt, 'in: ', expiresIn);
-      timeoutRefreshRef.current = setTimeout(async () => {
-        if (!session.isTimedOut) {
-          try {
-            const { data } = await sessionApi.refreshSession();
-            // set next refresh call with new expiry
-            setRefreshTimeout(data.expiresAt);
-          } catch (error) {
-            // fail means we set default state -> logout
-            await timeOut();
-            setTimeout(() => {
-              setShowModal(true);
-            });
-          }
-        }
-      }, expiresIn); // minus ten seconds padding for refresh request
-    }
-  };
-
   const submit = async ({ email }) => {
     signIn({ email });
   };
 
-  const cleanup = (clearRefreshTimeout = false) => {
-    clearTimeout(timeoutRef.current);
-    clearInterval(intervalRef.current);
-    if (clearRefreshTimeout) {
-      clearTimeout(timeoutRefreshRef.current);
-    }
-    getUserSession.cancel();
+  const signOut = async () => {
+    setNewSession(defaultValue);
+    stopPolling();
+    stopRefreshing();
+    await sessionApi.signOut();
   };
 
-  const loadData = async () => {
-    // ignore loading session data when user lands on verify page from email link
-    if (window.location.pathname.includes('/session/verify')) {
-      return;
-    }
-    setNewSession({
-      isLoading: true,
-    });
-    console.log('Session loadData');
-
-    const result = await checkSession();
-    if (!result) {
-      console.log(111);
-      signOut();
-    }
-    // if (!result) {
-    //   // try refreshing session
-    //   try {
-    //     const { data } = await sessionApi.refreshSession();
-    //     setRefreshTimeout(data.expiresAt);
-    //     checkSession();
-    //   } catch (error) {
-    //     // logout
-    //     signOut();
-    //   }
-    // }
+  const init = () => {
+    checkSession();
   };
+
+  useEffect(() => {
+    init();
+    window.addEventListener('focus', init);
+    return () => {
+      stopPolling();
+      window.removeEventListener('focus', init);
+    };
+  }, []);
 
   useEffect(() => {
     if (showModal) {
-      loadData();
+      init();
     }
-    // if user session is ok and user opens modal -> sign user
   }, [showModal]);
 
+  // awaiting result from polling and if active -> stop it
   useEffect(() => {
-    loadData();
-    window.addEventListener('focus', loadData);
-    return () => {
-      cleanup();
-      window.removeEventListener('focus', loadData);
-    };
-    // if user session is ok and user opens modal -> sign user
-  }, []);
+    if (session.isActive) {
+      stopPolling();
+      // subtract 5s from timeout to perform auto refresh before expiry });
+      startRefreshing({
+        interval: Math.max(
+          session.data.expiresAt * 1000 - Date.now() - 5000,
+          1000
+        ),
+      });
+    }
+  }, [session.isActive]);
 
   return (
     <Provider value={{ ...session, signIn, signOut, showLoginModal }}>

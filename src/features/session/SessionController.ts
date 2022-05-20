@@ -68,13 +68,14 @@ const getSession = async (req: NextApiRequest, res: NextApiResponse) => {
         expiresAt: newAccessToken.expiresAt,
       };
     } else {
-      throw new HttpError(HttpStatusCode.UNAUTHORIZED);
+      // throw new HttpError(HttpStatusCode.UNAUTHORIZED);
+      result = null;
     }
   } else {
-    await validate([check('accessToken').isJWT()])(req, res);
-    const accessToken = getCookie('accessToken', { req, res });
-    // decode JWT accessToken and send it back to the client
     try {
+      await validate([check('accessToken').isJWT()])(req, res);
+      const accessToken = getCookie('accessToken', { req, res });
+      // decode JWT accessToken and send it back to the client
       const decodedToken = verifyDecodeToken(accessToken);
       result = {
         _id: decodedToken['_id'],
@@ -155,7 +156,9 @@ const createSession = async (req: NextApiRequest, res: NextApiResponse) => {
     token: token,
     expiresAt,
   });
-  let url = `${env.BASE_URL}/api/session/callback?token=${token}&email=${email}`;
+  let url = `${
+    env.BASE_URL
+  }/api/session/callback?token=${token}&email=${encodeURIComponent(email)}`;
   if (req.query.redirectUrl) {
     url = `${url}?redirectUrl=${req.query.redirectUrl}`;
   }
@@ -194,7 +197,7 @@ const validateVerifyToken = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  await validate([check('token').isHash('md5'), check('email').isEmail()])(
+  await validate([check('token').isHash('md5'), check('email').exists()])(
     req,
     res
   );

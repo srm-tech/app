@@ -5,8 +5,11 @@ import {
   CommissionType,
 } from '../agreements/agreementConstants';
 
-export const defaultProfile: Omit<UserProfile, '_id' | 'userId'> = {
-  firstName: 'Kris',
+export const defaultProfile: Omit<
+  UserProfile,
+  '_id' | 'userId' | 'createdAt' | 'updatedAt'
+> = {
+  firstName: '',
   lastName: '',
   fullName: '',
   contactEmail: '',

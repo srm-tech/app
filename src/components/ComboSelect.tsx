@@ -97,8 +97,8 @@ export default function ComboSelect<T>({
       <div {...getComboboxProps()} className='relative'>
         <input
           {...getInputProps({ value: query })}
-          type='text'
-          className='block w-full border-2 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+          type='search'
+          className='block w-full border-2 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm appearance-none'
         />
         <InlineError message={error} />
         <button
