@@ -3,6 +3,7 @@ export const env = {
   DB_NAME: process.env.DB_NAME || 'guru',
   BASE_URL: process.env.BASE_URL || 'http://localhost:3000',
   DOMAIN: '',
+  HOST: '',
   SECRET: process.env.SECRET || 'secretSantaXOXO',
   EMAIL_SERVER_HOST:
     process.env.EMAIL_SERVER_HOST || 'email-smtp.ap-southeast-2.amazonaws.com',
@@ -17,6 +18,7 @@ export const env = {
   STRIPE_SUCCESS_PAGE:
     process.env.STRIPE_SUCCESS_PAGE || 'integrations/stripe/success',
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
+  STRIPE_TAX_ID: process.env.STRIPE_TAX_ID || '',
   STRIPE_CANCEL_PAGE: process.env.STRIPE_CANCEL_PAGE || 'promotion',
   TRANSACTION_FEE: process.env.TRANSACTION_FEE || 0.05, // 3% of the total payment
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
@@ -29,6 +31,9 @@ export const env = {
 };
 
 env.DOMAIN = env.BASE_URL.split('//')[1].split(':')[0];
+env.HOST = `${env.BASE_URL.trim()
+  .replace(/\./g, '&#8203;.')
+  .replace(/http:\/\/|https:\/\//g, '')}`;
 
 if (typeof window !== undefined) {
   console.info(process.env.NODE_ENV);

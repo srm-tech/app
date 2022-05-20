@@ -21,20 +21,75 @@ import { SessionModel } from './SessionModel';
 import UserModel from '../user/UserModel';
 
 const getSession = async (req: NextApiRequest, res: NextApiResponse) => {
-  await validate([check('accessToken').isJWT()])(req, res);
-  const accessToken = getCookie('accessToken', { req, res });
-  // decode JWT accessToken and send it back to the client
-  try {
-    const decodedToken = verifyDecodeToken(accessToken);
-    res.json({
-      _id: decodedToken['_id'],
-      email: decodedToken['email'],
-      expiresAt: decodedToken['exp'],
+  let result;
+  if (req.query.token && req.query.email) {
+    const sessionModel = await SessionModel();
+    const users = await UserModel();
+    const tokenExists = await sessionModel.get({
+      token: req.query.token,
+      type: 'verification',
     });
-  } catch (error) {
-    // if jwt expired send 401
-    throw new HttpError(HttpStatusCode.UNAUTHORIZED, (error as Error).message);
+    // token been removed by callback-> verified
+    if (tokenExists?.verifiedAt) {
+      await sessionModel.remove({
+        token: req.query.token,
+        type: 'verification',
+      });
+      const newRefreshToken = getRefreshToken();
+      await sessionModel.create({
+        token: newRefreshToken.token,
+        expiresAt: newRefreshToken.expiresAt,
+        type: 'refreshToken',
+      });
+      setCookies('refreshToken', newRefreshToken.token, {
+        ...appCookie,
+        req,
+        res,
+      });
+      const user = await users.get({
+        email: `${req.query.email}`,
+      });
+      const newAccessToken = await getJWT(user);
+
+      // set cookies
+      setCookies('refreshToken', newRefreshToken.token, {
+        ...appCookie,
+        req,
+        res,
+      });
+      setCookies('accessToken', newAccessToken.token, {
+        ...appCookie,
+        req,
+        res,
+      });
+      result = {
+        _id: user?._id,
+        email: user?.email,
+        expiresAt: newAccessToken.expiresAt,
+      };
+    } else {
+      throw new HttpError(HttpStatusCode.UNAUTHORIZED);
+    }
+  } else {
+    await validate([check('accessToken').isJWT()])(req, res);
+    const accessToken = getCookie('accessToken', { req, res });
+    // decode JWT accessToken and send it back to the client
+    try {
+      const decodedToken = verifyDecodeToken(accessToken);
+      result = {
+        _id: decodedToken['_id'],
+        email: decodedToken['email'],
+        expiresAt: decodedToken['exp'],
+      };
+    } catch (error) {
+      // if jwt expired send 401
+      throw new HttpError(
+        HttpStatusCode.UNAUTHORIZED,
+        (error as Error).message
+      );
+    }
   }
+  return res.json(result);
 };
 
 const refreshSession = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -52,12 +107,12 @@ const refreshSession = async (req: NextApiRequest, res: NextApiResponse) => {
   const decodedToken = decodeToken(accessToken);
   const email = decodedToken?.['email'];
 
-  const hasRefreshToken = await sessionModel.verify({
+  const isRefreshTokenDeleted = await sessionModel.remove({
     token: refreshToken,
     type: 'refreshToken',
   });
 
-  if (!hasRefreshToken || !email) {
+  if (isRefreshTokenDeleted.deletedCount !== 1 || !email) {
     throw new HttpError(HttpStatusCode.UNAUTHORIZED);
   }
 
@@ -83,7 +138,7 @@ const refreshSession = async (req: NextApiRequest, res: NextApiResponse) => {
   // set cookies
   setCookies('refreshToken', newRefreshToken.token, { ...appCookie, req, res });
   setCookies('accessToken', newAccessToken.token, { ...appCookie, req, res });
-  res.json({
+  return res.json({
     token: newAccessToken.token,
     expiresAt: newAccessToken.expiresAt,
   });
@@ -118,7 +173,7 @@ const createSession = async (req: NextApiRequest, res: NextApiResponse) => {
     html: signInTemplate(data),
   };
   sendMail(mailData);
-  res.json({ ok: true });
+  return res.send(token);
 };
 
 const deleteSession = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -132,7 +187,7 @@ const deleteSession = async (req: NextApiRequest, res: NextApiResponse) => {
   setCookies('refreshToken', '', { ...appCookie, req, res });
   setCookies('accessToken', '', { ...appCookie, req, res });
 
-  res.json({ ok: true });
+  return res.json({ ok: true });
 };
 
 const validateVerifyToken = async (
@@ -146,7 +201,7 @@ const validateVerifyToken = async (
   let query = `?token=${req.query.token}`;
   const sessionModel = await SessionModel();
   const users = await UserModel();
-  const tokenRemoved = await sessionModel.remove({
+  const tokenVerified = await sessionModel.updateVerifyAt({
     token: req.query.token,
     type: 'verification',
   });
@@ -169,13 +224,13 @@ const validateVerifyToken = async (
     email: user?.email,
   });
 
-  if (tokenRemoved.deletedCount > 0) {
+  if (tokenVerified) {
     setCookies('refreshToken', refreshToken, { ...appCookie, req, res });
     setCookies('accessToken', accessToken, { ...appCookie, req, res });
   } else {
     error = '&error=invalidToken';
   }
-  res.redirect(
+  return res.redirect(
     302,
     req.query.redirectUrl
       ? `${req.query.redirectUrl}${query}${error}`

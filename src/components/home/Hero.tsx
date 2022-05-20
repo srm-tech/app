@@ -3,7 +3,7 @@ import Link from 'next/link';
 import * as React from 'react';
 
 import { SignUpForBetaForm } from './SignUpForBetaForm';
-import { QuickForm as QuickIntroduction } from '../../features/introductions/QuickForm';
+import { QuickForm as QuickIntroduction } from '../../features/introductions1/QuickForm';
 
 export default function Hero() {
   return (

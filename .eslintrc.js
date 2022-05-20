@@ -21,6 +21,8 @@ module.exports = {
     'no-unused-vars': 'off',
     'react-hooks/exhaustive-deps': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'no-redeclare': 'off',
+    '@typescript-eslint/no-redeclare': ['error'],
 
     // Sort
     'simple-import-sort/exports': 'warn',

@@ -1,18 +1,10 @@
 import { connectToDatabase, ObjectId } from '@/lib/db';
 
-export enum CommissionCurrency {
-  AUD = 'AUD',
-  USD = 'USD',
-}
-export enum CommissionType {
-  fixed = 'fixed',
-  percent = 'percent',
-}
-
-export enum CommissionPaymentType {
-  prepaid = 'prepaid',
-  postpaid = 'postpaid',
-}
+import {
+  CommissionCurrency,
+  CommissionPaymentType,
+  CommissionType,
+} from './agreementConstants';
 
 export interface Agreement {
   _id: ObjectId;
@@ -21,18 +13,28 @@ export interface Agreement {
   commissionCurrency: CommissionCurrency;
   commissionType: CommissionType;
   commissionPaymentType: CommissionPaymentType;
-  commissionValue: number;
+  commissionAmount: number;
+  dealValue?: number;
   createdAt: Date;
   updatedAt: Date;
 }
+export type NewAgreement = Omit<Agreement, '_id'>;
 
-export type Commission = Omit<Agreement, '_id' | 'agreedAt'>;
+export interface AgreementInput {
+  businessId: string;
+  guruId: string;
+}
+
+export type Commission = Omit<
+  Agreement,
+  '_id' | 'createdAt' | 'updatedAt' | 'guruId' | 'businessId'
+>;
 
 export const AgreementModel = async () => {
   const { db } = await connectToDatabase();
   const collection = db.collection<Agreement>('Agreement');
   return {
-    create: async (data: Agreement) => {
+    create: async (data) => {
       return collection.insertOne({
         ...data,
         createdAt: new Date(),
@@ -49,8 +51,8 @@ export const AgreementModel = async () => {
     search: async ({ businessId, guruId }) => {
       return collection
         .find({
-          businessId,
-          guruId,
+          businessId: businessId,
+          guruId: guruId,
         })
         .toArray();
     },

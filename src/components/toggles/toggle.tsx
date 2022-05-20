@@ -13,7 +13,7 @@ export default function Toggle({
   onChange,
 }: {
   disabled?: boolean;
-  label: string;
+  label?: string;
   description?: string;
   value: boolean;
   onChange: any;
@@ -37,10 +37,11 @@ export default function Toggle({
         />
       </Switch>
       <Switch.Label as='span' className='ml-3 leading-3'>
-        <span className='text-sm font-medium text-gray-900'>{label} </span>
-        <br />
+        {label && (
+          <div className='text-sm font-medium text-gray-900'>{label} </div>
+        )}
         {description && (
-          <span className='text-xs text-gray-500'>({description})</span>
+          <div className='text-xs text-gray-500'>{description}</div>
         )}
       </Switch.Label>
     </Switch.Group>

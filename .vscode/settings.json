@@ -5,5 +5,19 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "cSpell.enabled": true
+  "cSpell.enabled": true,
+  "rest-client.environmentVariables": {
+    "$shared": {
+      "accessToken": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjZhNTNhYjA5ZmMwNTM1MTAyODJkNDMiLCJlbWFpbCI6ImtyaXNAaW50cm9kdWNlLmd1cnUiLCJpYXQiOjE2NTIyNjk5NzcsImV4cCI6MTY1MjU3MjM3N30.emQbZWr0sdQfftr4yaSiHeGwg-_rzUcf8IEbX35WXO0"
+    },
+    "development": {
+      "baseUrl": "http://localhost:3000"
+    },
+    "staging": {
+      "baseUrl": "stage.example.com"
+    },
+    "production": {
+      "baseUrl": "example.com"
+    }
+  }
 }

@@ -1,33 +1,19 @@
-@cookie = accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjZhNTNhYjA5ZmMwNTM1MTAyODJkNDMiLCJlbWFpbCI6ImtyaXNAaW50cm9kdWNlLmd1cnUiLCJpYXQiOjE2NTE1MDI4MTMsImV4cCI6MTY1MjEwMjc1M30.hooTAqxdDEjF8YE39bTpFAmDQoYyb7qdTxdwk1vFiIY
+@intorductionId = 627c21f87e3c7c03fb11c0fa
 
 ### Create One
-POST http://localhost:3000/api/introductions HTTP/1.1
+POST {{baseUrl}}/api/introductions HTTP/1.1
 content-type: application/json
-Cookie: {{cookie}}
+Cookie: {{accessToken}}
 
 {
     "agreement": {
-        "_id": "6270c5ba6a488c0261684240",
-        "commissionCurrency": "AUD",
-        "commissionType": "fixed",
-        "commissionPaymentType": "prepaid",
-        "commissionValue": 7
+        "_id": "6270c5ba6a488c0261684240"
     },
     "business": {
-        "userId": "626a53ab09fc053510282d43",
-        "firstName": "Kris",
-        "lastName": "Zima",
-        "fullName": "Kris Zima",
-        "businessCategory": "Software",
-        "businessName": "Software & Co",
-        "contactEmail": "kris@guru.com"
+        "userId": "626a53ab09fc053510282d43"
     },
     "guru": {
-        "userId": "626a53ab09fc053510282d43",
-        "firstName": "Kris",
-        "lastName": "Zima",
-        "fullName": "Kris Zima",
-        "contactEmail": "kris@guru.com"
+        "userId": "626a53ab09fc053510282d43"
     },
     "customer": {
         "userId": "626a53ab09fc053510282d43",
@@ -39,18 +25,21 @@ Cookie: {{cookie}}
 }
 
 ### Search
-GET http://localhost:3000/api/introductions HTTP/1.1
-Cookie: {{cookie}}
+GET {{baseUrl}}/api/introductions HTTP/1.1
+Cookie: {{accessToken}}
 
 ### Find One
-GET http://localhost:3000/api/introductions/6270c0d16a488c026168423b HTTP/1.1
-Cookie: {{cookie}}
+GET {{baseUrl}}/api/introductions/{{intorductionId}} HTTP/1.1
+Cookie: {{accessToken}}
 
+### getQuote
+GET {{baseUrl}}/api/introductions/{{intorductionId}}/quote HTTP/1.1
+Cookie: {{accessToken}}
 
 ### Update
-PUT http://localhost:3000/api/introductions/6270c0d16a488c026168423b HTTP/1.1
+PUT {{baseUrl}}/api/introductions/{{intorductionId}} HTTP/1.1
 content-type: application/json
-Cookie: {{cookie}}
+Cookie: {{accessToken}}
 
 {
     "status": "active"

@@ -1,35 +1,4 @@
-import { ObjectId } from 'bson';
-
-export interface UserProfile {
-  _id: ObjectId;
-  userId: ObjectId;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  abn: string;
-  businessName: string;
-  contactEmail: string;
-  contactPhone: string;
-  businessCategory: string;
-  rating: number;
-  successfulRate: number;
-  averageCommission: number;
-  commissionType: string;
-  commissionValue: number;
-  commissionCurrency: string;
-  commissionPerReceivedLead: number;
-  commissionPerCompletedLead: number;
-  commissionPerCompletedLeadPercent: number;
-  isAcceptingIntroductions: boolean;
-  address1: string;
-  address2: string;
-  address3: string;
-  country: string;
-  stripeId: string;
-  accountLink: string;
-  isActive: boolean;
-  isComplete: boolean;
-}
+import { UserProfile } from '../userProfile1/UserProfileModel';
 
 export type DefaultProfile = Omit<UserProfile, '_id' | 'userId'>;
 

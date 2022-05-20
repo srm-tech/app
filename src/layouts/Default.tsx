@@ -4,9 +4,9 @@ import Nav from '@/components/Nav';
 export default function DefaultLayout({ children }) {
   return (
     <main>
-      <div className='relative overflow-hidde'>
+      <div className='relative overflow-hidden'>
         <div className='relative'>
-          <div className='w-full bg-dark pt-6 px-2'>
+          <div className='w-full bg-dark px-2 py-4'>
             <Nav />
           </div>
           {children}

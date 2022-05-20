@@ -48,10 +48,19 @@ export class Router {
   }
 
   async validateRequest(method, path, callback) {
-    if (this.req.method === method && this.checkPath(path)) {
+    if (
+      this.req.method === method &&
+      this.checkPath(path) &&
+      !this.res.headersSent
+    ) {
       if (this.auth) {
         try {
           this.user = await this.auth(this.req, this.res);
+          console.info(
+            `${new Date().toLocaleString('en-AU')} ${
+              this.user._id
+            } ${method} ${path}`
+          );
         } catch (error) {
           return this.res
             .status(HttpStatusCode.UNAUTHORIZED)

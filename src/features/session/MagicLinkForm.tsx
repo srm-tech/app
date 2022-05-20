@@ -1,9 +1,6 @@
-import { FC, useEffect, useRef, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useState } from 'react';
 
 import { classNames } from '@/lib/helper';
-
-import requests from './requests';
 
 const MagicLinkForm = ({
   className = '',

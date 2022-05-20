@@ -7,7 +7,8 @@ import useRequest from '@/lib/useRequest';
 import Spinner from '@/components/Spinner';
 
 import MagicLinkForm from './MagicLinkForm';
-import sessionApi, { UserSession } from './requests';
+import sessionApi from './requests';
+import { UserSession } from './SessionModel';
 import SignInModal from './SignInModal';
 
 interface Session {
@@ -45,7 +46,10 @@ const SessionContext = React.createContext<ContextProps>({
 const { Provider } = SessionContext;
 
 export const SessionProvider = ({ children }) => {
-  const userSessionRequest = useRequest<UserSession>(sessionApi.getUserSession);
+  const getUserSession = useRequest<
+    UserSession,
+    { token: string; email: string }
+  >(sessionApi.getUserSession);
   const [session, setSession] = useState<Session>(defaultValue);
   const [showModal, setShowModal] = useState(false);
 
@@ -74,8 +78,15 @@ export const SessionProvider = ({ children }) => {
     setShowModal(false);
   };
 
-  const checkSession = async () => {
-    const result = await userSessionRequest.run();
+  const checkSession = async (email?: string, token?: string) => {
+    const result = await getUserSession.run(
+      (email &&
+        token && {
+          email: `${email}`,
+          token: `${token}`,
+        }) ||
+        undefined
+    );
     if (result) {
       setNewSession({
         data: result,
@@ -92,19 +103,20 @@ export const SessionProvider = ({ children }) => {
     return result;
   };
 
-  const checkSessionPolling = ({ interval }) => {
+  const checkSessionPolling = ({ interval, email, token }) => {
     clearInterval(intervalRef.current);
+    clearTimeout(timeoutRefreshRef.current); // we don't want to refresh token while poling for user to clink email link
     intervalRef.current = setInterval(async () => {
-      checkSession();
+      checkSession(email, token);
     }, interval);
   };
 
   const signIn = async ({ email }) => {
     setNewSession({ isLoading: true, error: '' });
     try {
-      await sessionApi.signIn({ email });
+      const { data: token } = await sessionApi.signIn({ email });
       setNewSession({ isPolling: true, isLoading: false });
-      checkSessionPolling({ interval: 2 * 1000 });
+      checkSessionPolling({ interval: 2 * 1000, email, token });
       clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
         // kill polling after 1hr -> set as fail
@@ -174,7 +186,7 @@ export const SessionProvider = ({ children }) => {
     if (clearRefreshTimeout) {
       clearTimeout(timeoutRefreshRef.current);
     }
-    userSessionRequest.cancel();
+    getUserSession.cancel();
   };
 
   const loadData = async () => {
@@ -185,18 +197,24 @@ export const SessionProvider = ({ children }) => {
     setNewSession({
       isLoading: true,
     });
+    console.log('Session loadData');
+
     const result = await checkSession();
     if (!result) {
-      // try refreshing session
-      try {
-        const { data } = await sessionApi.refreshSession();
-        setRefreshTimeout(data.expiresAt);
-        checkSession();
-      } catch (error) {
-        // logout
-        signOut();
-      }
+      console.log(111);
+      signOut();
     }
+    // if (!result) {
+    //   // try refreshing session
+    //   try {
+    //     const { data } = await sessionApi.refreshSession();
+    //     setRefreshTimeout(data.expiresAt);
+    //     checkSession();
+    //   } catch (error) {
+    //     // logout
+    //     signOut();
+    //   }
+    // }
   };
 
   useEffect(() => {

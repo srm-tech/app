@@ -1,7 +1,12 @@
-export default function Spinner() {
+import { classNames } from '@/lib/helper';
+
+export default function Spinner({ className }: { className?: string }) {
   return (
     <svg
-      className='m-auto mb-4 animate-spin h-8 w-8 text-white'
+      className={classNames(
+        'm-auto mb-4 animate-spin text-white',
+        className || 'h-8 w-8'
+      )}
       xmlns='http://www.w3.org/2000/svg'
       fill='none'
       viewBox='0 0 24 24'

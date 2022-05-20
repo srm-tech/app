@@ -6,214 +6,27 @@ const database = 'guru';
 // The current database to use.
 use(database);
 
-db.userProfiles.drop();
+db.UserProfile.drop();
+db.UserProfile.createIndex( {"userId": 1}, { unique: true } )
 
-db.userProfiles.insertMany([
-  {
-    _id: ObjectId('000000000000000000000000'),
-    firstName: 'Kris',
-    lastName: 'Zima',
-    businessName: 'Introduce Guru',
-    businessCategory: 'Software development',
-    rating: 5,
-    email: 'kris@introduce.guru',
-    succesfulRate: 0.97,
-    averageCommission: '$100 + 10%',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
-  },
-  {
-    _id: ObjectId('000000000000000000000001'),
-    firstName: 'Adam',
-    lastName: 'Abacki',
-    businessName: 'Supersoft SA',
-    businessCategory: 'Software development',
-    rating: 5,
-    email: 'adam.abacki@a.pl',
-    succesfulRate: 0.97,
-    averageCommission: '$100 + 10%',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
-  },
-  {
-    _id: ObjectId('000000000000000000000002'),
-    firstName: 'Janusz',
-    lastName: 'Iksiński',
-    businessName: 'Januszex sp. j.',
-    businessCategory: 'Catering',
-    rating: 2,
-    succesfulRate: .25,
-    averageCommission: '15%',
-    email: 'janusz@januszex.pl',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true,
-    commissionType: "commissionPerCompletedLead",
-    commissionPerReceivedLead: 10000,
-    commissionPerCompletedLead: 1000,
-    commissionPerReceivedLeadPercent: 15,
-    commissionLabel: "completed service"
-  },
-  {
-    _id: ObjectId('000000000000000000000003'),
-    firstName: 'Anna',
-    lastName: 'Nieznana',
-    businessName: 'Firma SA',
-    email: 'nieznana@firma.com',
-    businessCategory: 'Big corp',
-    rating: 4,
-    succesfulRate: .88,
-    averageCommission: '$1500',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
 
-  },
-  {
-    _id: ObjectId('000000000000000000000004'),
-    firstName: 'Jane',
-    lastName: 'Doe',
-    businessName: 'Terefere, Inc.',
-    email: 'janedoe@terefere.com',
-    businessCategory: 'Big corp',
-    rating: 4,
-    succesfulRate: .91,
-    averageCommission: '$1500 + 5%',
-    isActive: true  ,
-    isGuru: true,
-    isBusiness: true    
-    },
-    {
-    _id: ObjectId('000000000000000000000005'),
-    firstName: 'Karol',
-    lastName: 'Superowy',
-    businessName: 'Trutututu  SA',
-    email: 'super@trutututu.com',
-    businessCategory: 'Flowers',
-    rating: 1,
-    succesfulRate: .08,
-    averageCommission: '$10',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
-  },
-  {
-    _id: ObjectId('000000000000000000000006'),
-    firstName: 'Atanazy',
-    lastName: 'Parówka',
-    businessName: 'Parówka Company',
-    email: 'atanazy@paruwa.com',
-    businessCategory: 'Food & Groceries',
-    rating: 3,
-    succesfulRate: .38,
-    averageCommission: '$150',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
-
-  },
-      {
-    _id: ObjectId('000000000000000000000007'),
-    firstName: 'Gerwazy',
-    lastName: 'Trąba',
-    businessName: 'Trutututu  SA',
-    email: 'traba@trutututu.com',
-    businessCategory: 'Flowers',
-    rating: 5,
-    succesfulRate: .89,
-    averageCommission: '$10',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
-  },
-    {
-    _id: ObjectId('000000000000000000000008'),
-    firstName: 'Edward',
-    lastName: 'Mosiądz',
-    businessName: 'Mosiądz sp. z zoo',
-    email: 'mosiadz@zoo.pl',
-    businessCategory: 'Animals',
-    rating: 1,
-    succesfulRate: .8,
-    averageCommission: '$500150',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
-  },
-      {
-    _id: ObjectId('000000000000000000000009'),
-    firstName: 'Pankracy',
-    lastName: 'Bomba',
-    businessName: 'Kaboom!',
-    email: 'bomba@kaboom.com',
-    businessCategory: 'Explosives',
-    rating: 5,
-    succesfulRate: .99,
-    averageCommission: '$1000',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
-  },
-  {
-    _id: ObjectId('000000000000000000000010'),
-    firstName: 'Edward',
-    lastName: 'Mosiądz',
-    businessName: 'Mosiądz sp. z zoo',
-    email: 'mosiadz@zoo.pl',
-    businessCategory: 'Animals',
-    rating: 1,
-    succesfulRate: .8,
-    averageCommission: '$500150',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
-  },
-  {
-    _id: ObjectId('00000000000000000000001a'),
-    firstName: 'Tadeusz',
-    lastName: 'Kozodój',
-    businessName: 'Lelek Kozodój!',
-    email: 'lelek@kozodoj.com',
-    businessCategory: 'Animals',
-    rating: 5,
-    succesfulRate: .99,
-    averageCommission: '$1000',
-    isActive: true,
-    isGuru: true,
-    isBusiness: true
-  },
-  {
-    _id: ObjectId('00000000000000000000001b'),
-    firstName: 'Ambrozy',
-    lastName: 'Kleks',
-    businessName: 'Akademia Pana Kleksa',
-    email: 'kleks@akademia.edu',
-    businessCategory: 'Education',
-    rating: 5,
-    succesfulRate: .96,
-    averageCommission: '$100',
-    isActive: true,
-    isGuru: false,
-    isBusiness: true
-  },
-  {
-    _id: ObjectId('00000000000000000000001c'),
-    firstName: 'Luke',
-    lastName: 'Skywalker',
-    businessName: 'The Rebel Alliance',
-    email: 'luke@rebel.gov',
-    businessCategory: 'NGOs',
-    rating: 4,
-    succesfulRate: .82,
-    averageCommission: '$100',
-    isActive: true,
-    isGuru: true,
-    isBusiness: false
-  },
+// db.userProfiles.insertMany([
+//   {
+//     _id: ObjectId('000000000000000000000000'),
+//     firstName: 'Kris',
+//     lastName: 'Zima',
+//     businessName: 'Introduce Guru',
+//     businessCategory: 'Software development',
+//     rating: 5,
+//     email: 'kris@introduce.guru',
+//     succesfulRate: 0.97,
+//     averageCommission: '$100 + 10%',
+//     isActive: true,
+//     isGuru: true,
+//     isBusiness: true
+//   },
 
   
-]);
+// ]);
 
 

@@ -72,14 +72,6 @@ export default handleErrors(
             },
           ],
 
-          payment_intent_data: {
-            application_fee_amount: formatAmountForStripe(fee, env.CURRENCY),
-            receipt_email: business.contactEmail,
-            transfer_data: {
-              destination: business.stripeId,
-            },
-          },
-
           mode: 'payment',
           // automatic_tax: {
           //   enabled: true

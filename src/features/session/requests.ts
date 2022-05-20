@@ -2,21 +2,20 @@ import { AxiosPromise, AxiosResponse } from 'axios';
 
 import axios from '@/lib/axios';
 
-export interface UserSession {
-  _id: string;
-  email: string;
-  expiresAt: number; // seconds
-}
+import { UserSession } from './SessionModel';
 
-const requests = {
+const sessionApi = {
   signIn: async ({ email }) => {
     return axios.post('/session', { email });
   },
   signOut: async () => {
     return axios.delete('/session');
   },
-  getUserSession: async ({ signal }): Promise<AxiosResponse<UserSession>> => {
-    return axios.get('/session', { signal });
+  getUserSession: async (
+    signal,
+    params
+  ): Promise<AxiosResponse<UserSession>> => {
+    return axios.get('/session', params ? { signal, params } : { signal });
   },
   refreshSession: async (): Promise<AxiosResponse<UserSession>> => {
     return axios.get('/session/refresh');
@@ -25,4 +24,4 @@ const requests = {
     return axios.get(`/session/callback?token=${token}`);
   },
 };
-export default requests;
+export default sessionApi;

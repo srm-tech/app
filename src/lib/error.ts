@@ -30,3 +30,5 @@ export class HttpError extends Error {
     this.errors = errors || null;
   }
 }
+
+export { httpStatus };

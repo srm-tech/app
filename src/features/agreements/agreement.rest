@@ -1,9 +1,7 @@
-@cookie = accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjZhNTNhYjA5ZmMwNTM1MTAyODJkNDMiLCJlbWFpbCI6ImtyaXNAaW50cm9kdWNlLmd1cnUiLCJpYXQiOjE2NTE1MDI4MTMsImV4cCI6MTY1MjEwMjc1M30.hooTAqxdDEjF8YE39bTpFAmDQoYyb7qdTxdwk1vFiIY
-
 ### Create One
-POST http://localhost:3000/api/agreements HTTP/1.1
+POST {{baseUrl}}/api/agreements HTTP/1.1
 content-type: application/json
-Cookie: {{cookie}}
+Cookie: {{accessToken}}
 
 {
     "guruId": "626a53ab09fc053510282d43",
@@ -15,18 +13,18 @@ Cookie: {{cookie}}
 }
 
 ### Search
-GET http://localhost:3000/api/agreements HTTP/1.1
-Cookie: {{cookie}}
+GET {{baseUrl}}/api/agreements?guruId=626a53ab09fc053510282d43&businessId=626a53ab09fc053510282d77 HTTP/1.1
+Cookie: {{accessToken}}
 
 ### Find One
-GET http://localhost:3000/api/agreements/6270c67d6a488c0261684242 HTTP/1.1
-Cookie: {{cookie}}
+GET {{baseUrl}}/api/agreements/6270c67d6a488c0261684242 HTTP/1.1
+Cookie: {{accessToken}}
 
 
 ### Update
-PUT http://localhost:3000/api/agreements/6270c67d6a488c0261684242 HTTP/1.1
+PUT {{baseUrl}}/api/agreements/6270c67d6a488c0261684242 HTTP/1.1
 content-type: application/json
-Cookie: {{cookie}}
+Cookie: {{accessToken}}
 
 {
     "commissionValue": 8

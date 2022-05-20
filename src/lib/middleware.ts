@@ -24,7 +24,7 @@ export function validateMiddleware(validations, validationResult) {
     if (errors.isEmpty()) {
       return next();
     }
-    console.log(errors.array()[0].nestedErrors);
+    console.log(11, errors.array()[0].nestedErrors);
 
     const nestedFields = errors
       .array()[0]
@@ -32,11 +32,9 @@ export function validateMiddleware(validations, validationResult) {
       .join(', ');
 
     const firstErr = errors.array()[0];
-    return next(
-      new HttpError(
-        HttpStatusCode.UNPROCESSABLE_ENTITY,
-        `${firstErr.msg} - ${nestedFields || firstErr.param}`
-      )
+    throw new HttpError(
+      HttpStatusCode.UNPROCESSABLE_ENTITY,
+      `${firstErr.msg} - ${nestedFields || firstErr.param}`
     );
   };
 }

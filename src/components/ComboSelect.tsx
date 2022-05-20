@@ -1,50 +1,47 @@
-import { SearchIcon } from '@heroicons/react/solid';
+import { CheckCircleIcon, SearchIcon } from '@heroicons/react/solid';
 import clsx from 'clsx';
 import { useCombobox } from 'downshift';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import useFetch from 'use-http';
 
-import { debounce } from '@/lib/helper';
+import { classNames, debounce } from '@/lib/helper';
+
+import { BusinessSearch } from '@/features/userProfile1/UserProfileModel';
 
 import InlineError from './errors/InlineError';
-import { Search } from '../features/introductions/QuickForm';
+import Spinner from './Spinner';
+import { Search } from '../features/introductions1/QuickForm';
 
-export default function ComboSelect({ query, onChange, onSelect }) {
-  const debounceSetCurrentValue = useRef<any>(null);
-  const { get, data, response, loading, error } = useFetch('/search/business');
+export interface ComboSearch {
+  _id: string;
+  label: string;
+  description: string;
+}
 
-  let inputItems: Search[] = [];
-  if (response.ok) {
-    inputItems = data?.map((item) => ({
-      _id: item._id,
-      label: item.name,
-      businessName: item.businessName,
-      category: item.businessCategory,
-    }));
-  }
+interface ComboProps {
+  query: string;
+  onChange: (q: string) => void;
+  onSelect: (item: ComboSearch | null) => void;
+  isLoading: boolean;
+  inputItems: ComboSearch[];
+  error: string;
+  value: ComboSearch | null;
+}
 
-  const loadData = (value?: string) => {
-    const q = value || query || '';
-    if (q.length > 0) {
-      get(`?q=${q}`);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  // debounce function should only be created once
-  if (!debounceSetCurrentValue.current) {
-    debounceSetCurrentValue.current = debounce((value: string) => {
-      loadData(value);
-    }, 300);
-  }
+export default function ComboSelect<T>({
+  query,
+  onChange,
+  onSelect,
+  isLoading,
+  inputItems,
+  error,
+  value,
+}: ComboProps) {
+  const currentValue = useRef<any>(null);
 
   const {
     isOpen,
-    selectedItem,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
@@ -56,16 +53,18 @@ export default function ComboSelect({ query, onChange, onSelect }) {
     items: inputItems,
     id: 'ComboSelect',
     inputId: 'ComboSelectInput',
-    itemToString: (item: Search | null) => (item ? item.label : ''),
+    itemToString: (item: ComboSearch | null) => (item ? item.label : ''),
     onInputValueChange: ({ inputValue }: { inputValue?: string }) => {
-      onChange && onChange(inputValue || '');
-      // console.log(222);
-
-      debounceSetCurrentValue.current(inputValue);
+      if (inputValue !== currentValue.current) {
+        onChange && onChange(inputValue || '');
+        onSelect && onSelect(null);
+      }
+      currentValue.current = inputValue;
     },
     onSelectedItemChange: ({ selectedItem }) => {
       if (selectedItem) {
-        const item: Search = selectedItem;
+        currentValue.current = selectedItem.label;
+        const item: ComboSearch = selectedItem;
         onSelect && onSelect(item);
         onChange && onChange(item.label || '');
       }
@@ -101,14 +100,20 @@ export default function ComboSelect({ query, onChange, onSelect }) {
           type='text'
           className='block w-full border-2 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
         />
-        <InlineError message={error?.message} />
+        <InlineError message={error} />
         <button
           type='button'
           {...getToggleButtonProps()}
           aria-label={'toggle menu'}
           className='absolute right-2 top-2.5 text-gray-400'
         >
-          <SearchIcon className='w-5 h-5' />
+          {value ? (
+            <CheckCircleIcon className={classNames('w-5 h-5 text-green-700')} />
+          ) : isLoading ? (
+            <Spinner className='w-5 h-5' />
+          ) : (
+            <SearchIcon className={classNames('w-5 h-5')} />
+          )}
         </button>
       </div>
       <div className='relative mt-1'>
@@ -137,9 +142,7 @@ export default function ComboSelect({ query, onChange, onSelect }) {
                   <p
                     className='text-sm text-gray-500'
                     dangerouslySetInnerHTML={{
-                      __html: highlightText(
-                        `${item.businessName} | ${item.category}`
-                      ),
+                      __html: highlightText(item.description),
                     }}
                   ></p>
                 </div>

@@ -1,0 +1,65 @@
+@userId = 626a53ab09fc053510282d43
+
+### Create One
+POST {{baseUrl}}/api/userProfile HTTP/1.1
+content-type: application/json
+Cookie: {{accessToken}}
+
+{
+    "firstName": "Kris",
+    "lastName": "Zima",
+    "fullName": "Kris Zima",
+    "contactEmail": "kris@mosquito.ie",
+    "contactPhone": "040404040",
+    "businessName": "Kris & Co",
+    "businessCategory": "Software",
+    "stripeId": "",
+    "abn": "",
+    "addressLine1": "Address line 1",
+    "addressLine2": "Address line 2",
+    "city": "",
+    "state": "AU",
+    "country": "AU",
+    "rating": 0,
+    "successfulRate": 0,
+    "averageCommission": 0,
+    "defaultCommission": [{
+        "commissionAmount": 0,
+        "commissionCurrency": "AUD",
+        "commissionType": "fixed",
+        "commissionPaymentType": "prepaid"
+    }],
+    "userId": "{{userId}}",
+    "isAcceptingIntroductions": true,
+    "isActive": false,
+    "isComplete": false
+}
+
+### Search
+GET {{baseUrl}}/api/userProfile?q=kr HTTP/1.1
+Cookie: {{accessToken}}
+
+### Find One
+GET {{baseUrl}}/api/userProfile/{{userId}} HTTP/1.1
+Cookie: {{accessToken}}
+
+### Update
+PUT {{baseUrl}}/api/userProfile/{{userId}} HTTP/1.1
+content-type: application/json
+Cookie: {{accessToken}}
+
+{
+    "_id": "{{userId}}",
+    "firstName": "Kriso",
+    "lastName": "Zima",
+    "fullName": "Kris Zima",
+    "contactEmail": "kris@mosquito.ie"
+}
+
+### Commission
+GET {{baseUrl}}/api/userProfile/{{userId}}/commission HTTP/1.1
+Cookie: {{accessToken}}
+
+### Delete
+DELETE  {{baseUrl}}/api/userProfile/{{userId}} HTTP/1.1
+Cookie: {{accessToken}}

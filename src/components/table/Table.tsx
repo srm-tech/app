@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
+import Skeleton from 'react-loading-skeleton';
 import {
   useFilters,
   useGlobalFilter,
@@ -16,11 +17,11 @@ import {
 type TableProps = {
   columns: any;
   data: any;
-  loading?: boolean;
+  isLoading?: boolean;
 };
 
 // ------------main table component----------------------------------------------------
-export default function Table({ columns, data, loading }: TableProps) {
+export default function Table({ columns, data, isLoading }: TableProps) {
   const filterTypes = React.useMemo(
     () => ({
       fuzzyText: fuzzyTextFilterFn,
@@ -95,7 +96,7 @@ export default function Table({ columns, data, loading }: TableProps) {
           className='min-w-full divide-y divide-gray-200'
           {...getTableProps()}
         >
-          <thead className='bg-gray-50'>
+          <thead className='bg-gray-50 '>
             {
               // Loop over the header rows
               headerGroups.map((headerGroup) => (
@@ -110,7 +111,7 @@ export default function Table({ columns, data, loading }: TableProps) {
                       // Apply the header cell props
                       <th
                         scope='col'
-                        className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'
+                        className='px-6 py-3 text-xs font-medium tracking-wider text-left  last:text-right text-gray-500 uppercase'
                         // key={`col-${column.toString()}`}
                         {...column.getHeaderProps(
                           column.getSortByToggleProps()
@@ -148,7 +149,15 @@ export default function Table({ columns, data, loading }: TableProps) {
           {/* Apply the table body props */}
 
           <tbody {...getTableBodyProps()}>
-            {
+            {isLoading ? (
+              <tr>
+                {Array.from(Array(columns.length).keys()).map((i) => (
+                  <td key={i}>
+                    <Skeleton count={5} height={40} />
+                  </td>
+                ))}
+              </tr>
+            ) : (
               // Loop over the table rows
               page.map((row, index) => {
                 // Prepare the row for display
@@ -181,12 +190,12 @@ export default function Table({ columns, data, loading }: TableProps) {
                   </tr>
                 );
               })
-            }
+            )}
           </tbody>
         </table>
       </div>
 
-      <div className='flex items-center justify-between mt-2 pagination bg-gray-50 p-2'>
+      <div className='flex items-center justify-between pagination bg-gray-50 p-2 border-t-[1px]'>
         <span>
           Page{' '}
           <strong>
@@ -212,7 +221,7 @@ export default function Table({ columns, data, loading }: TableProps) {
             />
           </span>
           <select
-            className='relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
+            className='relative inline-flex items-center px-5 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
             value={pageSize}
             onChange={(e) => {
               setPageSize(Number(e.target.value));

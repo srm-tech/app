@@ -1,10 +1,16 @@
 import { connectToDatabase, ObjectId } from '@/lib/db';
 
-interface Session {
+export interface Session {
   _id?: ObjectId;
   token: string;
   type: 'verification' | 'refreshToken';
   expiresAt?: Date;
+  verifiedAt?: Date;
+}
+export interface UserSession {
+  _id: string;
+  email: string;
+  expiresAt: number; // seconds
 }
 
 export const SessionModel = async () => {
@@ -19,6 +25,12 @@ export const SessionModel = async () => {
     },
     get: async (data) => {
       return collection.findOne({ token: data.token, type: data.type });
+    },
+    updateVerifyAt: async (data) => {
+      return collection.updateOne(
+        { token: data.token, type: data.type },
+        { $set: { verifiedAt: new Date() } }
+      );
     },
     verify: async (data) => {
       return collection.findOne({

@@ -1,4 +1,5 @@
-import { Collection, Db, MongoClient, ObjectId } from 'mongodb';
+import { ObjectId } from 'bson';
+import { Db, MongoClient } from 'mongodb';
 
 import { env } from '@/lib/envConfig';
 
@@ -10,21 +11,6 @@ export const getDb = () => {
   const db = client.db(env.DB_NAME);
   return { client, db, dbName: env.DB_NAME };
 };
-
-// interface DBOptions {
-//   client: MongoClient;
-//   db: Db;
-//   dbName: string;
-// }
-
-// export const getCollection =
-//   () =>
-//   (collectionName: string): { db: Db; collection: Collection<Document> } => {
-//     const { db } = getDb();
-//     return { db, collection: db.collection(collectionName) };
-//   };
-
-export { ObjectId };
 
 let cachedClient;
 let cachedDb;
@@ -58,3 +44,5 @@ export const connectToDatabase = async (): Promise<{
 
   return { client, db };
 };
+
+export { ObjectId };
