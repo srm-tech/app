@@ -237,7 +237,7 @@ const validateVerifyToken = async (
     302,
     req.query.redirectUrl
       ? `${req.query.redirectUrl}${query}${error}`
-      : `/app/session/verify${query}${error}`
+      : `/session/verify${query}${error}`
   );
 };
 

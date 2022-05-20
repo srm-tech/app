@@ -102,6 +102,7 @@ export default function Nav() {
                                 session.signOut({
                                   callbackUrl: env.BASE_URL,
                                 });
+                                router.replace('/');
                               }
                               if (item.name === 'My Profile') {
                                 e.preventDefault();
@@ -129,6 +130,7 @@ export default function Nav() {
                 session.isActive
                   ? () => {
                       session.signOut({ callbackUrl: env.BASE_URL });
+                      router.replace('/');
                     }
                   : () => {
                       session.showLoginModal();

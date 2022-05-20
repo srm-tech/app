@@ -23,7 +23,6 @@ export default function RegisterPage() {
       isShowing={true}
       form='registration'
       acceptCaption='Register Now'
-      cancelCaption='Close'
       onAccept={() => console.info('register from intro')}
       onCancel={() => {}}
       caption='Create Introduce Guru account'

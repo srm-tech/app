@@ -99,6 +99,8 @@ export const SessionProvider = ({ children }) => {
         isActive: true,
         isLoading: false,
       });
+    } else {
+      setNewSession({ isLoading: false });
     }
     return result;
   };
