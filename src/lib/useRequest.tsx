@@ -45,9 +45,9 @@ const useRequest = <T, P = undefined>(
   const [error, setError] = useState('');
   const [data, setData] = useState<T>();
   const dependenciesRef = useRef<DependencyList>([]);
-  const controllerRef = useRef<AbortController>(new AbortController());
+  const controllerRef = useRef<AbortController>();
   const cancel = () => {
-    controllerRef.current.abort();
+    controllerRef.current?.abort();
     controllerRef.current = new AbortController();
   };
 
@@ -57,8 +57,9 @@ const useRequest = <T, P = undefined>(
     setIsLoading(true);
     setError('');
     try {
+      controllerRef.current = controllerRef.current || new AbortController();
       const result = await callback(
-        controllerRef.current.signal,
+        controllerRef.current?.signal,
         payloadOverride || options?.payload
       );
       if (result?.data) {
@@ -113,6 +114,7 @@ const useRequest = <T, P = undefined>(
 
   useEffect(() => {
     // run once on mount
+    controllerRef.current = new AbortController();
     if (options?.runOnMount) {
       run(options?.payload);
     }
