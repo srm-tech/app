@@ -7,7 +7,7 @@ import { check, oneOf, validate } from '@/lib/validator';
 import AgreementModel, { Agreement } from './AgreementModel';
 import { JWTToken } from '../session/jwt';
 import { auth } from '../session/middleware';
-import UserProfileModel from '../userProfile1/UserProfileModel';
+import UserProfileModel from '../userProfile/UserProfileModel';
 
 const checkByKey = (v: keyof Agreement) => check(v);
 

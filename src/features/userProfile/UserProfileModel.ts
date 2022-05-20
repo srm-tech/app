@@ -1,290 +1,198 @@
-import { Collection, ObjectId } from 'mongodb';
+import { connectToDatabase, ObjectId } from '@/lib/db';
 
-import { defaultProfile, UserProfile } from './constants';
+import { Commission } from '@/features/agreements/AgreementModel';
 
-const UserProfileModel = (collection: Collection<UserProfile>) => ({
-  create: async (_id, data: UserProfile) => {
-    return {
-      defaultProfile,
-      ...(await collection?.insertOne({ ...data, _id: new ObjectId(_id) })),
-    };
-  },
-  readMany: async ({ userId }) => {
-    return collection?.find({ userId }).toArray();
-  },
-  searchForBusinessQuick: async (q: string) => {
-    const query = new RegExp(q, 'i');
-    return collection
-      .aggregate([
-        //pipeline array
-        {
-          $project: {
-            firstName: 1,
-            lastName: 1,
-            businessName: 1,
-            businessCategory: 1,
-            isBusiness: 1,
-          },
-        },
-        {
-          $addFields: {
-            search: {
-              $concat: [
-                '$firstName',
-                ' ',
-                '$lastName',
-                ' - ',
-                '$businessName',
-                ' (',
-                '$businessCategory',
-                ')',
+import { defaultProfile } from './userProfileConstants';
+import { Rating } from '../ratings/RatingModel';
+
+export interface UserProfile {
+  _id: ObjectId;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  abn: string;
+  businessName: string;
+  contactEmail: string;
+  contactPhone: string;
+  businessCategory: string;
+  rating: number;
+  successfulRate: number;
+  averageCommission: number;
+  defaultCommission: Commission[];
+  isAcceptingIntroductions: boolean;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  postcode: string;
+  state: string;
+  country: string;
+  stripeId: string;
+  isActive: boolean;
+  isComplete: boolean;
+  beneficiary?: {
+    firstName: string;
+    lastName: string;
+    contactEmail: string;
+    bsb: string;
+    accountNo: string;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+}
+export type NewUserProfile = Omit<UserProfile, '_id'>;
+
+export type BusinessProps =
+  | 'userId'
+  | 'firstName'
+  | 'lastName'
+  | 'fullName'
+  | 'contactEmail'
+  | 'contactPhone'
+  | 'businessName'
+  | 'businessCategory'
+  | 'rating';
+export type Business = Pick<UserProfile, BusinessProps>;
+export type BusinessSearch = Pick<
+  UserProfile,
+  | 'businessCategory'
+  | 'businessName'
+  | 'firstName'
+  | 'fullName'
+  | 'userId'
+  | 'rating'
+>;
+
+export type CustomerInput = {
+  contact: string;
+  name: string;
+  contactType: string;
+};
+export type CustomerProps =
+  | 'firstName'
+  | 'lastName'
+  | 'fullName'
+  | 'contactEmail'
+  | 'contactPhone';
+export type Customer = Pick<UserProfile, CustomerProps>;
+
+export type GuruProps =
+  | 'userId'
+  | 'firstName'
+  | 'lastName'
+  | 'fullName'
+  | 'contactEmail'
+  | 'contactPhone'
+  | 'rating';
+export type Guru = Pick<UserProfile, GuruProps>;
+
+export const UserProfileModel = async () => {
+  const { db } = await connectToDatabase();
+  const collection = db.collection<UserProfile>('UserProfile');
+  return {
+    create: async (userId, data: UserProfile) => {
+      await collection.insertOne({
+        ...defaultProfile,
+        ...data,
+        fullName: `${data.firstName} ${data.lastName}`,
+        isActive: true,
+        isComplete: true,
+        userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      return collection.findOne({ userId });
+    },
+    updateOne: async (userId: string, data: Partial<UserProfile>) => {
+      const { _id, ...rest } = data;
+      const currentProfile = await collection.findOne({ userId });
+      const newProfile = {
+        ...defaultProfile,
+        ...currentProfile,
+        ...rest,
+        fullName: `${data.firstName} ${data.lastName}`,
+        userId,
+        updatedAt: new Date(),
+      };
+      await collection.updateOne({ userId }, { $set: newProfile });
+      return newProfile;
+    },
+    findOne: async (userId) => {
+      return collection.findOne({ userId });
+    },
+    search: async (q: string) => {
+      const query = new RegExp(q, 'i');
+      return collection
+        .aggregate([
+          {
+            $lookup: {
+              from: 'reviews',
+              localField: '_id',
+              foreignField: 'business',
+              as: 'reviews',
+              pipeline: [
+                {
+                  $project: {
+                    _id: 0,
+                    business: 0,
+                    guru: 0,
+                    jobId: 0,
+                    comment: 0,
+                    date: 0,
+                  },
+                },
               ],
             },
-            name: { $concat: ['$firstName', ' ', '$lastName'] },
           },
-        }, //stage1
-        {
-          $match: {
-            search: { $regex: query },
-            isAcceptingIntroductions: true,
-          },
-        }, //stage2
-      ])
-      .limit(10)
-      .toArray();
-  },
-  searchForBusiness: async (q: string) => {
-    const query = new RegExp(q, 'i');
-    console.log(query);
-    return collection
-      .aggregate([
-        {
-          $lookup: {
-            from: 'reviews',
-            localField: '_id',
-            foreignField: 'business',
-            as: 'reviews',
-            pipeline: [
-              {
-                $project: {
-                  _id: 0,
-                  business: 0,
-                  guru: 0,
-                  jobId: 0,
-                  comment: 0,
-                  date: 0,
-                },
+          {
+            $addFields: {
+              search: {
+                $concat: [
+                  '$firstName',
+                  ' ',
+                  '$lastName',
+                  ' - ',
+                  '$businessName',
+                  ' (',
+                  '$businessCategory',
+                  ')',
+                ],
               },
+              name: { $concat: ['$firstName', ' ', '$lastName'] },
+              avgCommissionCustomer: {
+                $avg: '$commissionCustomer',
+              },
+              avgCommissionBusiness: {
+                $avg: '$commissionBusiness',
+              },
+              rating: {
+                $avg: '$reviews.rating',
+              },
+            },
+          },
+          {
+            $unset: [
+              'rating',
+              'successfulRate',
+              'averageCommission',
+              'isActive',
+              'isGuru',
+              'isBusiness',
             ],
           },
-        },
-        {
-          $addFields: {
-            search: {
-              $concat: [
-                '$firstName',
-                ' ',
-                '$lastName',
-                ' - ',
-                '$businessName',
-                ' (',
-                '$businessCategory',
-                ')',
-              ],
-            },
-            name: { $concat: ['$firstName', ' ', '$lastName'] },
-            avgCommissionCustomer: {
-              $avg: '$commissionCustomer',
-            },
-            avgCommissionBusiness: {
-              $avg: '$commissionBusiness',
-            },
-            rating: {
-              $avg: '$reviews.rating',
+          {
+            $match: {
+              search: { $regex: query },
+              isAcceptingIntroductions: true,
             },
           },
-        },
-        {
-          $unset: [
-            'rating',
-            'successfulRate',
-            'averageCommission',
-            'isActive',
-            'isGuru',
-            'isBusiness',
-          ],
-        },
-        {
-          $match: {
-            search: { $regex: query },
-            isAcceptingIntroductions: true,
-          },
-        },
-      ])
-      .toArray();
-  },
-  searchForCustomer: async (contact: string, type: 'email' | 'phone') => {
-    const connections = await collection
-      .aggregate([
-        {
-          $lookup: {
-            from: 'connections',
-            localField: '_id',
-            foreignField: 'user2',
-            as: 'myConnection',
-          },
-        },
-
-        {
-          $match: { phone: '786865787' },
-        },
-        {
-          $unwind: '$myConnection',
-        },
-        {
-          $project: {
-            'myConnection.user2._id': 1,
-          },
-        },
-        {
-          $unset: 'myConnection',
-        },
-        { $limit: 1 },
-      ])
-      .toArray();
-    return connections[0];
-  },
-  searchForGuru: async ({ query = '' }) => {
-    return collection
-      .aggregate([
-        //pipeline array
-        {
-          $project: {
-            search: {
-              $concat: [
-                '$firstName',
-                ' ',
-                '$lastName',
-                ' - ',
-                '$businessName',
-                ' (',
-                '$businessCategory',
-                ')',
-              ],
-            },
-            name: { $concat: ['$firstName', ' ', '$lastName'] },
-            businessName: '$businessName',
-            userId: '$userId',
-            category: '$businessCategory',
-            isBusiness: '$isBusiness',
-            isGuru: '$isGuru',
-          },
-        },
-        {
-          $match: {
-            search: { $regex: query, $options: 'i' },
-            isGuru: true,
-          },
-        },
-        { $unset: 'userId' }, // remove filed from result
-      ])
-      .toArray();
-  },
-  getOne: async (userId: any) => {
-    return {
-      ...defaultProfile,
-      ...(await collection.findOne({
-        _id: userId,
-      })),
-    };
-  },
-  getOneByEmail: async (email) => {
-    return {
-      ...defaultProfile,
-      ...(await collection.findOne({
-        email,
-      })),
-    };
-  },
-  updateOne: async ({ _id, ...data }: UserProfile) => {
-    const result = await collection.updateOne(
-      { _id: new ObjectId(_id) },
-      { $set: data }
-    );
-    return {
-      ...defaultProfile,
-      ...(await collection.findOne({ _id: new ObjectId(_id) })),
-    };
-  },
-  addStripe: async (data) => {
-    return collection.updateOne(
-      { _id: data._id },
-      {
-        $set: {
-          stripeId: data.stripeId,
-          accountLink: data.accountLink,
-        },
-      }
-    );
-  },
-  addCommission: async (
-    business: ObjectId,
-    customerId: ObjectId,
-    amount: number
-  ) => {
-    const resultBusiness = await collection.updateOne(
-      { _id: business },
-      {
-        $push: {
-          commissionBusiness: amount,
-        },
-      }
-    );
-    const resultCustomer = await collection.updateOne(
-      { _id: customerId },
-      {
-        $push: {
-          commissionCustomer: amount,
-        },
-      }
-    );
-    return {
-      resultBusiness: resultBusiness,
-      resultCustomer: resultCustomer,
-    };
-  },
-  stripeCheck: async (userId: ObjectId) => {
-    await collection.find({
-      _id: userId,
-      stripeId: { $exists: true },
-    });
-  },
-  /*
-  addReview: async (data) => {
-    data.date = new Date();
-    const businessId = new ObjectId(data.business);
-    const jobId = new ObjectId(data.jobId);
-    const business = await collection.findOne({
-      _id: businessId
-    });
-    const result = await collection.updateOne(
-      {
-        _id: businessId
-      },
-      {
-        $push: {
-          reviews: {
-            guru: data.guru,
-            date: new Date(),
-            rate: data.rating,
-            comment: data.comment,
-            job: jobId
-          }
-        }
-      }
-      )
-      return business;
-  }*/
-});
+        ])
+        .toArray() as Promise<UserProfile[]>;
+    },
+    delete: async (userId) => {
+      return collection.deleteOne({ userId });
+    },
+  };
+};
 
 export default UserProfileModel;

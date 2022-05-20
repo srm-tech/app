@@ -1,1 +1,1 @@
-export { default } from '@/features/userProfile/userProfileController';
+export { default } from '@/features/userProfile/UserProfileController';

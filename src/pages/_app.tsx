@@ -14,7 +14,7 @@ import useRequest from '@/lib/useRequest';
 
 // import { SessionProvider, signIn, useSession } from 'next-auth/react';
 import { SessionProvider, useSession } from '@/features/session/SessionContext';
-import { LoadUser } from '@/features/userProfile1/LoadUser';
+import { LoadUser } from '@/features/userProfile/LoadUser';
 
 // const CheckSession = () => {
 //   const { get, response, loading, error } = useFetch('');

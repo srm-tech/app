@@ -1,1 +1,1 @@
-export { default } from '@/features/userProfile1/RegisterPage';
+export { default } from '@/features/userProfile/RegisterPage';

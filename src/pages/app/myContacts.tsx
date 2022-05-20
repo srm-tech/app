@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import StarRatingComponent from "react-star-rating-component";
-import useFetch, { CachePolicies } from "use-http";
+import React, { useEffect, useState } from 'react';
+import StarRatingComponent from 'react-star-rating-component';
+import useFetch, { CachePolicies } from 'use-http';
 
-import { env } from "@/lib/envConfig";
+import { env } from '@/lib/envConfig';
 
-import Button from "@/components/buttons/Button";
-import Link from "@/components/buttons/Link";
-import Table from "@/components/table/Table";
+import Button from '@/components/buttons/Button';
+import Link from '@/components/buttons/Link';
+import Table from '@/components/table/Table';
 
-import DashboardLayout from "@/layouts/DashboardLayout";
+import DefaultLayout from '@/layouts/Default';
 
 export default function MyContacts() {
   const [loaderVisible, setLoaderVisible] = useState(false);
@@ -18,7 +18,7 @@ export default function MyContacts() {
   const { get, post, response, loading, error } = useFetch();
 
   async function loadData() {
-    const loaded = await get("/myContacts");
+    const loaded = await get('/myContacts');
     if (response.ok) {
       setReload(false);
       setData(loaded);
@@ -32,26 +32,26 @@ export default function MyContacts() {
   }, [reload]);
 
   async function handleAccept(e, invitationId) {
-    const accept = await post("/invitations/accept", {
+    const accept = await post('/invitations/accept', {
       invitationId: invitationId,
     });
     setReload(true);
   }
 
   async function handleDecline(e, invitationId) {
-    const decline = await post("/invitations/decline", {
+    const decline = await post('/invitations/decline', {
       invitationId: invitationId,
     });
     setReload(true);
   }
 
   async function handleToggleFav(e, contactId) {
-    const fav = await post("/favourites/toggle", { contactId: contactId });
+    const fav = await post('/favourites/toggle', { contactId: contactId });
     setReload(true);
   }
 
   async function handleRemoveFromContacts(e, contactId) {
-    const remove = await post("/myContacts/remove", {
+    const remove = await post('/myContacts/remove', {
       contactId: contactId,
     });
   }
@@ -62,29 +62,29 @@ export default function MyContacts() {
 
   const columns = [
     {
-      Header: "name",
-      accessor: "name",
+      Header: 'name',
+      accessor: 'name',
       Cell: ({ row: { original } }) => (
         <>
-          <div className="cell-name">
+          <div className='cell-name'>
             {original.contact.firstName} {original.contact.lastName}
           </div>
           <small>
             <div>{original.contact.businessName}</div>
-            <div className="cell-email">{original.contact.email}</div>
-            <div className="cell-phone">{original.contact.phone}</div>
+            <div className='cell-email'>{original.contact.email}</div>
+            <div className='cell-phone'>{original.contact.phone}</div>
           </small>
         </>
       ),
     },
-    { Header: "business category", accessor: "contact.businessCategory" },
+    { Header: 'business category', accessor: 'contact.businessCategory' },
     {
-      Header: "rating",
-      accessor: "contact.rating",
+      Header: 'rating',
+      accessor: 'contact.rating',
       Cell: ({ value }) => (
         <StarRatingComponent
-          emptyStarColor="#ccc"
-          starColor="#fa0"
+          emptyStarColor='#ccc'
+          starColor='#fa0'
           value={value}
           starCount={5}
           editing={false}
@@ -92,24 +92,24 @@ export default function MyContacts() {
       ),
     },
     {
-      Header: "average commission",
-      accessor: "contact.avgCommissionCustomer",
+      Header: 'average commission',
+      accessor: 'contact.avgCommissionCustomer',
       Cell: ({ row: { original } }) => (
         <>
           <div>
-            <span className="text-yellow-500">
-              sent:{" "}
+            <span className='text-yellow-500'>
+              sent:{' '}
               {original.contact.avgCommissionBusiness
                 ? original.contact.avgCommissionBusiness.toFixed(2)
-                : 0}{" "}
+                : 0}{' '}
               A$
             </span>
             <br />
-            <span className="text-green-500">
-              received:{" "}
+            <span className='text-green-500'>
+              received:{' '}
               {original.contact.avgCommissionCustomer
                 ? original.contact.avgCommissionCustomer.toFixed(2)
-                : 0}{" "}
+                : 0}{' '}
               A$
             </span>
           </div>
@@ -117,16 +117,16 @@ export default function MyContacts() {
       ),
     },
     {
-      Header: "favourites",
-      accessor: "isFavourite",
+      Header: 'favourites',
+      accessor: 'isFavourite',
       Cell: ({ row: { original } }) => (
-        <Link href="" onClick={(e) => handleToggleFav(e, original._id)}>
+        <Link href='' onClick={(e) => handleToggleFav(e, original._id)}>
           {original.isFavourite ? (
-            <span className="text-red-700" aria-label="remove from favourites">
+            <span className='text-red-700' aria-label='remove from favourites'>
               &#x2665;
             </span>
           ) : (
-            <span className="text-red-100" aria-label="add to favourites">
+            <span className='text-red-100' aria-label='add to favourites'>
               &#x2665;
             </span>
           )}
@@ -135,23 +135,23 @@ export default function MyContacts() {
     },
     // { Header: 'status', accessor: 'status' },
     {
-      Header: "actions",
-      accessor: "_id",
+      Header: 'actions',
+      accessor: '_id',
       Cell: ({ row: { original } }) => {
         const id = original._id;
         const acceptDeclineButtons = (
           <>
             <div>
               <Button
-                variants="primary"
-                className="text-xs"
+                variants='primary'
+                className='text-xs'
                 onClick={(e) => handleAccept(e, id)}
               >
                 Accept
               </Button>
               <Button
-                variants="secondary"
-                className="text-xs"
+                variants='secondary'
+                className='text-xs'
                 onClick={(e) => handleDecline(e, id)}
               >
                 Decline
@@ -161,14 +161,14 @@ export default function MyContacts() {
         );
 
         return (
-          <>{original.status === "pending" ? acceptDeclineButtons : <></>}</>
+          <>{original.status === 'pending' ? acceptDeclineButtons : <></>}</>
         );
       },
     },
   ];
   return (
-    <DashboardLayout title="My Contacts" loading={loading}>
-      <Table data={data} columns={columns} loading={loading} />
-    </DashboardLayout>
+    <DefaultLayout>
+      {/* <Table data={data} columns={columns} loading={loading} /> */}
+    </DefaultLayout>
   );
 }

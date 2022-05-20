@@ -1,1 +1,1 @@
-export { default } from '@/features/session/UserController';
+export { default } from '@/features/session/SessionController';

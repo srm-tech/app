@@ -8,9 +8,9 @@ import useRequest from '@/lib/useRequest';
 
 // import { SessionProvider, signIn, useSession } from 'next-auth/react';
 import { SessionProvider, useSession } from '@/features/session/SessionContext';
-import userProfileApi from '@/features/userProfile1/requests';
-import { UserProfile } from '@/features/userProfile1/UserProfileModel';
-import userProfileStore from '@/features/userProfile1/userStore';
+import userProfileApi from '@/features/userProfile/requests';
+import { UserProfile } from '@/features/userProfile/UserProfileModel';
+import userProfileStore from '@/features/userProfile/userStore';
 
 export const LoadUser = ({ children }) => {
   const router = useRouter();

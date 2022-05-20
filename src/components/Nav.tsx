@@ -12,8 +12,8 @@ import { classNames } from '@/lib/helper';
 import Modal from '@/components/modals/ConfirmModal';
 
 import { useSession } from '@/features/session/SessionContext';
-import RegisterForm from '@/features/userProfile1/RegisterForm';
-import userProfileStore from '@/features/userProfile1/userStore';
+import RegisterForm from '@/features/userProfile/RegisterForm';
+import userProfileStore from '@/features/userProfile/userStore';
 
 import Avatar from './Avatar';
 import Logo from './Logo';
@@ -24,7 +24,7 @@ export default function Nav() {
   const [showProfile, setShowProfile] = useState(false);
   const userProfile = userProfileStore((state) => state.userProfile);
 
-  const navigation = [
+  const navigation: { name: string; href: string }[] = [
     // { name: 'Marketplace', href: '#' },
     // { name: 'Company', href: '#' },
   ];

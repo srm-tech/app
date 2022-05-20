@@ -72,6 +72,7 @@ const useRequest = <T, P = undefined>(
         (error as Error).message;
       setError(msg);
       options?.onError?.(msg);
+      return null;
     } finally {
       timeReminder = Math.max(timeReminder, Date.now() - startTime);
       setTimeout(() => {

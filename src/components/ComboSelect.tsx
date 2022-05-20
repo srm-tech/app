@@ -7,11 +7,11 @@ import useFetch from 'use-http';
 
 import { classNames, debounce } from '@/lib/helper';
 
-import { BusinessSearch } from '@/features/userProfile1/UserProfileModel';
+import { BusinessSearch } from '@/features/userProfile/UserProfileModel';
 
 import InlineError from './errors/InlineError';
 import Spinner from './Spinner';
-import { Search } from '../features/introductions1/QuickForm';
+import { Search } from '../features/introductions/QuickForm';
 
 export interface ComboSearch {
   _id: string;

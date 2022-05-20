@@ -5,4 +5,6 @@ export enum IntroductionStatus {
   CANCELLED = 'cancelled',
   PAYMENT_PENDING = 'pending payment',
   PAYMENT_SUCCESS = 'paid',
+  PAYMENT_CLAIMED = 'claimed',
+  PAYMENT_WITHDRAWN = 'withdrawn',
 }

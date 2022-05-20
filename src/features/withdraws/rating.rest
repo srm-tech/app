@@ -1,0 +1,36 @@
+### Create One
+POST {{baseUrl}}/api/ratings HTTP/1.1
+content-type: application/json
+Cookie: {{accessToken}}
+
+{
+    "userId": "626a53ab09fc053510282d43",
+    "from": "626a53ab09fc053510282d43",
+    "comment": "Sample1",
+    "rating":5
+}
+
+### Search
+GET {{baseUrl}}/api/ratings?userId=626a53ab09fc053510282d43 HTTP/1.1
+Cookie: {{accessToken}}
+
+
+### Search stats
+GET {{baseUrl}}/api/ratings/stats?userId=626a53ab09fc053510282d43 HTTP/1.1
+Cookie: {{accessToken}}
+
+
+### Find One
+GET {{baseUrl}}/api/ratings/6270c67d6a488c0261684242 HTTP/1.1
+Cookie: {{accessToken}}
+
+
+### Update
+PUT {{baseUrl}}/api/ratings/6270c67d6a488c0261684242 HTTP/1.1
+content-type: application/json
+Cookie: {{accessToken}}
+
+{
+    "commissionValue": 8
+}
+

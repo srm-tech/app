@@ -7,7 +7,7 @@ import {
 } from './agreementConstants';
 
 export interface Agreement {
-  _id: ObjectId;
+  _id: ObjectId | string;
   businessId: string;
   guruId: string;
   commissionCurrency: CommissionCurrency;
@@ -15,8 +15,8 @@ export interface Agreement {
   commissionPaymentType: CommissionPaymentType;
   commissionAmount: number;
   dealValue?: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 export type NewAgreement = Omit<Agreement, '_id'>;
 

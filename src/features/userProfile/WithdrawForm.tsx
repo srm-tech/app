@@ -26,11 +26,13 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function RegisterForm({
+export default function WithdrawForm({
   id,
   onSuccess,
+  amount,
 }: {
   id: string;
+  amount: string;
   onSuccess: (data: UserProfile) => void;
 }) {
   const [formValues, setFormValues] = useState<UserProfile>();
@@ -44,15 +46,21 @@ export default function RegisterForm({
       onSuccess: (data: UserProfile) => {
         const profile = {
           ...data,
-          contactEmail: data.contactEmail || session.data.email,
+          beneficiary: {
+            firstName: data.beneficiary?.firstName || data.firstName,
+            lastName: data.beneficiary?.lastName || data.lastName,
+            contactEmail: data.beneficiary?.contactEmail || data.contactEmail,
+            bsb: data.beneficiary?.bsb || '',
+            accountNo: data.beneficiary?.accountNo || '',
+          },
         };
         setFormValues(profile);
         reset(profile);
       },
     }
   );
-  const createUserProfile = useRequest<UserProfile>(
-    userProfileApi.createUserProfile,
+  const updateUserProfile = useRequest<UserProfile>(
+    userProfileApi.updateUserProfile,
     {
       onSuccess: (data) => {
         onSuccess && onSuccess(data);
@@ -69,12 +77,7 @@ export default function RegisterForm({
 
   const saveUserProfile = async (data) => {
     setErrorMessage('');
-    if (!agreed) {
-      return setErrorMessage('Please agree to our terms.');
-    }
-    createUserProfile.run({
-      ...data,
-    });
+    updateUserProfile.run(data);
   };
 
   return (
@@ -87,10 +90,10 @@ export default function RegisterForm({
       }}
     >
       <LoadingOverlay
-        isLoading={getUserProfile.isLoading || createUserProfile.isLoading}
+        isLoading={getUserProfile.isLoading || updateUserProfile.isLoading}
       >
         {getUserProfile.error ||
-          (createUserProfile.error && (
+          (updateUserProfile.error && (
             <div className='relative bg-red-100'>
               <div className='px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8'>
                 <div className='pr-16 sm:text-center sm:px-16'>
@@ -106,11 +109,8 @@ export default function RegisterForm({
 
         <div>
           <h3 className='text-base font-medium leading-6 text-gray-900'>
-            Personal Information
+            Beneficiary Details
           </h3>
-          <p className='max-w-2xl mt-1 text-sm text-gray-500'>
-            Your Personal information is visible to your contacts only.
-          </p>
         </div>
         <div className='my-2'>
           <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start'>
@@ -124,7 +124,7 @@ export default function RegisterForm({
               <div className='flex max-w-lg rounded-md shadow-sm'>
                 <input
                   type='text'
-                  {...register('firstName', {
+                  {...register('beneficiary.firstName', {
                     required: true,
                     maxLength: 127,
                   })}
@@ -149,7 +149,7 @@ export default function RegisterForm({
               <div className='flex max-w-lg rounded-md shadow-sm'>
                 <input
                   type='text'
-                  {...register('lastName', {
+                  {...register('beneficiary.lastName', {
                     required: true,
                     maxLength: 127,
                   })}
@@ -174,7 +174,7 @@ export default function RegisterForm({
               <div className='flex max-w-lg rounded-md shadow-sm'>
                 <input
                   type='text'
-                  {...register('contactEmail', {
+                  {...register('beneficiary.contactEmail', {
                     required: false,
                     pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                   })}
@@ -190,110 +190,60 @@ export default function RegisterForm({
             </div>
           </div>
         </div>
-        <div className='my-2'>
-          <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start'>
-            <label
-              htmlFor='contactPhone'
-              className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
-            >
-              Contact phone:
-            </label>
-            <div className='mt-1 sm:mt-0 sm:col-span-2'>
-              <div className='flex max-w-lg rounded-md shadow-sm'>
-                <input
-                  type='text'
-                  {...register('contactPhone', {
-                    required: false,
-                  })}
-                  className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
-                />
-              </div>
-              {errors.contactPhone?.type === 'required' && (
-                <small className='text-red-900'>This field is required</small>
-              )}
-              {errors.contactPhone?.type === 'pattern' && (
-                <small className='text-red-900'>The phone is invalid</small>
-              )}
-            </div>
-          </div>
-        </div>
         <div className='mt-8'>
           <h3 className='text-base font-medium leading-6 text-gray-900'>
-            Business Information
+            Bank details
           </h3>
-          <p className='max-w-2xl mt-1 text-sm text-gray-500'>
-            Is your account tied to a company?
-          </p>
         </div>
         <div className='my-2'>
           <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start'>
             <label
-              htmlFor='businessName'
+              htmlFor='bsb'
               className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
             >
-              Business name:
+              BSB:
             </label>
             <div className='mt-1 sm:mt-0 sm:col-span-2'>
               <div className='flex max-w-lg rounded-md shadow-sm'>
                 <input
                   type='text'
-                  {...register('businessName', {
+                  {...register('beneficiary.bsb', {
                     required: true,
                     maxLength: 255,
                   })}
                   className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
                 />
               </div>
-              {errors.businessName?.type === 'required' && (
+              {errors.bsb?.type === 'required' && (
                 <small className='text-red-900'>This field is required</small>
               )}
             </div>
           </div>
-        </div>
-        <div className='sm:col-span-2'>
-          <div className='flex items-start'>
-            <div className='flex-shrink-0'>
-              <Switch
-                checked={agreed}
-                onChange={setAgreed}
-                className={classNames(
-                  agreed ? 'bg-indigo-600' : 'bg-gray-200',
-                  'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                )}
+          <div className='my-2'>
+            <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start'>
+              <label
+                htmlFor='accountNo'
+                className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
               >
-                <span className='sr-only'>Agree to policies</span>
-                <span
-                  aria-hidden='true'
-                  className={classNames(
-                    agreed ? 'translate-x-5' : 'translate-x-0',
-                    'inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                  )}
-                />
-              </Switch>
-            </div>
-            <div className='ml-3'>
-              <p className='text-base text-gray-500'>
-                By selecting this, you agree to the{' '}
-                <Link href='/legal/privacy' passHref>
-                  <a className='font-medium text-gray-700 underline'>
-                    Privacy Policy
-                  </a>
-                </Link>{' '}
-                and{' '}
-                <Link href='/legal/terms' passHref>
-                  <a className='font-medium text-gray-700 underline'>
-                    Terms & Conditions
-                  </a>
-                </Link>
-                .
-              </p>
+                Account No:
+              </label>
+              <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                <div className='flex max-w-lg rounded-md shadow-sm'>
+                  <input
+                    type='text'
+                    {...register('beneficiary.accountNo', {
+                      required: true,
+                      maxLength: 255,
+                    })}
+                    className='flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 sm:text-sm'
+                  />
+                </div>
+                {errors.accountNo?.type === 'required' && (
+                  <small className='text-red-900'>This field is required</small>
+                )}
+              </div>
             </div>
           </div>
-          {errorMessage && (
-            <div className='py-4'>
-              <InlineError message={errorMessage} />
-            </div>
-          )}
         </div>
       </LoadingOverlay>
     </form>

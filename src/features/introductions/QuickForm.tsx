@@ -21,15 +21,15 @@ import {
   DefaultAgreementSummaryForGuru,
 } from '@/features/agreements/AgreementSummary';
 import { useSession } from '@/features/session/SessionContext';
-import RegisterForm from '@/features/userProfile1/RegisterForm';
-import userProfileApi from '@/features/userProfile1/requests';
+import RegisterForm from '@/features/userProfile/RegisterForm';
+import userProfileApi from '@/features/userProfile/requests';
 
 import { Introduction, IntroductionInput } from './IntroductionModel';
 import introductionApi from './requests';
 import { CommissionPaymentType } from '../agreements/agreementConstants';
 import agreementApi from '../agreements/requests';
-import { BusinessSearch, UserProfile } from '../userProfile1/UserProfileModel';
-import userProfileStore from '../userProfile1/userStore';
+import { BusinessSearch, UserProfile } from '../userProfile/UserProfileModel';
+import userProfileStore from '../userProfile/userStore';
 export interface Search {
   _id: string;
   label: string;
