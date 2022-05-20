@@ -39,7 +39,7 @@ export default function Nav() {
   ];
 
   return (
-    <Popover className='mx-auto max-w-7xl'>
+    <Popover className='mx-auto max-w-7xl py-4'>
       <nav
         className='relative flex items-center justify-between'
         aria-label='Global'

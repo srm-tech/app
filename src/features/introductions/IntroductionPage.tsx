@@ -665,7 +665,7 @@ export default function Introductions() {
 
   return (
     <DefaultLayout>
-      <div className='max-w-7xl mx-auto my-8 mb-16'>
+      <div className='max-w-7xl mx-auto my-8 mb-16 px-4'>
         <div className='py-4 flex justify-between'>
           <div className='text-2xl'>All introductions</div>
           <div className='flex justify-end'>

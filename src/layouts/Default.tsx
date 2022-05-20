@@ -6,11 +6,11 @@ export default function DefaultLayout({ children }) {
     <main>
       <div className='relative overflow-hidden'>
         <div className='relative'>
-          <div className='w-full bg-dark px-2 py-4'>
+          <div className='w-full bg-dark px-4'>
             <Nav />
           </div>
-          {children}
-          <div className='w-full bg-dark'>
+          <div className=''>{children}</div>
+          <div className='w-full bg-dark px-4'>
             <Footer />
           </div>
         </div>
