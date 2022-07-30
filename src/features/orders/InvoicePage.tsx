@@ -16,15 +16,15 @@ const InvoicePage = ({
   const router = useRouter();
   const [email, setEmail] = useState('');
   const orderId = router.query['orderId'];
-  const updateUserProfile = useRequest<Order, Pick<Order, '_id'>>(
-    userProfileApi.updateUserProfile,
-    {
-      onSuccess: (userProfile) => {
-        userProfileStore.setState({ userProfile });
-        toast.success('Your business profile is now hidden!');
-      },
-    }
-  );
+  // const updateUserProfile = useRequest<Order, Pick<Order, '_id'>>(
+  //   userProfileApi.updateUserProfile,
+  //   {
+  //     onSuccess: (userProfile) => {
+  //       userProfileStore.setState({ userProfile });
+  //       toast.success('Your business profile is now hidden!');
+  //     },
+  //   }
+  // );
 
   const create = () => {
     onSubmit({ email });
