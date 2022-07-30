@@ -1,13 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 
-import { ObjectId } from '@/lib/db';
 import { sendMail } from '@/lib/emails';
 import { env } from '@/lib/envConfig';
 import { HttpError, httpStatus } from '@/lib/error';
 import { Router } from '@/lib/router';
 import { formatAmountForStripe } from '@/lib/stripe-helpers';
-import { htmlIntroduction } from '@/lib/utils';
 import { body, check, oneOf, validate } from '@/lib/validator';
 
 import { IntroductionStatus } from './introductionConstants';
@@ -22,11 +20,10 @@ import IntroductionModel, {
   NewIntroduction,
 } from './IntroductionModel';
 import { CommissionType } from '../agreements/agreementConstants';
-import AgreementModel, { Agreement } from '../agreements/AgreementModel';
+import AgreementModel from '../agreements/AgreementModel';
 import { parseAmount } from '../agreements/AgreementSummary';
 import { JWTToken } from '../session/jwt';
 import { auth } from '../session/middleware';
-import UserModel from '../user/UserModel';
 import UserProfileModel, {
   Business,
   Customer,
@@ -115,6 +112,7 @@ const create = async (
   const today = new Date();
   const newIntroduction: NewIntroduction = {
     status: IntroductionStatus.PENDING,
+    dealValue: 0,
     customer: {
       fullName: customer?.name,
       firstName: customerFirstName,
@@ -296,13 +294,13 @@ const update = async (
   return res.json(newIntroduction);
 };
 
-const calculateQuote = (introduction) => {
+export const calculateQuote = async (introduction) => {
   const isFixed =
     introduction?.agreement.commissionType === CommissionType.fixed;
   const amountOwned = isFixed
     ? introduction?.agreement.commissionAmount || 0
     : (Number(introduction?.agreement.commissionAmount) *
-        Number(introduction?.agreement.dealValue)) /
+        Number(introduction.dealValue)) /
       100;
   const STRIPE_FEE_FIXED = 0.3;
   const STRIPE_FEE_PERCENT = 2.9;
@@ -310,8 +308,11 @@ const calculateQuote = (introduction) => {
   const amountWithGst = amountOwned + amountOwned * GST;
   const stripeFee =
     (amountWithGst * STRIPE_FEE_PERCENT) / 100 + STRIPE_FEE_FIXED;
-  const introduceGuruFee = Number(
-    Number(amountOwned * Number(env.TRANSACTION_FEE) + stripeFee).toFixed(2)
+  const introduceGuruFee = Math.max(
+    Number(
+      Number(amountOwned * Number(env.TRANSACTION_FEE) + stripeFee).toFixed(2)
+    ),
+    5
   );
   const tip = 0; // TODO
   const total = Number(Number(amountOwned + tip + introduceGuruFee).toFixed(2));
@@ -324,8 +325,14 @@ const calculateQuote = (introduction) => {
 
 const getQuote = async (req: NextApiRequest, res: NextApiResponse) => {
   const introductionModel = await IntroductionModel();
-  const introduction = await introductionModel.findOne(req.query.id);
-  return res.json(calculateQuote(introduction));
+  let introduction = await introductionModel.findOne(req.query.id);
+  return res.json(
+    await calculateQuote({
+      ...introduction,
+      agreement: { ...introduction?.agreement },
+      dealValue: req.query.dealValue,
+    })
+  );
 };
 
 const makePayment = async (
@@ -345,8 +352,18 @@ const makePayment = async (
     );
   }
 
+  const newIntroduction = {
+    ...introduction,
+    dealValue: Number(req.query.dealValue),
+  };
+
+  // update deal value in
+  await introductionModel.updateOne(user._id, {
+    dealValue: newIntroduction.dealValue,
+  });
+
   // get quote
-  const quote = calculateQuote(introduction);
+  const quote = await calculateQuote(newIntroduction);
 
   // stripe
   const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
@@ -389,7 +406,7 @@ const makePayment = async (
       quote.total,
       introduction.agreement.commissionCurrency
     )}`,
-    cancel_url: `${env.BASE_URL}/api/introductions/${introduction._id}/paymentCallback?paymentStatus=cancelled`,
+    cancel_url: `${env.BASE_URL}/api/introductions/${introduction._id}/paymentCallback?paymentStatus=cancelled&amount=${quote.total}`,
   } as Stripe.Checkout.SessionCreateParams;
   const session = await stripe.checkout.sessions.create(params);
 
@@ -411,12 +428,14 @@ const handlePayment = async (
       `Can't find introduction ${req.query.id}`
     );
   }
-  const newIntroduction: Introduction = {
-    ...introduction,
-    paid: Number(req.query.amount) / 100,
-    status: IntroductionStatus.PAYMENT_PENDING,
-  };
-  await introductionModel.updateOne(req.query.id, newIntroduction);
+  if (req.query['paymentStatus'] === 'success') {
+    const newIntroduction: Introduction = {
+      ...introduction,
+      paid: Number(req.query.amount) / 100,
+      status: IntroductionStatus.PAYMENT_PENDING,
+    };
+    await introductionModel.updateOne(req.query.id, newIntroduction);
+  }
   return res.redirect(
     302,
     `/app/introductions?paymentStatus=${req.query.paymentStatus}`

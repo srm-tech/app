@@ -1,0 +1,29 @@
+@orderId = 627c21f87e3c7c03fb11c0fa
+@introductionId = 627c21f87e3c7c03fb11c0fa
+
+### Create One
+POST {{baseUrl}}/api/orders HTTP/1.1
+content-type: application/json
+Cookie: {{accessToken}}
+
+{
+    "quote" :{
+      total: 400
+    }
+    "introductionId": ,
+    "invoiceUrl": {{introductionId}}
+}
+
+### Find One
+GET {{baseUrl}}/api/orders/{{orderId}} HTTP/1.1
+Cookie: {{accessToken}}
+
+### Update
+PUT {{baseUrl}}/api/orders/{{orderId}} HTTP/1.1
+content-type: application/json
+Cookie: {{accessToken}}
+
+{
+    "status": "active"
+}
+

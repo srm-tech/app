@@ -10,6 +10,10 @@ import {
   UserProfile,
 } from '../userProfile/UserProfileModel';
 
+export interface Payment {
+  _id: ObjectId | string;
+  dealValue: number;
+}
 export interface Introduction {
   _id: ObjectId | string;
   status: IntroductionStatus;
@@ -18,6 +22,7 @@ export interface Introduction {
   customer: Customer;
   guru: Guru;
   agreement: Agreement;
+  dealValue: number;
   updatedAt: Date | string;
   expiresAt: Date | string;
   createdAt: Date | string;
@@ -30,7 +35,7 @@ export type UpdatePaymentStatusIntroduction = Pick<
 >;
 export type UpdateStatusIntroduction = Pick<Introduction, '_id' | 'status'>;
 export type UpdateAgreementForIntroduction = Pick<Introduction, '_id'> & {
-  dealValue: number | string;
+  dealValue: number;
 };
 
 export type Quote = {

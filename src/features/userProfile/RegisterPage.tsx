@@ -1,10 +1,9 @@
 import { useRouter } from 'next/router';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
-import ConfirmModal from '@/components/modals/ConfirmModal';
+import DefaultLayout from '@/layouts/Default';
 
 import RegisterForm from './RegisterForm';
-import { UserProfile } from './UserProfileModel';
 import userProfileStore from './userStore';
 
 interface Profile {
@@ -19,15 +18,8 @@ export default function RegisterPage() {
   const router = useRouter();
   const userProfile = userProfileStore((state) => state.userProfile);
   return (
-    <ConfirmModal
-      isShowing={true}
-      form='registration'
-      acceptCaption='Register Now'
-      onAccept={() => console.info('register from intro')}
-      onCancel={() => {}}
-      caption='Create Introduce Guru account'
-      isClosable={false}
-      content={
+    <DefaultLayout>
+      <div className='px-4 mx-auto my-8 mb-16 max-w-2xl'>
         <div>
           <p>Almost there, please provide profile info for the introduction.</p>
           <RegisterForm
@@ -39,7 +31,7 @@ export default function RegisterPage() {
             }}
           />
         </div>
-      }
-    />
+      </div>
+    </DefaultLayout>
   );
 }

@@ -2,16 +2,12 @@ import { CheckCircleIcon, SearchIcon } from '@heroicons/react/solid';
 import clsx from 'clsx';
 import { useCombobox } from 'downshift';
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import useFetch from 'use-http';
+import { useRef } from 'react';
 
-import { classNames, debounce } from '@/lib/helper';
-
-import { BusinessSearch } from '@/features/userProfile/UserProfileModel';
+import { classNames } from '@/lib/helper';
 
 import InlineError from './errors/InlineError';
 import Spinner from './Spinner';
-import { Search } from '../features/introductions/QuickForm';
 
 export interface ComboSearch {
   _id: string;
@@ -43,7 +39,6 @@ export default function ComboSelect<T>({
   const {
     isOpen,
     getToggleButtonProps,
-    getLabelProps,
     getMenuProps,
     getInputProps,
     getComboboxProps,

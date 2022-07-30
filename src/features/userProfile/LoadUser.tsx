@@ -44,9 +44,9 @@ export const LoadUser = ({ children }) => {
   const loadData = async () => {
     if (session.isActive) {
       const result = await getUserProfile.run();
-      if (!result?.isComplete && router.pathname !== '/app/register') {
-        router.replace('/app/register');
-      }
+      // if (!result?.isComplete && router.pathname !== '/app/register') {
+      //   router.replace('/app/register');
+      // }
     }
   };
 

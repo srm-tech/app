@@ -39,15 +39,26 @@ const introductionApi = {
   ): Promise<AxiosResponse<Introduction> | any> => {
     return axios.put(`/introductions/${data._id}`, data, { signal });
   },
-  getQuote: async (signal, id): Promise<AxiosResponse<Introduction> | any> => {
-    if (!id) return null;
-    return axios.get(`/introductions/${id}/quote`, { signal });
+  getQuote: async (
+    signal,
+    params
+  ): Promise<AxiosResponse<Introduction> | any> => {
+    if (!params.id) return null;
+    return axios.get(
+      `/introductions/${params.id}/quote?dealValue=${params.dealValue}`,
+      { signal }
+    );
   },
   getPaymentSession: async (
     signal,
-    id
-  ): Promise<AxiosResponse<Stripe.Checkout.Session>> => {
-    return axios.get(`/introductions/${id}/payment`, { signal });
+    params
+  ): Promise<AxiosResponse<Stripe.Checkout.Session> | any> => {
+    return axios.get(
+      `/introductions/${params.id}/payment?dealValue=${params.dealValue}`,
+      {
+        signal,
+      }
+    );
   },
 };
 export default introductionApi;

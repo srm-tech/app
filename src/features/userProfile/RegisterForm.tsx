@@ -296,13 +296,19 @@ export default function RegisterForm({
                 <p className='text-base text-gray-500'>
                   By selecting this, you agree to the{' '}
                   <Link href='/legal/privacy' passHref>
-                    <a className='font-medium text-gray-700 underline'>
+                    <a
+                      className='font-medium text-gray-700 underline'
+                      target='_blank'
+                    >
                       Privacy Policy
                     </a>
                   </Link>{' '}
                   and{' '}
                   <Link href='/legal/terms' passHref>
-                    <a className='font-medium text-gray-700 underline'>
+                    <a
+                      className='font-medium text-gray-700 underline'
+                      target='_blank'
+                    >
                       Terms & Conditions
                     </a>
                   </Link>

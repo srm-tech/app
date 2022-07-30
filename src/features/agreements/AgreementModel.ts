@@ -14,7 +14,6 @@ export interface Agreement {
   commissionType: CommissionType;
   commissionPaymentType: CommissionPaymentType;
   commissionAmount: number;
-  dealValue?: number;
   createdAt: Date | string;
   updatedAt: Date | string;
 }

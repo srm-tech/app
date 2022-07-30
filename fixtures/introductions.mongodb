@@ -1,90 +1,47 @@
-use("guru");
+// MongoDB Playground
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
 
-db.introductions.drop();
+// The current database to use.
+use('guru');
 
-db.introductions.insertMany([
-  {
-  "status": "pending",
-  "action": "sent",
-  "date": "2021-12-25T03:17:52.197Z",
-  "expiresAt": "2021-12-25T03:17:52.197Z",
-
-  "guruId": ObjectId("000000000000000000000001"),
-  "customerId": ObjectId("000000000000000000000003"),
-  "businessId": ObjectId("000000000000000000000002"),
-  agreementId: ObjectId("61ce0ca750875b78d6808426"),
-
-  "guru": {
-    "_id": {
-      "$oid": "000000000000000000000001"
-    },
-    "firstName": "Ernst Stavro",
-    "lastName": "Blofeld",
-    "businessName": "Spectre, Inc.",
-    "businessCategory": "world dominators",
-    "rating": 5,
-    "email": "marcin.barylka@gmail.com",
-    "succesfulRate": 0.99,
-    "averageCommission": 276,
-    "isActive": true,
-    "isGuru": false,
-    "isBusiness": true,
-    "accountLink": null,
-    "stripeId": "acct_1K702VRP3ieqtpLe",
-    "address1": "sss",
-    "address2": "adres2",
-    "address3": "",
-    "country": "AU",
-    "commissionPerReceivedLeadCash": 1000,
-    "commissionType": "commissionPerReceivedLeadPercent",
-    "commissionPerCompletedLead": 1000,
-    "commissionPerReceivedLeadPercent": 25,
-    "commissionBusiness": [
-    ],
-    "abn": "12345678901",
-    "contactEmail": "marcin.barylka@gmail.com",
-    "contactPhone": ""
-  },
-  "business": {
-    "_id": {
-      "$oid": "000000000000000000000002"
-    },
-    "firstName": "Marcin",
-    "lastName": "Baryłka",
-    "businessName": "Hicron sp. z o.o.",
-    "businessCategory": "software development",
-    "rating": 4,
-    "email": "marcin.barylka@gmail.com",
-    "succesfulRate": 0.62,
-    "averageCommission": 796,
-    "isActive": true,
-    "isGuru": true,
-    "isBusiness": true,
-    "commissionCustomer": [
-    ],
-    "accountLink": "https://connect.stripe.com/setup/s/7tA5oHf06pEV",
-    "stripeId": "acct_1K702VRP3ieqtpLe",
-    "commissionType": "commissionPerReceivedLeadPercent",
-    "commissionPerReceivedLeadPercent": 20
-  },
-
-  "customer": {
-      "_id": {
-        "$oid": "000000000000000000000003"
-    },
-    "firstName": "Julie",
-    "lastName": "Bautista",
-    "businessName": "Hoover-Price",
-    "businessCategory": "investors",
-    "rating": 3,
-    "email": "julie.bautista@mail.com",
-    "succesfulRate": 0.49,
-    "averageCommission": 661,
-    "isActive": true,
-    "isGuru": true,
-    "isBusiness": false,
-    "accountLink": "https://connect.stripe.com/setup/s/FgszLGd07cqT",
-    "stripeId": "acct_1K702VRP3ieqtpLe"
+// Create a new index in the collection.
+db.getCollection('Introduction')
+  .createIndex(
+    {
+      'guru.userId': 'text',
+      'business.userId':'text'
+      /*
+       * Keys
+       *
+       * Normal index
+       * fieldA:  1, //ascending
+       * fieldB: -1  //descending
+       *
+       * Wildcard index
+       * '$**': 1, //wildcard index on all fields and subfields in a document
+       * 'path.to.field.$**': 1 //wildcard index on a specific field and its subpaths
+       *
+       * Text index
+       * fieldA: 'text',
+       * fieldB: 'text'
+       *
+       * Geospatial Index
+       * locationField: '2dsphere'
+       *
+       * Hashed Index
+       * fieldA: 'hashed'
+       */
+    }, {
+      /*
+       * Options (https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/#options-for-all-index-types)
+       *
+       * background: true, //ignored in 4.2+
+       * unique: false,
+       * name: 'some name',
+       * partialFilterExpression: {},
+       * sparse: false,
+       * expireAfterSeconds: TTL,
+       * collation: {}
+       */
     }
-  }
-])
+  );

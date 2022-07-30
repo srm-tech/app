@@ -17,7 +17,7 @@ class MyDocument extends Document {
       <Html lang='en' className='h-full'>
         <Head>
           <link rel='preconnect' href='https://fonts.googleapis.com' />
-          <link
+          {/* <link
             rel='preconnect'
             href='https://fonts.gstatic.com'
             crossOrigin='true'
@@ -25,12 +25,12 @@ class MyDocument extends Document {
           <link
             href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Ubuntu:ital,wght@0,400;0,700;1,400&display=swap'
             rel='stylesheet'
-          />
+          /> */}
         </Head>
         <body className='h-full'>
           <Main />
           <NextScript />
-          <script
+          {/* <script
             async
             src='https://www.googletagmanager.com/gtag/js?id=G-EMFVVLT2ME'
           ></script>
@@ -42,7 +42,7 @@ class MyDocument extends Document {
 
   gtag('config', 'G-EMFVVLT2ME')`,
             }}
-          />
+          /> */}
         </body>
       </Html>
     );

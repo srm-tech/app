@@ -74,7 +74,7 @@ const getSession = async (req: NextApiRequest, res: NextApiResponse) => {
   } else {
     try {
       await validate([check('accessToken').isJWT()])(req, res);
-      const accessToken = getCookie('accessToken', { req, res });
+      const accessToken = getCookie('accessToken', { req, res }) || '';
       // decode JWT accessToken and send it back to the client
       const decodedToken = verifyDecodeToken(accessToken);
       result = {

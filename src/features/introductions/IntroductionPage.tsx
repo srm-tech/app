@@ -2,21 +2,13 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  version,
-} from 'react';
+import { Session } from 'next-auth';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { env } from '@/lib/envConfig';
 import useRequest from '@/lib/useRequest';
 
 import Button from '@/components/buttons/Button';
-import Commission from '@/components/Commission';
 import InlineError from '@/components/errors/InlineError';
 import Modal from '@/components/modals/ConfirmModal';
 import useModal from '@/components/modals/useModal';
@@ -40,11 +32,7 @@ import {
   UpdateStatusIntroduction,
 } from './IntroductionModel';
 import introductionApi from './requests';
-import {
-  CommissionCurrency,
-  CommissionPaymentType,
-  CommissionType,
-} from '../agreements/agreementConstants';
+import { CommissionType } from '../agreements/agreementConstants';
 import {
   AgreementSummaryForBusiness,
   parseAmount,
@@ -70,7 +58,6 @@ export default function Introductions() {
       0
     );
   }, [introductions]);
-  console.log(credits);
 
   const [errorMessage, setErrorMessage] = React.useState('');
   const [dealValue, setDealValue] = React.useState<number | undefined>();
@@ -121,7 +108,7 @@ export default function Introductions() {
   const getQuoteRequest = useRequest<Introduction, any>(
     introductionApi.getQuote,
     {
-      payload: rowItem?._id,
+      payload: { id: rowItem?._id, dealValue },
       dependencies: [dealValue, rowItem?._id],
       debounce: 400,
       onSuccess: (data) => {
@@ -129,9 +116,13 @@ export default function Introductions() {
       },
     }
   );
-  const getPaymentSession = useRequest(introductionApi.getPaymentSession, {
-    onSuccess: () => {},
-  });
+  const getPaymentSession = useRequest<Session, any>(
+    introductionApi.getPaymentSession,
+    {
+      payload: { id: rowItem?._id, dealValue },
+      onSuccess: () => {},
+    }
+  );
 
   useEffect(() => {
     const paymentStatus = router.query['paymentStatus'];
@@ -309,7 +300,9 @@ export default function Introductions() {
           row: { original: Introduction };
         }) => (
           <>
-            <div className='cell-name'>{data.customer.fullName}</div>
+            <div className='cell-name truncate max-w-[200px]'>
+              {data.customer.fullName}
+            </div>
             <div className='cell-email'>
               <a
                 className='text-xs text-blue-500'
@@ -338,7 +331,7 @@ export default function Introductions() {
           row: { original: Introduction };
         }) => (
           <>
-            <div className='cell-name'>
+            <div className='cell-name truncate max-w-[200px]'>
               {data.guru.userId === userProfile?.userId
                 ? data.business.businessName
                 : 'Me'}
@@ -380,7 +373,7 @@ export default function Introductions() {
           row: { original: Introduction };
         }) => (
           <>
-            <div className='cell-name'>
+            <div className='cell-name truncate max-w-[200px]'>
               {data.guru.userId === userProfile?.userId
                 ? 'Me'
                 : data.guru.fullName}
@@ -515,9 +508,12 @@ export default function Introductions() {
               onClick={() => {
                 setRowItem(data);
                 getQuoteRequest.run(data._id);
+                if (agreementAmount?.isFixed) {
+                  setDealValue(Number(agreementAmount?.value));
+                }
                 setShowPaymentSummaryModal(true);
               }}
-              className='bg-green-500 text-white py-2 px-4 rounded font-normal hover:text-opacity-75 animated-underline border border-gray-600 focus:outline-none focus-visible:text-white'
+              className='px-4 py-2 font-normal text-white bg-green-500 border border-gray-600 rounded hover:text-opacity-75 animated-underline focus:outline-none focus-visible:text-white'
             >
               Pay {parseCommissionAmount(data.agreement).value}
             </button>
@@ -528,7 +524,7 @@ export default function Introductions() {
               <div className='mb-2'>
                 <Button
                   variants='primary'
-                  className='text-xs mr-2'
+                  className='mr-2 text-xs'
                   onClick={(e) => acceptByBusiness(data)}
                 >
                   Accept
@@ -643,17 +639,14 @@ export default function Introductions() {
   const closePaymentSummaryModal = () => setShowPaymentSummaryModal(false);
   const redirectToStripe = async () => {
     setErrorMessage('');
-    if (!agreementAmount?.isFixed && !inputRef.current.value) {
+    if (!agreementAmount?.isFixed && !dealValue) {
       return setErrorMessage('Please enter deal value');
     }
     if (rowItem?._id) {
-      if (!agreementAmount?.isFixed) {
-        await updateIntroduction.run({
-          _id: rowItem?._id,
-          dealValue: inputRef.current.value,
-        });
-      }
-      const paymentSession = await getPaymentSession.run(rowItem?._id);
+      const paymentSession = await getPaymentSession.run({
+        id: rowItem?._id,
+        dealValue,
+      });
       if (!paymentSession) {
         return toast.error(
           'There is a problem with the quote or payment! Please contact us.'
@@ -665,8 +658,8 @@ export default function Introductions() {
 
   return (
     <DefaultLayout>
-      <div className='max-w-7xl mx-auto my-8 mb-16 px-4'>
-        <div className='py-4 flex justify-between'>
+      <div className='px-4 mx-auto my-8 mb-16 max-w-7xl 2xl:px-0'>
+        <div className='flex justify-between py-4'>
           <div className='text-2xl'>All introductions</div>
           <div className='flex justify-end'>
             <Toggle
@@ -679,14 +672,14 @@ export default function Introductions() {
             />
 
             <Link href={'/'}>
-              <a className='ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>
+              <a className='inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>
                 New Introduction
               </a>
             </Link>
             <button
               // disabled={true}
               onClick={() => setShowBalanceModal(true)}
-              className='ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
+              className='inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
             >
               Ballance{' '}
               {credits.toLocaleString('en-AU', {
@@ -767,7 +760,7 @@ export default function Introductions() {
                 </p>
                 <p>
                   Outstanding ballance will be paid to your bank account
-                  automatically at the end of each month.
+                  automatically at the end of each week.
                 </p>
                 <WithdrawForm
                   id='withdraw'
@@ -811,7 +804,7 @@ export default function Introductions() {
                     <input
                       type='number'
                       value={dealValue || ''}
-                      defaultValue={rowItem?.agreement.dealValue}
+                      defaultValue={rowItem?.dealValue}
                       onChange={(e) => setDealValue(Number(e.target.value))}
                       className='w-full'
                     />
@@ -820,7 +813,7 @@ export default function Introductions() {
               )}
               {!agreementAmount?.isFixed && (
                 <div className='mt-4'>
-                  Payable to guru:{' '}
+                  Payable to {rowItem?.business.firstName}:{' '}
                   <span className='text-green-600'>
                     {quote?.amountOwned?.toLocaleString('en-AU', {
                       style: 'currency',

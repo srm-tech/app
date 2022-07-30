@@ -34,15 +34,15 @@ export function AgreementSummaryForGuru({ agreement, business }) {
       </p>
       <p className='mt-4 underline'>Terms:</p>
       <p>
-        Upon acceptance of this introduction {business?.businessName} will pay{' '}
-        {parseCommissionAmount(agreement).value} commission{' '}
+        Upon acceptance of this introduction {business?.businessName} agrees to
+        pay {parseCommissionAmount(agreement).value} commission{' '}
         {agreement?.commissionPaymentType === CommissionPaymentType.postpaid
           ? `after the deal is done.`
           : `upfront.`}
       </p>
       <p className='mt-4'>
         <span className=''>Agreed on:</span>{' '}
-        {new Date(agreement?.createdAt).toLocaleDateString()}
+        {new Date(agreement?.createdAt).toLocaleDateString('en-AU')}
       </p>
     </div>
   );
@@ -56,8 +56,8 @@ export function DefaultAgreementSummaryForGuru({ defaultAgreement, business }) {
       </p>
       <p className='mt-4 underline'>Terms:</p>
       <p>
-        Upon acceptance of this introduction {business?.businessName} will pay{' '}
-        {parseCommissionAmount(defaultAgreement).value} commission{' '}
+        Upon acceptance of this introduction {business?.businessName} agrees to
+        pay {parseCommissionAmount(defaultAgreement).value} commission{' '}
         {defaultAgreement?.commissionPaymentType ===
         CommissionPaymentType.postpaid
           ? `after the deal is done.`
@@ -83,7 +83,7 @@ export function AgreementSummaryForBusiness({ agreement, guru }) {
       </p>
       <p className='mt-4'>
         <span className=''>{guru.fullName} agreed to your terms on:</span>{' '}
-        {new Date(agreement?.createdAt).toLocaleDateString()}
+        {new Date(agreement?.createdAt).toLocaleDateString('en-AU')}
       </p>
     </div>
   );

@@ -47,7 +47,7 @@ const userProfileApi = {
               style: 'currency',
               currency: item?.commissionCurrency || 'AUD',
             })
-          : `${item.commissionAmount}%`,
+          : `${item.commissionAmount}`,
     }));
     return { data: newData[0] };
   },

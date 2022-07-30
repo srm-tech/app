@@ -1,0 +1,17 @@
+// MongoDB Playground
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// The current database to use.
+use('guru');
+
+// Create a new index in the collection.
+db.Introduction.find({
+  // status: "pending payment",
+  updatedAt: {
+    $lt: new Date(new Date().setDate(new Date().getDate()-1))
+  }
+});
+  
+db.Introduction.countDocuments({
+  status: "pending payment"
+});

@@ -99,6 +99,7 @@ export const SessionProvider = ({ children }) => {
         isActive: true,
         isLoading: false,
       });
+      stopPollingTimeout();
     } else {
       setNewSession({ isLoading: false });
     }

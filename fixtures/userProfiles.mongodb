@@ -6,9 +6,9 @@ const database = 'guru';
 // The current database to use.
 use(database);
 
-db.UserProfile.drop();
-db.UserProfile.createIndex( {"userId": 1}, { unique: true } )
-
+// db.UserProfile.drop();
+// db.UserProfile.createIndex( {"userId": 1}, { unique: true } )
+db.UserProfile.remove({id: "62d3f8aed2ba074f74a7a2a3"});
 
 // db.userProfiles.insertMany([
 //   {

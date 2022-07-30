@@ -110,10 +110,10 @@ export const UserProfileModel = async () => {
         ...defaultProfile,
         ...currentProfile,
         ...rest,
-        fullName: `${data.firstName} ${data.lastName}`,
         userId,
         updatedAt: new Date(),
       };
+      newProfile.fullName = `${newProfile.firstName} ${newProfile.lastName}`;
       await collection.updateOne({ userId }, { $set: newProfile });
       return newProfile;
     },
