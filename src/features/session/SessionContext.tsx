@@ -54,6 +54,7 @@ export const SessionProvider = ({ children }) => {
   >(sessionApi.getUserSession);
   const [session, setSession] = useState<Session>(defaultValue);
   const [showModal, setShowModal] = useState(false);
+  const [email, setEmail] = useState('');
 
   const pollingIntervalRef = useRef<any>();
   const pollingTimeoutRef = useRef<any>();
@@ -155,6 +156,8 @@ export const SessionProvider = ({ children }) => {
     setPollingTimeout(10);
     try {
       const { data: token } = await sessionApi.signIn({ email });
+      setEmail(email);
+
       startPolling({
         interval: 2000,
         email,
@@ -246,7 +249,8 @@ export const SessionProvider = ({ children }) => {
                 </div>
                 <div className='text-center sm:mt-5'>
                   <div className='text-lg leading-6 font-medium text-gray-500'>
-                    Confirm your email
+                    Confirm your email <br />
+                    {email}
                   </div>
                 </div>
               </div>
