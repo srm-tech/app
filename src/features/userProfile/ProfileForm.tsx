@@ -21,7 +21,6 @@ export default function ProfileForm({
 }) {
   const [formValues, setFormValues] = useState();
   const session = useSession();
-  console.log(session.data);
 
   const getUserProfile = useRequest<UserProfile>(
     userProfileApi.getUserProfile,
