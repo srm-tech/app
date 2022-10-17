@@ -4,23 +4,25 @@ import { CommissionPaymentType, CommissionType } from './agreementConstants';
 import { Agreement } from './AgreementModel';
 
 export function parseAmount(amount: number, currency = 'AUD') {
-  return `${amount?.toLocaleString(
-    'en-AU',
-    (currency && {
-      style: 'currency',
-      currency,
-    }) ||
-      {}
-  )}`;
+  return `$${amount}`;
+  //  `$${amount?.toLocaleString(
+  //   'en-AU',
+  //   (currency && {
+  //     style: 'currency',
+  //     currency,
+  //   }) ||
+  //     {}
+  // )}`;
 }
 
 export function parseCommissionAmount(item: Agreement) {
   const isFixed = item.commissionType === CommissionType.fixed;
   return {
-    value: `${parseAmount(
+    displayValue: `${parseAmount(
       item.commissionAmount,
       (isFixed && item?.commissionCurrency) || ''
     )}${isFixed ? '' : '%'}`,
+    value: item.commissionAmount,
     isFixed,
   };
 }

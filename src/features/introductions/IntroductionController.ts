@@ -266,28 +266,6 @@ const update = async (
       };
       sendMail(mailData);
     }
-    if (newIntroduction.status === IntroductionStatus.PAYMENT_PENDING) {
-      // send email
-      const mailData = {
-        from: env.EMAIL_FROM,
-        to: newIntroduction.guru.contactEmail,
-        replyTo: newIntroduction.business.contactEmail,
-        bcc: 'kris@introduce.guru',
-        subject: `You introduction has been paid by ${newIntroduction.business.businessName}`,
-        // text: text(req.body),
-        html: pendingPaymentIntroductionTemplate(
-          env.BASE_URL,
-          newIntroduction.guru,
-          newIntroduction.customer,
-          newIntroduction.business,
-          parseAmount(
-            introduction.agreement.commissionAmount,
-            introduction.agreement.commissionCurrency
-          )
-        ),
-      };
-      sendMail(mailData);
-    }
   }
   // final save
   await introductionModel.updateOne(_id, newIntroduction);
@@ -390,7 +368,7 @@ const makePayment = async (
     },
     line_items: [
       {
-        name: `Payment for ${introduction.guru.fullName} via introduce.guru`,
+        name: `Payment to introduce.guru`,
         amount: formatAmountForStripe(
           quote.total,
           introduction.agreement.commissionCurrency
@@ -429,12 +407,40 @@ const handlePayment = async (
     );
   }
   if (req.query['paymentStatus'] === 'success') {
+    const quote = await calculateQuote({
+      ...introduction,
+      agreement: { ...introduction?.agreement },
+      dealValue: introduction.dealValue,
+    });
+    const amountOwnedText = parseAmount(
+      introduction.agreement.commissionAmount,
+      introduction.agreement.commissionCurrency
+    );
     const newIntroduction: Introduction = {
       ...introduction,
       paid: Number(req.query.amount) / 100,
+      fee: quote.introduceGuruFee,
+      amountOwned: introduction.agreement.commissionAmount,
       status: IntroductionStatus.PAYMENT_PENDING,
     };
     await introductionModel.updateOne(req.query.id, newIntroduction);
+    // send email
+    const mailData = {
+      from: env.EMAIL_FROM,
+      to: newIntroduction.guru.contactEmail,
+      replyTo: newIntroduction.business.contactEmail,
+      bcc: 'kris@introduce.guru',
+      subject: `You introduction has been paid by ${newIntroduction.business.businessName}`,
+      // text: text(req.body),
+      html: pendingPaymentIntroductionTemplate(
+        env.BASE_URL,
+        newIntroduction.guru,
+        newIntroduction.customer,
+        newIntroduction.business,
+        amountOwnedText
+      ),
+    };
+    sendMail(mailData);
   }
   return res.redirect(
     302,

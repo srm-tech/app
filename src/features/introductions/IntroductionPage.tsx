@@ -420,10 +420,7 @@ export default function Introductions() {
         }) => {
           const isGuru = data.guru.userId === userProfile?.userId;
           const paid = data.paid
-            ? `Paid ${Number(data.paid).toLocaleString('en-AU', {
-                style: 'currency',
-                currency: data.agreement.commissionCurrency,
-              })}`
+            ? `Paid ${parseAmount(Number(data.paid))}`
             : 'Paid';
           let statusLabel;
           switch (data.status) {
@@ -444,11 +441,10 @@ export default function Introductions() {
               statusLabel = paid;
               break;
             case IntroductionStatus.PAYMENT_PENDING:
-              statusLabel = data.paid
-                ? `Payment pending ${Number(data.paid).toLocaleString('en-AU', {
-                    style: 'currency',
-                    currency: data.agreement.commissionCurrency,
-                  })}`
+              statusLabel = data.amountOwned
+                ? `Payment pending ${parseAmount(
+                    Number(isGuru ? data.amountOwned : data.paid)
+                  )}`
                 : 'Payment pending';
               break;
             case IntroductionStatus.PAYMENT_CLAIMED:
@@ -505,9 +501,12 @@ export default function Introductions() {
         }) => {
           const completeButton = (
             <button
-              onClick={() => {
+              onClick={async () => {
                 setRowItem(data);
-                getQuoteRequest.run(data._id);
+                await getQuoteRequest.run({
+                  id: data._id,
+                  dealValue: 10,
+                });
                 if (agreementAmount?.isFixed) {
                   setDealValue(Number(agreementAmount?.value));
                 }
@@ -515,7 +514,7 @@ export default function Introductions() {
               }}
               className='px-4 py-2 font-normal text-white bg-green-500 border border-gray-600 rounded hover:text-opacity-75 animated-underline focus:outline-none focus-visible:text-white'
             >
-              Pay {parseCommissionAmount(data.agreement).value}
+              Pay {parseCommissionAmount(data.agreement).displayValue}
             </button>
           );
 
@@ -788,15 +787,6 @@ export default function Introductions() {
             onAccept={redirectToStripe}
           >
             <div>
-              <p>
-                Your Guru <b>{rowItem?.business.firstName}</b> from{' '}
-                {rowItem?.business.businessName} will receive{' '}
-                {quote?.amountOwned?.toLocaleString('en-AU', {
-                  style: 'currency',
-                  currency: 'AUD',
-                })}
-                .
-              </p>
               {!agreementAmount?.isFixed && (
                 <div className='mt-4'>
                   <div className='mx-auto'>
@@ -811,25 +801,37 @@ export default function Introductions() {
                   </div>
                 </div>
               )}
-              {!agreementAmount?.isFixed && (
+              {agreementAmount?.isFixed && (
+                <p>
+                  Your Guru <b>{rowItem?.guru.firstName}</b> will receive{' '}
+                  {quote?.amountOwned?.toLocaleString('en-AU', {
+                    style: 'currency',
+                    currency: 'AUD',
+                  })}
+                </p>
+              )}
+              {!agreementAmount?.isFixed && Number(quote?.amountOwned) > 0 && (
                 <div className='mt-4'>
-                  Payable to {rowItem?.business.firstName}:{' '}
-                  <span className='text-green-600'>
+                  <p>
+                    Your Guru <b>{rowItem?.guru.firstName}</b> will receive{' '}
                     {quote?.amountOwned?.toLocaleString('en-AU', {
                       style: 'currency',
                       currency: 'AUD',
                     })}
-                  </span>
+                  </p>
                 </div>
               )}
-              <p className='mt-4'>
-                Our fee of{' '}
-                {quote?.introduceGuruFee?.toLocaleString('en-AU', {
-                  style: 'currency',
-                  currency: 'AUD',
-                })}{' '}
-                (incl. GST) is charged on top.
-              </p>
+              {((!agreementAmount?.isFixed && Number(quote?.amountOwned) > 0) ||
+                agreementAmount?.isFixed) && (
+                <p className='mt-4'>
+                  Our fee of{' '}
+                  {quote?.introduceGuruFee?.toLocaleString('en-AU', {
+                    style: 'currency',
+                    currency: 'AUD',
+                  })}{' '}
+                  (incl. GST) is charged on top.
+                </p>
+              )}
               {errorMessage && (
                 <div className='mt-4'>
                   <InlineError message={errorMessage} />

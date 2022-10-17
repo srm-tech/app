@@ -18,11 +18,13 @@ export interface Introduction {
   _id: ObjectId | string;
   status: IntroductionStatus;
   paid: number | string;
+  fee: number | string;
+  amountOwned: number | string;
+  dealValue: number;
   business: Business;
   customer: Customer;
   guru: Guru;
   agreement: Agreement;
-  dealValue: number;
   updatedAt: Date | string;
   expiresAt: Date | string;
   createdAt: Date | string;
