@@ -199,7 +199,7 @@ export default function Nav() {
 
       <Modal
         isShowing={showProfile}
-        form='profile'
+        form={userProfile?.isComplete ? 'profile' : 'registration'}
         acceptCaption='Update'
         cancelCaption='Close'
         onAccept={() => console.info('Saving...')}
@@ -208,7 +208,7 @@ export default function Nav() {
         content={
           <div>
             <RegisterForm
-              id='profile'
+              id={userProfile?.isComplete ? 'profile' : 'registration'}
               onSuccess={(data) => {
                 toast.success(`Your profile is now up to date!`);
                 userProfileStore.setState({ userProfile: data });
