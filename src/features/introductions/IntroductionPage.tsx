@@ -53,7 +53,7 @@ export default function Introductions() {
       (r, item) =>
         (r +=
           item.status === IntroductionStatus.PAYMENT_SUCCESS
-            ? Number(item.paid)
+            ? Number(item.amountOwned)
             : 0),
       0
     );
@@ -680,11 +680,7 @@ export default function Introductions() {
               onClick={() => setShowBalanceModal(true)}
               className='inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
             >
-              Ballance{' '}
-              {credits.toLocaleString('en-AU', {
-                style: 'currency',
-                currency: 'AUD',
-              })}
+              Ballance {parseAmount(credits)}
             </button>
           </div>
         </div>
@@ -728,10 +724,7 @@ export default function Introductions() {
             content={
               <WithdrawForm
                 id='withdraw'
-                amount={credits.toLocaleString('en-AU', {
-                  style: 'currency',
-                  currency: 'AUD',
-                })}
+                amount={parseAmount(credits)}
                 onSuccess={() => {
                   toast.success('Success! We have updated your details.');
                 }}
@@ -749,13 +742,7 @@ export default function Introductions() {
               <div>
                 <p>
                   Your current balance of commission earned is{' '}
-                  <b>
-                    {credits.toLocaleString('en-AU', {
-                      style: 'currency',
-                      currency: 'AUD',
-                    })}
-                  </b>
-                  .
+                  <b>{parseAmount(credits)}</b>.
                 </p>
                 <p>
                   Outstanding ballance will be paid to your bank account
@@ -763,10 +750,7 @@ export default function Introductions() {
                 </p>
                 <WithdrawForm
                   id='withdraw'
-                  amount={credits.toLocaleString('en-AU', {
-                    style: 'currency',
-                    currency: 'AUD',
-                  })}
+                  amount={parseAmount(credits)}
                   onSuccess={() => {
                     setShowBalanceModal(false);
                     toast.success('Success! Your money are on the way.');
@@ -804,31 +788,21 @@ export default function Introductions() {
               {agreementAmount?.isFixed && (
                 <p>
                   Your Guru <b>{rowItem?.guru.firstName}</b> will receive{' '}
-                  {quote?.amountOwned?.toLocaleString('en-AU', {
-                    style: 'currency',
-                    currency: 'AUD',
-                  })}
+                  {parseAmount(Number(quote?.amountOwned))}
                 </p>
               )}
               {!agreementAmount?.isFixed && Number(quote?.amountOwned) > 0 && (
                 <div className='mt-4'>
                   <p>
                     Your Guru <b>{rowItem?.guru.firstName}</b> will receive{' '}
-                    {quote?.amountOwned?.toLocaleString('en-AU', {
-                      style: 'currency',
-                      currency: 'AUD',
-                    })}
+                    {parseAmount(Number(quote?.amountOwned))}
                   </p>
                 </div>
               )}
               {((!agreementAmount?.isFixed && Number(quote?.amountOwned) > 0) ||
                 agreementAmount?.isFixed) && (
                 <p className='mt-4'>
-                  Our fee of{' '}
-                  {quote?.introduceGuruFee?.toLocaleString('en-AU', {
-                    style: 'currency',
-                    currency: 'AUD',
-                  })}{' '}
+                  Our fee of {parseAmount(Number(quote?.introduceGuruFee))}{' '}
                   (incl. GST) is charged on top.
                 </p>
               )}
