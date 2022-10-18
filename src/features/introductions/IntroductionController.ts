@@ -113,6 +113,8 @@ const create = async (
   const newIntroduction: NewIntroduction = {
     status: IntroductionStatus.PENDING,
     dealValue: 0,
+    amountOwned: 0,
+    fee: 0,
     customer: {
       fullName: customer?.name,
       firstName: customerFirstName,
