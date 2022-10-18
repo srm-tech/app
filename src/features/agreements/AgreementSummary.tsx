@@ -32,12 +32,12 @@ export function AgreementSummaryForGuru({ agreement, business }) {
     <div>
       <p>{business?.businessName} would like to offer you</p>
       <p className='font-medium text-green-700 text-lg'>
-        {parseCommissionAmount(agreement).value}
+        {parseCommissionAmount(agreement).displayValue}
       </p>
       <p className='mt-4 underline'>Terms:</p>
       <p>
         Upon acceptance of this introduction {business?.businessName} agrees to
-        pay {parseCommissionAmount(agreement).value} commission{' '}
+        pay {parseCommissionAmount(agreement).displayValue} commission{' '}
         {agreement?.commissionPaymentType === CommissionPaymentType.postpaid
           ? `after the deal is done.`
           : `upfront.`}
@@ -54,12 +54,12 @@ export function DefaultAgreementSummaryForGuru({ defaultAgreement, business }) {
     <div>
       <p>{business?.businessName} would like to offer you</p>
       <p className='font-medium text-green-700 text-lg'>
-        {parseCommissionAmount(defaultAgreement).value}
+        {parseCommissionAmount(defaultAgreement).displayValue}
       </p>
       <p className='mt-4 underline'>Terms:</p>
       <p>
         Upon acceptance of this introduction {business?.businessName} agrees to
-        pay {parseCommissionAmount(defaultAgreement).value} commission{' '}
+        pay {parseCommissionAmount(defaultAgreement).displayValue} commission{' '}
         {defaultAgreement?.commissionPaymentType ===
         CommissionPaymentType.postpaid
           ? `after the deal is done.`
@@ -73,12 +73,12 @@ export function AgreementSummaryForBusiness({ agreement, guru }) {
     <div>
       <p>Your commission offered to {guru?.fullName}</p>
       <p className='font-medium text-green-700 text-lg'>
-        {parseCommissionAmount(agreement).value}
+        {parseCommissionAmount(agreement).displayValue}
       </p>
       <p className='mt-4 underline'>Terms:</p>
       <p>
         Upon acceptance of this introduction you are agreeing to pay{' '}
-        {parseCommissionAmount(agreement).value} commission{' '}
+        {parseCommissionAmount(agreement).displayValue} commission{' '}
         {agreement?.commissionPaymentType === CommissionPaymentType.postpaid
           ? `after the deal is done.`
           : `upfront.`}
