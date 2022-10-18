@@ -201,6 +201,32 @@ export const QuickForm = () => {
     searchAgreement.isLoading ||
     getUserProfileCommission.isLoading;
 
+  const AgreementContent = useMemo(
+    () => (
+      <div>
+        {agreement ? (
+          <AgreementSummaryForGuru
+            key={business?.userId}
+            business={business}
+            agreement={agreement}
+          />
+        ) : (
+          <DefaultAgreementSummaryForGuru
+            key={business?.userId}
+            business={business}
+            defaultAgreement={defaultAgreement}
+          />
+        )}
+        {errorMessage && (
+          <div className='mt-4'>
+            <InlineError message={errorMessage} />
+          </div>
+        )}
+      </div>
+    ),
+    [agreement, defaultAgreement, business?.userId, errorMessage]
+  );
+
   return (
     <div className='m-auto bg-white rounded-lg sm:max-w-md sm:w-full'>
       <form
@@ -361,26 +387,7 @@ export const QuickForm = () => {
           setIsLoading(false);
         }}
         caption={`Review your agreement`}
-        content={
-          <div>
-            {agreement ? (
-              <AgreementSummaryForGuru
-                business={business}
-                agreement={agreement}
-              />
-            ) : (
-              <DefaultAgreementSummaryForGuru
-                business={business}
-                defaultAgreement={defaultAgreement}
-              />
-            )}
-            {errorMessage && (
-              <div className='mt-4'>
-                <InlineError message={errorMessage} />
-              </div>
-            )}
-          </div>
-        }
+        content={AgreementContent}
       />
     </div>
   );

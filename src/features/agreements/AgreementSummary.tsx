@@ -3,7 +3,7 @@ import * as React from 'react';
 import { CommissionPaymentType, CommissionType } from './agreementConstants';
 import { Agreement } from './AgreementModel';
 
-export function parseAmount(amount: number, currency = 'AUD') {
+export function parseAmount(amount: number, currency = 'AUD', prefix = '$') {
   return `$${amount}`;
   //  `$${amount?.toLocaleString(
   //   'en-AU',
@@ -16,12 +16,14 @@ export function parseAmount(amount: number, currency = 'AUD') {
 }
 
 export function parseCommissionAmount(item: Agreement) {
-  const isFixed = item.commissionType === CommissionType.fixed;
+  if (!item) {
+    return { displayValue: '', value: 0, isFixed: false };
+  }
+  const isFixed = item?.commissionType === CommissionType.fixed;
   return {
-    displayValue: `${parseAmount(
-      item.commissionAmount,
-      (isFixed && item?.commissionCurrency) || ''
-    )}${isFixed ? '' : '%'}`,
+    displayValue: isFixed
+      ? `$${item.commissionAmount}`
+      : `${item.commissionAmount}%`,
     value: item.commissionAmount,
     isFixed,
   };

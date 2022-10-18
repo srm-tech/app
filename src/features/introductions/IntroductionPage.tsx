@@ -60,7 +60,7 @@ export default function Introductions() {
   }, [introductions]);
 
   const [errorMessage, setErrorMessage] = React.useState('');
-  const [dealValue, setDealValue] = React.useState<number | undefined>();
+  const [dealValue, setDealValue] = React.useState<number>(100);
   const [quote, setQuote] = React.useState<Quote | undefined>();
   const [rowItem, setRowItem] = React.useState<Introduction | null>(null);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
@@ -419,8 +419,8 @@ export default function Introductions() {
           row: { original: Introduction };
         }) => {
           const isGuru = data.guru.userId === userProfile?.userId;
-          const paid = data.paid
-            ? `Paid ${parseAmount(Number(data.paid))}`
+          const paid = data.amountOwned
+            ? `Paid ${parseAmount(Number(data.amountOwned))}`
             : 'Paid';
           let statusLabel;
           switch (data.status) {
@@ -505,7 +505,7 @@ export default function Introductions() {
                 setRowItem(data);
                 await getQuoteRequest.run({
                   id: data._id,
-                  dealValue: 10,
+                  dealValue: dealValue,
                 });
                 if (agreementAmount?.isFixed) {
                   setDealValue(Number(agreementAmount?.value));

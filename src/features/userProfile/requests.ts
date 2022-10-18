@@ -39,17 +39,8 @@ const userProfileApi = {
         signal,
       }
     );
-    const newData = data.map((item: Commission) => ({
-      ...item,
-      commissionAmount:
-        item.commissionType === CommissionType.fixed
-          ? item.commissionAmount?.toLocaleString('en-AU', {
-              style: 'currency',
-              currency: item?.commissionCurrency || 'AUD',
-            })
-          : `${item.commissionAmount}`,
-    }));
-    return { data: newData[0] };
+
+    return { data: data[0] };
   },
   updateUserProfile: async (
     signal,
